@@ -2,7 +2,7 @@
 Contributors: raybogman
 Tags: ai, content, seo, claude, openai, gpt, anthropic, yoast, content-generator, linkedin
 Requires at least: 5.8
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 2.5.6
 License: GPLv2 or later
