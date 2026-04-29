@@ -11,7 +11,7 @@ jobs:
     name: Deploy to Freemius
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Get version from tag
         id: version
@@ -34,7 +34,7 @@ jobs:
           release_mode: 'released'
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ai-content-orchestrator-${{ steps.version.outputs.VERSION }}
           path: |
