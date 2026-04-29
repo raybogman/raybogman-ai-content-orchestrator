@@ -31,4 +31,4 @@ jobs:
         with:
           file_name: 'ai-content-orchestrator.zip'
           version: ${{ steps.version.outputs.VERSION }}
-          release_mode: 'pending'
+          release_mode: 'released'
