@@ -1,0 +1,23 @@
+name: Deploy to Freemius
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Freemius
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Freemius
+        uses: freemius/deploy-on-freemius@v2
+        with:
+          developer-id: 33246
+          plugin-id: 28680
+          public-key: ${{ secrets.FREEMIUS_PUBLIC_KEY }}
+          secret-key: ${{ secrets.FREEMIUS_SECRET_KEY }}
+          zip-name: 'ai-content-orchestrator'
