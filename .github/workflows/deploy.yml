@@ -32,3 +32,12 @@ jobs:
           file_name: 'ai-content-orchestrator.zip'
           version: ${{ steps.version.outputs.VERSION }}
           release_mode: 'released'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-content-orchestrator-${{ steps.version.outputs.VERSION }}
+          path: |
+            ai-content-orchestrator.zip
+            ai-content-orchestrator__free.zip
+          retention-days: 90
