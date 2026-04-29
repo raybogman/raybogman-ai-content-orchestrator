@@ -3,7 +3,7 @@
  * Plugin Name:       AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/ai-content-orchestrator
  * Description:       AI Content Orchestrator — End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
- * Version:           2.5.1
+ * Version:           2.5.2
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Ray Bogman
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'AICC_VERSION', '2.5.1' );
+define( 'AICC_VERSION', '2.5.2' );
 define( 'AICC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AICC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AICC_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
