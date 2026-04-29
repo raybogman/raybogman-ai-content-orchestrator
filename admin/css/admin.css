@@ -1,0 +1,590 @@
+/**
+ * AI Content Orchestrator - Admin Styles
+ *
+ * @package AI_Content_Creator
+ */
+
+/* ── Layout ────────────────────���────────────────────────────────── */
+
+.aicc-wrap {
+	max-width: 960px;
+}
+
+.aicc-wrap .wp-heading-inline {
+	display: flex;
+	align-items: center;
+}
+
+.aicc-heading-icon {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+	margin-right: 8px;
+}
+
+.aicc-subtitle {
+	color: #646970;
+	font-size: 14px;
+	margin: 4px 0 20px;
+}
+
+/* ── Status bar ─────────────────────────────────────────────────── */
+
+.aicc-status-bar {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 10px 16px;
+	margin-bottom: 20px;
+	font-size: 13px;
+}
+
+.aicc-status-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.aicc-status-link {
+	margin-left: auto;
+	text-decoration: none;
+	color: #2271b1;
+}
+
+.aicc-status-link:hover {
+	color: #135e96;
+}
+
+.aicc-badge {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.aicc-badge-success {
+	background: #edfaef;
+	color: #00a32a;
+	border: 1px solid #00a32a;
+}
+
+.aicc-badge-warning {
+	background: #fcf9e8;
+	color: #996800;
+	border: 1px solid #dba617;
+}
+
+/* ── Cards ────────��─────────────────────────────────────────────── */
+
+.aicc-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	margin-bottom: 20px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.aicc-card-header {
+	padding: 12px 20px;
+	border-bottom: 1px solid #c3c4c7;
+	background: #f6f7f7;
+}
+
+.aicc-card-header h2 {
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+	display: flex;
+	align-items: center;
+}
+
+.aicc-card-header-success {
+	background: #edfaef;
+	border-bottom-color: #00a32a;
+}
+
+.aicc-card-header-success h2 {
+	color: #00a32a;
+}
+
+.aicc-card-body {
+	padding: 16px 20px;
+}
+
+/* ── Form overrides ───��────────────────────────���────────────────── */
+
+.aicc-card .form-table th {
+	width: 180px;
+	padding: 16px 10px 16px 0;
+	vertical-align: top;
+}
+
+.aicc-card .form-table td {
+	padding: 12px 10px;
+}
+
+.aicc-card .form-table textarea {
+	width: 100%;
+	min-height: 120px;
+}
+
+.aicc-card .form-table fieldset label {
+	display: block;
+	margin-bottom: 6px;
+}
+
+.aicc-btn-icon {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	vertical-align: text-bottom;
+	margin-right: 4px;
+}
+
+.button-hero .aicc-btn-icon {
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+}
+
+/* ── Category checkbox list ��────────────────────────────────────── */
+
+.aicc-checkbox-list {
+	max-height: 200px;
+	overflow-y: auto;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 8px 12px;
+	background: #f6f7f7;
+}
+
+.aicc-checkbox-item {
+	display: block !important;
+	margin-bottom: 4px !important;
+	font-weight: normal !important;
+}
+
+.aicc-checkbox-item input[type="checkbox"] {
+	margin-right: 6px;
+}
+
+/* ── Log box ─────────────���──────────────────────────────────────── */
+
+.aicc-log-box {
+	background: #1d2327;
+	color: #c3c4c7;
+	padding: 16px;
+	border-radius: 4px;
+	max-height: 350px;
+	overflow-y: auto;
+	font-family: Menlo, Consolas, Monaco, "Andale Mono", monospace;
+	font-size: 12px;
+	line-height: 1.8;
+}
+
+.aicc-log-line {
+	margin: 0;
+	padding: 0;
+}
+
+.aicc-log-line.step {
+	color: #72aee6;
+	font-weight: 600;
+}
+
+.aicc-log-line.success {
+	color: #00a32a;
+}
+
+.aicc-log-line.error {
+	color: #d63638;
+}
+
+/* ── Result table ──────��────────────────────────────────────────── */
+
+.aicc-result-card .widefat td {
+	vertical-align: top;
+}
+
+.aicc-result-card .widefat td:first-child {
+	font-weight: 600;
+	width: 160px;
+	color: #1d2327;
+}
+
+.aicc-tag {
+	display: inline-block;
+	background: #f0f0f1;
+	border: 1px solid #c3c4c7;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	margin: 2px;
+	color: #50575e;
+}
+
+/* ── Preview ────────────────────────────────────────────────────── */
+
+.aicc-preview {
+	margin-top: 16px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 24px;
+	max-height: 500px;
+	overflow-y: auto;
+	font-size: 15px;
+	line-height: 1.7;
+	color: #1d2327;
+}
+
+.aicc-preview h2 {
+	font-size: 22px;
+	margin: 20px 0 10px;
+	color: #1d2327;
+}
+
+.aicc-preview h3 {
+	font-size: 18px;
+	margin: 16px 0 8px;
+	color: #50575e;
+}
+
+.aicc-preview p {
+	margin-bottom: 12px;
+}
+
+.aicc-preview ul,
+.aicc-preview ol {
+	margin: 0 0 12px 24px;
+}
+
+.aicc-preview li {
+	margin-bottom: 4px;
+}
+
+.aicc-preview strong {
+	font-weight: 700;
+}
+
+/* ── Spinner in button ─────────��───────────────────────────��────── */
+
+.aicc-btn-spinner {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: aicc-spin 0.7s linear infinite;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+@keyframes aicc-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* ── Style hover preview panel ──────────────────────────────────── */
+
+.aicc-style-preview-panel {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 10000;
+	width: 580px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+	margin-top: 8px;
+}
+
+.aicc-style-preview-header {
+	display: flex;
+	align-items: center;
+	padding: 10px 16px;
+	border-bottom: 1px solid #dcdcde;
+	background: #f6f7f7;
+	border-radius: 6px 6px 0 0;
+	font-size: 13px;
+}
+
+.aicc-style-preview-panel .aicc-preview {
+	margin: 0;
+	border: none;
+	border-radius: 0 0 6px 6px;
+	padding: 16px;
+	font-size: 13px;
+	line-height: 1.6;
+	overflow-y: auto;
+}
+
+.aicc-style-preview-panel .aicc-preview h2 {
+	font-size: 16px;
+	margin: 14px 0 6px;
+}
+
+.aicc-style-preview-panel .aicc-preview h3 {
+	font-size: 14px;
+	margin: 10px 0 4px;
+}
+
+.aicc-style-preview-panel .aicc-preview p {
+	margin-bottom: 8px;
+}
+
+.aicc-style-preview-panel .aicc-preview table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 12px;
+	margin: 8px 0;
+}
+
+.aicc-style-preview-panel .aicc-preview table th,
+.aicc-style-preview-panel .aicc-preview table td {
+	border: 1px solid #dcdcde;
+	padding: 4px 8px;
+	text-align: left;
+}
+
+.aicc-style-preview-panel .aicc-preview table th {
+	background: #f6f7f7;
+}
+
+#aicc-style-preview-trigger {
+	transition: color 0.15s;
+}
+
+#aicc-style-preview-trigger:hover {
+	color: #135e96;
+}
+
+/* ── Saved URL chips ────────────────────────────────────────────── */
+
+.aicc-saved-urls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 10px;
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	min-height: 40px;
+}
+
+.aicc-url-chip {
+	display: inline-flex;
+	align-items: center;
+	background: #fff;
+	border: 1px solid #2271b1;
+	border-radius: 16px;
+	padding: 4px 4px 4px 12px;
+	font-size: 13px;
+	color: #2271b1;
+	transition: all 0.15s;
+}
+
+.aicc-url-chip:hover {
+	background: #2271b1;
+	color: #fff;
+}
+
+.aicc-url-chip-text {
+	cursor: pointer;
+	font-family: Menlo, Consolas, Monaco, monospace;
+	max-width: 350px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.aicc-url-chip-remove {
+	background: transparent;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	font-size: 18px;
+	line-height: 1;
+	padding: 0 6px 0 8px;
+	margin-left: 4px;
+	border-left: 1px solid rgba(34, 113, 177, 0.3);
+	opacity: 0.7;
+	transition: opacity 0.15s;
+}
+
+.aicc-url-chip-remove:hover {
+	opacity: 1;
+}
+
+.aicc-url-chip:hover .aicc-url-chip-remove {
+	border-left-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── PDF Library ────────────────────────────────────────────────── */
+
+.aicc-pdf-library {
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 12px;
+	background: #f6f7f7;
+}
+
+.aicc-pdf-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 10px;
+	margin-bottom: 4px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+}
+
+.aicc-pdf-item:last-child {
+	margin-bottom: 0;
+}
+
+.aicc-pdf-label {
+	flex: 1;
+	display: flex !important;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	margin: 0 !important;
+}
+
+.aicc-pdf-delete-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 2px;
+	opacity: 0.6;
+	transition: opacity 0.15s;
+}
+
+.aicc-pdf-delete-btn:hover {
+	opacity: 1;
+}
+
+.aicc-pdf-preview {
+	width: 100%;
+	font-size: 12px;
+	color: #646970;
+	padding-left: 28px;
+	margin-top: 2px;
+	line-height: 1.4;
+	font-style: italic;
+}
+
+.aicc-pdf-upload-area {
+	display: flex;
+	align-items: center;
+}
+
+/* ── Scheduled table ────────────────────────────────────────────── */
+
+.aicc-scheduled-table th {
+	font-weight: 600;
+	padding: 10px 12px;
+}
+
+.aicc-scheduled-table td {
+	padding: 12px;
+	vertical-align: middle;
+}
+
+.aicc-scheduled-table .button .dashicons {
+	margin-right: 2px;
+}
+
+/* Actions column — keep all buttons on a single row, no wrapping. */
+.aicc-scheduled-table th.aicc-actions-col,
+.aicc-scheduled-table td.aicc-actions-cell {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.aicc-scheduled-table td.aicc-actions-cell .button {
+	margin-right: 4px;
+	vertical-align: middle;
+}
+
+.aicc-scheduled-table td.aicc-actions-cell .button:last-child {
+	margin-right: 0;
+}
+
+.aicc-schedule-cell {
+	font-family: Menlo, Consolas, Monaco, monospace;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+/* ── Modal ──────────────────────────────────────────────────────── */
+
+.aicc-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 100000;
+}
+
+.aicc-modal-backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.aicc-modal-content {
+	position: relative;
+	background: #fff;
+	max-width: 440px;
+	margin: 100px auto;
+	padding: 24px;
+	border-radius: 4px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.aicc-modal-content h2 {
+	margin-top: 0;
+	font-size: 18px;
+}
+
+.aicc-modal-content input[type="datetime-local"] {
+	width: 100%;
+	margin-top: 12px;
+	padding: 8px 10px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+
+@media screen and (max-width: 782px) {
+	.aicc-status-bar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
+	.aicc-status-link {
+		margin-left: 0;
+	}
+
+	.aicc-card .form-table th {
+		width: auto;
+		padding-bottom: 4px;
+	}
+}
