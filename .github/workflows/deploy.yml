@@ -13,11 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create plugin zip
+        run: |
+          cd $GITHUB_WORKSPACE
+          zip -r ai-content-orchestrator.zip . -x '.git/*' '.github/*' '*.DS_Store'
+
       - name: Deploy to Freemius
-        uses: freemius/deploy-on-freemius@v2
+        uses: buttonizer/freemius-deploy@v1
+        env:
+          DEV_ID: '33246'
+          PLUGIN_ID: '28680'
+          PLUGIN_SLUG: 'ai-content-orchestrator'
+          PUBLIC_KEY: ${{ secrets.FREEMIUS_PUBLIC_KEY }}
+          SECRET_KEY: ${{ secrets.FREEMIUS_SECRET_KEY }}
         with:
-          developer-id: 33246
-          plugin-id: 28680
-          public-key: ${{ secrets.FREEMIUS_PUBLIC_KEY }}
-          secret-key: ${{ secrets.FREEMIUS_SECRET_KEY }}
-          zip-name: 'ai-content-orchestrator'
+          file_name: 'ai-content-orchestrator.zip'
+          version: ${{ github.ref_name }}
+          release_mode: 'pending'
