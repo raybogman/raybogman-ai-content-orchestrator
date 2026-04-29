@@ -13,13 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
       - name: Create plugin zip
-        run: |
-          cd $GITHUB_WORKSPACE
-          zip -r ai-content-orchestrator.zip . -x '.git/*' '.github/*' '*.DS_Store'
+        run: zip -r ai-content-orchestrator.zip . -x '.git/*' '.github/*' '*.DS_Store'
 
       - name: Deploy to Freemius
-        uses: buttonizer/freemius-deploy@v1
+        uses: buttonizer/freemius-deploy@v0.1.3
         env:
           DEV_ID: '33246'
           PLUGIN_ID: '28680'
@@ -28,5 +30,5 @@ jobs:
           SECRET_KEY: ${{ secrets.FREEMIUS_SECRET_KEY }}
         with:
           file_name: 'ai-content-orchestrator.zip'
-          version: ${{ github.ref_name }}
+          version: ${{ steps.version.outputs.VERSION }}
           release_mode: 'pending'

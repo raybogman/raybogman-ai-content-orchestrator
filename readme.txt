@@ -4,7 +4,7 @@ Tags: ai, content, seo, claude, openai, gpt, anthropic, yoast, content-generator
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 2.5.2
+Stable tag: 2.5.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
