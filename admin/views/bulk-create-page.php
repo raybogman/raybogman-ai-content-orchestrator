@@ -103,7 +103,7 @@ $aicc_default_format  = AICC_Settings::get_default_output_format();
 					</tr>
 				</thead>
 				<tbody>
-					<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
+					<?php for ( $aicc_i = 1; $aicc_i <= 5; $aicc_i++ ) : ?>
 						<tr class="aicc-bulk-row">
 							<td><input type="checkbox" class="aicc-bulk-check" checked /></td>
 							<td><input type="text" class="large-text aicc-bulk-topic" placeholder="<?php esc_attr_e( 'Enter topic...', 'ai-content-orchestrator' ); ?>" /></td>
@@ -167,9 +167,9 @@ $aicc_default_format  = AICC_Settings::get_default_output_format();
 						</th>
 						<td>
 							<div id="aicc-bulk-saved-urls-list" class="aicc-saved-urls">
-								<?php foreach ( $aicc_saved_urls as $saved_url ) : ?>
-									<span class="aicc-url-chip" data-url="<?php echo esc_attr( $saved_url ); ?>">
-										<span class="aicc-url-chip-text"><?php echo esc_html( $saved_url ); ?></span>
+								<?php foreach ( $aicc_saved_urls as $aicc_saved_url ) : ?>
+									<span class="aicc-url-chip" data-url="<?php echo esc_attr( $aicc_saved_url ); ?>">
+										<span class="aicc-url-chip-text"><?php echo esc_html( $aicc_saved_url ); ?></span>
 										<button type="button" class="aicc-url-chip-remove" title="<?php esc_attr_e( 'Remove', 'ai-content-orchestrator' ); ?>">&times;</button>
 									</span>
 								<?php endforeach; ?>

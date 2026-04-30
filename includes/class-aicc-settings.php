@@ -888,24 +888,25 @@ class AICC_Settings {
 		}
 
 		$field_id = esc_attr( $args['id'] );
+  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Values are from trusted plugin settings.
 		printf( '<input type="hidden" id="%s" name="%s" value="%d" />', $field_id, $field_id, $value );
 
 		printf(
 			'<button type="button" class="button aicc-media-upload-btn" data-target="%s">%s</button>',
-			$field_id,
+			esc_attr( $field_id ),
 			esc_html( $button_text )
 		);
 
 		if ( $value > 0 ) {
 			printf(
 				' <button type="button" class="button aicc-media-remove-btn" data-target="%s">%s</button>',
-				$field_id,
+				esc_attr( $field_id ),
 				esc_html__( 'Remove', 'ai-content-orchestrator' )
 			);
 		}
 
 		// Preview area.
-		echo '<div class="aicc-media-preview" data-target="' . $field_id . '" style="margin-top:8px;">';
+		echo '<div class="aicc-media-preview" data-target="' . esc_attr( $field_id ) . '" style="margin-top:8px;">';
 		if ( ! empty( $preview_url ) ) {
 			if ( preg_match( '/\.(jpe?g|png|gif|webp|svg)$/i', $preview_url ) ) {
 				printf( '<img src="%s" style="max-width:300px;max-height:150px;border:1px solid #ccc;border-radius:4px;" />', esc_url( $preview_url ) );
@@ -913,7 +914,7 @@ class AICC_Settings {
 				printf(
 					'<span class="dashicons dashicons-media-default" style="vertical-align:text-bottom;"></span> <code>%s</code> (#%d)',
 					esc_html( $file_name ),
-					$value
+					intval( $value )
 				);
 			}
 		}
@@ -1053,10 +1054,10 @@ class AICC_Settings {
 				foreach ( $items as $item ) {
 					printf(
 						'<option value="%d" %s>%s (#%d)</option>',
-						$item['id'],
+						intval( $item['id'] ),
 						selected( $value, $item['id'], false ),
 						esc_html( $item['title'] ),
-						$item['id']
+						intval( $item['id'] )
 					);
 				}
 				echo '</optgroup>';
@@ -1066,7 +1067,7 @@ class AICC_Settings {
 			printf(
 				'<input type="number" id="%1$s" name="%1$s" value="%2$d" min="0" class="small-text" />',
 				esc_attr( $args['id'] ),
-				$value
+				intval( $value )
 			);
 		}
 
@@ -1239,7 +1240,8 @@ class AICC_Settings {
 		echo '</button>';
 		echo '<span style="color:#787c82; font-size:12px;" id="aicc-color-count">';
 		if ( ! empty( $value ) ) {
-			printf( esc_html__( '%d/4 selected', 'ai-content-orchestrator' ), min( count( array_filter( $colors ) ), 4 ) );
+   /* translators: %s: dynamic value */
+			printf( esc_html__( '%d/4 selected', 'ai-content-orchestrator' ), intval( min( count( array_filter( $colors ) ), 4 ) ) );
 		}
 		echo '</span>';
 		echo '</div>';

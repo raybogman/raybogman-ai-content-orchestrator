@@ -122,9 +122,9 @@ $aicc_project_vision = AICC_Settings::get_project_vision();
 							</th>
 							<td>
 								<div id="aicc-saved-urls-list" class="aicc-saved-urls">
-									<?php foreach ( $aicc_saved_urls as $saved_url ) : ?>
-										<span class="aicc-url-chip" data-url="<?php echo esc_attr( $saved_url ); ?>">
-											<span class="aicc-url-chip-text"><?php echo esc_html( $saved_url ); ?></span>
+									<?php foreach ( $aicc_saved_urls as $aicc_saved_url ) : ?>
+										<span class="aicc-url-chip" data-url="<?php echo esc_attr( $aicc_saved_url ); ?>">
+											<span class="aicc-url-chip-text"><?php echo esc_html( $aicc_saved_url ); ?></span>
 											<button type="button" class="aicc-url-chip-remove" title="<?php esc_attr_e( 'Remove', 'ai-content-orchestrator' ); ?>">&times;</button>
 										</span>
 									<?php endforeach; ?>
@@ -165,21 +165,21 @@ $aicc_project_vision = AICC_Settings::get_project_vision();
 									<p class="description" style="margin-bottom: 8px;">
 										<strong><?php esc_html_e( 'Saved PDFs — check to use as source:', 'ai-content-orchestrator' ); ?></strong>
 									</p>
-									<?php foreach ( $aicc_pdf_library as $pdf ) : ?>
-										<div class="aicc-pdf-item" data-pdf-id="<?php echo esc_attr( $pdf['id'] ); ?>">
+									<?php foreach ( $aicc_pdf_library as $aicc_pdf ) : ?>
+										<div class="aicc-pdf-item" data-pdf-id="<?php echo esc_attr( $aicc_pdf['id'] ); ?>">
 											<label class="aicc-pdf-label">
-												<input type="checkbox" name="aicc-pdf-ids[]" value="<?php echo esc_attr( $pdf['id'] ); ?>" class="aicc-pdf-checkbox" />
+												<input type="checkbox" name="aicc-pdf-ids[]" value="<?php echo esc_attr( $aicc_pdf['id'] ); ?>" class="aicc-pdf-checkbox" />
 												<span class="dashicons dashicons-pdf" style="color: #d63638; vertical-align: text-bottom;"></span>
-												<strong><?php echo esc_html( $pdf['name'] ); ?></strong>
+												<strong><?php echo esc_html( $aicc_pdf['name'] ); ?></strong>
 												<span class="description">
-													&mdash; <?php echo esc_html( $pdf['upload_date'] ); ?>
-													&middot; <?php echo esc_html( number_format( $pdf['text_length'] ) ); ?> chars
+													&mdash; <?php echo esc_html( $aicc_pdf['upload_date'] ); ?>
+													&middot; <?php echo esc_html( number_format( $aicc_pdf['text_length'] ) ); ?> chars
 												</span>
 											</label>
-											<button type="button" class="aicc-pdf-delete-btn" data-pdf-id="<?php echo esc_attr( $pdf['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
+											<button type="button" class="aicc-pdf-delete-btn" data-pdf-id="<?php echo esc_attr( $aicc_pdf['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
 												<span class="dashicons dashicons-trash" style="color: #d63638; font-size: 14px; width: 14px; height: 14px;"></span>
 											</button>
-											<div class="aicc-pdf-preview description"><?php echo esc_html( $pdf['text_preview'] ); ?></div>
+											<div class="aicc-pdf-preview description"><?php echo esc_html( $aicc_pdf['text_preview'] ); ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -236,17 +236,17 @@ $aicc_project_vision = AICC_Settings::get_project_vision();
 						</tr>
 						<!-- Blog Style (visible for Blog Post only) -->
 						<?php
-						$styles          = AICC_Styles::get_styles();
-						$style_previews  = AICC_Styles::get_short_previews();
+						$aicc_styles          = AICC_Styles::get_styles();
+						$aicc_style_previews  = AICC_Styles::get_short_previews();
 						?>
 						<tr id="aicc-style-row">
 							<th scope="row"><?php esc_html_e( 'Blog Style', 'ai-content-orchestrator' ); ?></th>
 							<td>
 								<div style="display: flex; align-items: center; gap: 8px; position: relative;">
 									<select id="aicc-blog-style" class="regular-text">
-										<?php foreach ( $styles as $key => $style ) : ?>
-											<option value="<?php echo esc_attr( $key ); ?>">
-												<?php echo esc_html( $style['name'] ); ?> &mdash; <?php echo esc_html( $style['target_words'] ); ?> words
+										<?php foreach ( $aicc_styles as $aicc_key => $aicc_style ) : ?>
+											<option value="<?php echo esc_attr( $aicc_key ); ?>">
+												<?php echo esc_html( $aicc_style['name'] ); ?> &mdash; <?php echo esc_html( $aicc_style['target_words'] ); ?> words
 											</option>
 										<?php endforeach; ?>
 									</select>
@@ -264,12 +264,12 @@ $aicc_project_vision = AICC_Settings::get_project_vision();
 									</div>
 								</div>
 								<p class="description" id="aicc-style-description">
-									<?php echo esc_html( $styles['standard']['description'] ); ?>
+									<?php echo esc_html( $aicc_styles['standard']['description'] ); ?>
 								</p>
 
 								<!-- Hidden preview data -->
-								<?php foreach ( $style_previews as $key => $html ) : ?>
-									<script type="text/html" id="aicc-style-preview-data-<?php echo esc_attr( $key ); ?>"><?php echo wp_kses_post( $html ); ?></script>
+								<?php foreach ( $aicc_style_previews as $aicc_key => $aicc_html ) : ?>
+									<script type="text/html" id="aicc-style-preview-data-<?php echo esc_attr( $aicc_key ); ?>"><?php echo wp_kses_post( $aicc_html ); ?></script>
 								<?php endforeach; ?>
 							</td>
 						</tr>
@@ -362,6 +362,7 @@ $aicc_project_vision = AICC_Settings::get_project_vision();
 										<p class="description">
 											<?php
 											printf(
+            /* translators: %s: dynamic value */
 												esc_html__( 'Will share to Instagram as @%s with the featured image and an AI-generated caption.', 'ai-content-orchestrator' ),
 												esc_html( $aicc_ig_profile['username'] ?? '' )
 											);
@@ -472,10 +473,10 @@ $aicc_project_vision = AICC_Settings::get_project_vision();
 							<td>
 								<div id="aicc-categories-list" class="aicc-checkbox-list">
 									<?php if ( ! empty( $aicc_categories ) ) : ?>
-										<?php foreach ( $aicc_categories as $cat ) : ?>
+										<?php foreach ( $aicc_categories as $aicc_cat ) : ?>
 											<label class="aicc-checkbox-item">
-												<input type="checkbox" name="aicc-categories[]" value="<?php echo esc_attr( $cat['id'] ); ?>" />
-												<?php echo esc_html( $cat['name'] ); ?>
+												<input type="checkbox" name="aicc-categories[]" value="<?php echo esc_attr( $aicc_cat['id'] ); ?>" />
+												<?php echo esc_html( $aicc_cat['name'] ); ?>
 											</label>
 										<?php endforeach; ?>
 									<?php else : ?>

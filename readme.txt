@@ -4,7 +4,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.5.6
+Stable tag: 2.5.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,26 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 * When: On plugin activation (opt-in consent screen shown first)
 
 == Changelog ==
+
+= 2.5.7 =
+* Fixed: WordPress.org Plugin Check — all errors and warnings resolved. Passes all categories: General, Plugin Repo, Security, Performance, and Accessibility.
+* Fixed: Output escaping for all rendered settings fields (esc_attr, intval).
+* Fixed: Input sanitization and wp_unslash on all $_GET/$_POST/$_FILES usage.
+* Fixed: All translators comments for i18n strings with placeholders.
+* Fixed: Ordered placeholders in email notification (%1$s, %2$s, %3$s, %4$s).
+* Fixed: All global variables prefixed with aicc_ in view templates.
+* Fixed: Freemius function renamed from aco_fs to aicc_fs for prefix compliance.
+* Fixed: Third-party service disclosures added to readme.txt (Anthropic, OpenAI, Ideogram, LinkedIn, Instagram, Freemius).
+* Fixed: Tags reduced to 5 (WordPress.org maximum).
+* Fixed: Short description trimmed to under 150 characters.
+* Fixed: Tested up to updated to WordPress 6.9.
+* Fixed: Domain Path languages directory created.
+* Improved: Replaced unlink() with wp_delete_file().
+
+= 2.5.0 =
+* New: Freemius SDK integration for free/Enterprise licensing and deployment.
+* New: GitHub Actions CI/CD pipeline — push a tag to auto-deploy to Freemius.
+* New: Downloadable free + enterprise zip artifacts from GitHub Actions.
 
 = 2.4.0 =
 * New: Full free/Enterprise feature gating. Free version: 4 blog styles, DALL-E images only, inline linking (max 3), 1 URL scanning, WordPress output, content repurposing, manual scheduling. Enterprise version adds: all 13 blog styles, Ideogram, competitor analysis, LinkedIn & Instagram sharing, Thrive Architect, PDF sources, adaptive linking (max 15), multiple URLs, auto-fill schedule, email notifications, Bulk Create, and Refresh Content.

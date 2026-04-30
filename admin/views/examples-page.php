@@ -499,26 +499,26 @@ $aicc_examples = array(
 		<?php esc_html_e( 'Preview what each blog style produces. Click any style to expand its example. Select your preferred style on the Create Content page.', 'ai-content-orchestrator' ); ?>
 	</p>
 
-	<?php foreach ( $aicc_styles as $key => $style ) : ?>
+	<?php foreach ( $aicc_styles as $aicc_key => $aicc_style ) : ?>
 		<div class="aicc-card" style="margin-bottom: 12px;">
-			<div class="aicc-card-header aicc-example-toggle" data-target="aicc-example-<?php echo esc_attr( $key ); ?>" style="cursor: pointer;">
+			<div class="aicc-card-header aicc-example-toggle" data-target="aicc-example-<?php echo esc_attr( $aicc_key ); ?>" style="cursor: pointer;">
 				<h2 style="justify-content: space-between; width: 100%;">
 					<span>
-						<span class="dashicons <?php echo esc_attr( $style['icon'] ); ?>" style="margin-right: 6px;"></span>
-						<?php echo esc_html( $style['name'] ); ?>
+						<span class="dashicons <?php echo esc_attr( $aicc_style['icon'] ); ?>" style="margin-right: 6px;"></span>
+						<?php echo esc_html( $aicc_style['name'] ); ?>
 						<span class="description" style="font-weight: normal; margin-left: 8px;">
-							<?php echo esc_html( $style['target_words'] ); ?> words &mdash;
-							<?php echo esc_html( $style['description'] ); ?>
+							<?php echo esc_html( $aicc_style['target_words'] ); ?> words &mdash;
+							<?php echo esc_html( $aicc_style['description'] ); ?>
 						</span>
 					</span>
 					<span class="dashicons dashicons-arrow-down-alt2" style="color: #646970;"></span>
 				</h2>
 			</div>
-			<div id="aicc-example-<?php echo esc_attr( $key ); ?>" class="aicc-card-body aicc-example-body" style="display: none;">
+			<div id="aicc-example-<?php echo esc_attr( $aicc_key ); ?>" class="aicc-card-body aicc-example-body" style="display: none;">
 				<div class="aicc-preview" style="display: block; max-height: none;">
 					<?php
-					if ( isset( $aicc_examples[ $key ] ) ) {
-						echo wp_kses_post( $aicc_examples[ $key ] );
+					if ( isset( $aicc_examples[ $aicc_key ] ) ) {
+						echo wp_kses_post( $aicc_examples[ $aicc_key ] );
 					} else {
 						echo '<p class="description"><em>' . esc_html__( 'Example coming soon.', 'ai-content-orchestrator' ) . '</em></p>';
 					}

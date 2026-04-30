@@ -109,6 +109,7 @@ class AICC_PDF_Library {
 		if ( isset( $file['error'] ) && UPLOAD_ERR_OK !== $file['error'] ) {
 			$messages = array(
 				UPLOAD_ERR_INI_SIZE   => sprintf(
+     /* translators: %s: dynamic value */
 					__( 'File exceeds the server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'ai-content-orchestrator' ),
 					self::get_max_upload_size_formatted()
 				),
@@ -121,6 +122,7 @@ class AICC_PDF_Library {
 			);
 			$msg = isset( $messages[ $file['error'] ] )
 				? $messages[ $file['error'] ]
+    /* translators: %s: dynamic value */
 				: sprintf( __( 'Upload error code: %d', 'ai-content-orchestrator' ), $file['error'] );
 			return new WP_Error( 'upload_error', $msg );
 		}
@@ -135,7 +137,8 @@ class AICC_PDF_Library {
 		$max_size = self::get_max_upload_size();
 		if ( $file['size'] > $max_size ) {
 			return new WP_Error( 'too_large', sprintf(
-				__( 'PDF is too large (%s). Maximum allowed: %s.', 'ai-content-orchestrator' ),
+				__( /* translators: 1: file size, 2: max size */
+			'PDF is too large (%1\$s). Maximum allowed: %2\$s.', 'ai-content-orchestrator' ),
 				size_format( $file['size'] ),
 				size_format( $max_size )
 			) );

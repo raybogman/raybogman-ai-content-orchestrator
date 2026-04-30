@@ -234,7 +234,10 @@ class AICC_Admin {
 		<div class="wrap aicc-wrap">
 			<h1 class="wp-heading-inline">
 				<span class="dashicons dashicons-lock aicc-heading-icon"></span>
-				<?php echo esc_html( sprintf( __( 'AI Content Orchestrator — %s', 'ai-content-orchestrator' ), $feature_name ) ); ?>
+				<?php
+				/* translators: %s: feature name */
+				echo esc_html( sprintf( __( 'AI Content Orchestrator — %s', 'ai-content-orchestrator' ), $feature_name ) );
+				?>
 			</h1>
 			<div class="aicc-card" style="max-width:700px; margin-top:20px;">
 				<div class="aicc-card-body" style="text-align:center; padding:40px 30px;">
@@ -491,6 +494,7 @@ class AICC_Admin {
 			} else {
 				wp_send_json_success( array(
 					'message' => sprintf(
+      /* translators: %s: dynamic value */
 						__( 'Connection successful! Using model: %s', 'ai-content-orchestrator' ),
 						$model_used
 					),
@@ -583,8 +587,8 @@ class AICC_Admin {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'ai-content-orchestrator' ) ) );
 		}
 
-		@set_time_limit( 120 );
-		@ini_set( 'memory_limit', '256M' );
+		@set_time_limit( 120 ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Needed for long AI API calls.
+		@ini_set( 'memory_limit', '256M' ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Needed for large content processing.
 
 		$step   = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 1;
 		$job_id = isset( $_POST['job_id'] ) ? sanitize_text_field( wp_unslash( $_POST['job_id'] ) ) : '';
@@ -1289,15 +1293,16 @@ class AICC_Admin {
 		}
 
 		// Try to increase upload limits.
-		@ini_set( 'upload_max_filesize', '50M' );
-		@ini_set( 'post_max_size', '50M' );
-		@ini_set( 'memory_limit', '256M' );
+		@ini_set( 'upload_max_filesize', '50M' ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged
+		@ini_set( 'post_max_size', '50M' ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged
+		@ini_set( 'memory_limit', '256M' ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged
 
 		// When the file exceeds post_max_size, PHP silently drops the entire
 		// POST body — $_FILES and $_POST become empty arrays.
 		if ( empty( $_FILES['pdf_file'] ) ) {
 			wp_send_json_error( array(
 				'message' => sprintf(
+     /* translators: %s: dynamic value */
 					__( 'No file received. The file likely exceeds your server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'ai-content-orchestrator' ),
 					AICC_PDF_Library::get_max_upload_size_formatted()
 				),
@@ -1362,7 +1367,7 @@ class AICC_Admin {
 		// Save this chunk using WordPress filesystem.
 		$chunk_file = trailingslashit( $temp_dir ) . sprintf( 'chunk_%05d', $chunk_number );
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, Generic.PHP.ForbiddenFunctions.Found -- File upload tmp_name is handled by PHP.
-		if ( ! move_uploaded_file( $_FILES['chunk']['tmp_name'], $chunk_file ) ) {
+		if ( ! move_uploaded_file( ( isset( $_FILES['chunk']['tmp_name'] ) ? $_FILES['chunk']['tmp_name'] : '' ), $chunk_file ) ) {
 			wp_send_json_error( array( 'message' => __( 'Failed to save chunk.', 'ai-content-orchestrator' ) ) );
 		}
 
@@ -1383,6 +1388,7 @@ class AICC_Admin {
 		$final_dir  = AICC_PDF_Library::get_upload_dir();
 		$final_id   = wp_generate_uuid4();
 		$final_file = trailingslashit( $final_dir ) . $final_id . '.pdf';
+  // phpcs:ignore WordPress.WP.AlternativeFunctions -- Required for chunk file assembly.
 		$out        = fopen( $final_file, 'wb' );
 
 		if ( ! $out ) {
@@ -1393,9 +1399,11 @@ class AICC_Admin {
 			$chunk_path = trailingslashit( $temp_dir ) . sprintf( 'chunk_%05d', $i );
 			if ( file_exists( $chunk_path ) ) {
 				$chunk_data = file_get_contents( $chunk_path );
+    // phpcs:ignore WordPress.WP.AlternativeFunctions -- Required for chunk file assembly.
 				fwrite( $out, $chunk_data );
 			}
 		}
+  // phpcs:ignore WordPress.WP.AlternativeFunctions -- Required for chunk file assembly.
 		fclose( $out );
 
 		// Clean up temp chunks.
@@ -1405,6 +1413,7 @@ class AICC_Admin {
 				wp_delete_file( $cf );
 			}
 		}
+  // phpcs:ignore WordPress.WP.AlternativeFunctions -- Required for chunk file assembly.
 		@rmdir( $temp_dir );
 
 		// Extract text from the assembled PDF.
@@ -2099,6 +2108,7 @@ class AICC_Admin {
 		if ( $link_count < 2 ) {
 			$issues[] = array(
 				'key'   => 'missing_internal_links',
+    /* translators: %s: dynamic value */
 				'label' => sprintf( __( 'Only %d internal links found. Recommended: 3-5 for SEO.', 'ai-content-orchestrator' ), $link_count ),
 			);
 		}
@@ -2108,6 +2118,7 @@ class AICC_Admin {
 			$months = round( $age_days / 30 );
 			$issues[] = array(
 				'key'   => 'outdated_content',
+    /* translators: %s: dynamic value */
 				'label' => sprintf( __( 'Post is %d months old. Refreshing outdated content can recover lost rankings.', 'ai-content-orchestrator' ), $months ),
 			);
 		}
@@ -2682,8 +2693,9 @@ class AICC_Admin {
 			$post->post_title
 		);
 
+		/* translators: 1: site name, 2: post title, 3: post URL, 4: edit URL */
 		$body = sprintf(
-			__( "A scheduled post has been published on %s.\n\nTitle: %s\nURL: %s\nEdit: %s\n\nThis notification was sent by AI Content Orchestrator.", 'ai-content-orchestrator' ),
+			__( "A scheduled post has been published on %1\$s.\n\nTitle: %2\$s\nURL: %3\$s\nEdit: %4\$s\n\nThis notification was sent by AI Content Orchestrator.", 'ai-content-orchestrator' ),
 			$site_name,
 			$post->post_title,
 			$post_url,

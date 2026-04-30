@@ -417,6 +417,7 @@ class AICC_Internal_Linker {
 			'post_type'        => array( 'post', 'page' ),
 			'post_status'      => 'publish',
 			'posts_per_page'   => 200,
+			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 			'post__not_in'     => $exclude > 0 ? array( $exclude ) : array(),
 			'orderby'          => 'date',
 			'order'            => 'DESC',

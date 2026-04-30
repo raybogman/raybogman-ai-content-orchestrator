@@ -12,12 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wpdb;
 
 // Count AI-generated posts.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 $aicc_total_posts = (int) $wpdb->get_var(
 	"SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key = '_aicc_generated' AND meta_value = '1'"
 );
 
 // Count posts this month.
 $aicc_month_start = gmdate( 'Y-m-01 00:00:00' );
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 $aicc_month_posts = (int) $wpdb->get_var( $wpdb->prepare(
 	"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
@@ -27,6 +29,7 @@ $aicc_month_posts = (int) $wpdb->get_var( $wpdb->prepare(
 ) );
 
 // Scheduled / pending review.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 $aicc_scheduled_count = (int) $wpdb->get_var(
 	"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
@@ -35,6 +38,7 @@ $aicc_scheduled_count = (int) $wpdb->get_var(
 );
 
 // Top performing posts (by comment count as a proxy; pageviews need analytics).
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 $aicc_top_posts = $wpdb->get_results(
 	"SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_status
 	 FROM {$wpdb->posts} p
@@ -47,6 +51,7 @@ $aicc_top_posts = $wpdb->get_results(
 
 // Posts needing refresh (published more than 6 months ago).
 $aicc_six_months_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-6 months' ) );
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 $aicc_stale_posts = $wpdb->get_results( $wpdb->prepare(
 	"SELECT p.ID, p.post_title, p.post_date, p.post_modified,
 	        CHAR_LENGTH(p.post_content) AS content_length

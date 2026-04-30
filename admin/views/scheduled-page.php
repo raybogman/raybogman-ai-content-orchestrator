@@ -161,44 +161,44 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 			</div>
 			<div class="aicc-card-body">
 				<div style="position:relative; padding-left:24px;">
-					<?php foreach ( $aicc_upcoming as $idx => $up ) :
-						$is_future  = ( 'future' === $up['status'] );
-						$is_pending = $up['needs_review'];
-						$dot_color  = $is_future ? '#00a32a' : '#dba617';
-						$status_label = $is_future
+					<?php foreach ( $aicc_upcoming as $aicc_idx => $aicc_up ) :
+						$aicc_is_future  = ( 'future' === $aicc_up['status'] );
+						$aicc_is_pending = $aicc_up['needs_review'];
+						$aicc_dot_color  = $aicc_is_future ? '#00a32a' : '#dba617';
+						$aicc_status_label = $aicc_is_future
 							? __( 'Scheduled', 'ai-content-orchestrator' )
 							: __( 'Awaiting approval', 'ai-content-orchestrator' );
-						$date_str = ! empty( $up['scheduled_at_formatted'] ) ? $up['scheduled_at_formatted'] : __( 'Publish on approval', 'ai-content-orchestrator' );
+						$aicc_date_str = ! empty( $aicc_up['scheduled_at_formatted'] ) ? $aicc_up['scheduled_at_formatted'] : __( 'Publish on approval', 'ai-content-orchestrator' );
 
-						$days_until = '';
-						if ( ! empty( $up['scheduled_at'] ) && $up['scheduled_at'] > 0 ) {
-							$diff = $up['scheduled_at'] - time();
-							if ( $diff > 0 ) {
-								$days = ceil( $diff / DAY_IN_SECONDS );
-								$days_until = sprintf(
+						$aicc_days_until = '';
+						if ( ! empty( $aicc_up['scheduled_at'] ) && $aicc_up['scheduled_at'] > 0 ) {
+							$aicc_diff = $aicc_up['scheduled_at'] - time();
+							if ( $aicc_diff > 0 ) {
+								$aicc_days = ceil( $aicc_diff / DAY_IN_SECONDS );
+								$aicc_days_until = sprintf(
 									/* translators: %s: human-readable time */
 									__( 'in %s', 'ai-content-orchestrator' ),
-									human_time_diff( time(), $up['scheduled_at'] )
+									human_time_diff( time(), $aicc_up['scheduled_at'] )
 								);
 							}
 						}
 					?>
-					<div style="position:relative; padding-bottom:<?php echo $idx < count( $aicc_upcoming ) - 1 ? '20px' : '0'; ?>; <?php echo $idx < count( $aicc_upcoming ) - 1 ? 'border-left:2px solid #e0e0e0; margin-left:6px; padding-left:22px;' : 'margin-left:6px; padding-left:22px;'; ?>">
-						<div style="position:absolute; left:-8px; top:2px; width:14px; height:14px; background:<?php echo esc_attr( $dot_color ); ?>; border-radius:50%; border:2px solid #fff;"></div>
+					<div style="position:relative; padding-bottom:<?php echo $aicc_idx < count( $aicc_upcoming ) - 1 ? '20px' : '0'; ?>; <?php echo $aicc_idx < count( $aicc_upcoming ) - 1 ? 'border-left:2px solid #e0e0e0; margin-left:6px; padding-left:22px;' : 'margin-left:6px; padding-left:22px;'; ?>">
+						<div style="position:absolute; left:-8px; top:2px; width:14px; height:14px; background:<?php echo esc_attr( $aicc_dot_color ); ?>; border-radius:50%; border:2px solid #fff;"></div>
 						<div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-							<strong style="font-size:13px;"><?php echo esc_html( $date_str ); ?></strong>
-							<?php if ( $days_until ) : ?>
-								<span style="color:#787c82; font-size:12px;">(<?php echo esc_html( $days_until ); ?>)</span>
+							<strong style="font-size:13px;"><?php echo esc_html( $aicc_date_str ); ?></strong>
+							<?php if ( $aicc_days_until ) : ?>
+								<span style="color:#787c82; font-size:12px;">(<?php echo esc_html( $aicc_days_until ); ?>)</span>
 							<?php endif; ?>
-							<span style="display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; background:<?php echo $is_future ? '#e7f5e7' : '#fff8e5'; ?>; color:<?php echo $is_future ? '#00a32a' : '#996800'; ?>;">
-								<?php echo esc_html( $status_label ); ?>
+							<span style="display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; background:<?php echo $aicc_is_future ? '#e7f5e7' : '#fff8e5'; ?>; color:<?php echo $aicc_is_future ? '#00a32a' : '#996800'; ?>;">
+								<?php echo esc_html( $aicc_status_label ); ?>
 							</span>
 						</div>
 						<div style="margin-top:2px;">
-							<a href="<?php echo esc_url( get_permalink( $up['id'] ) ); ?>" target="_blank" style="text-decoration:none; font-weight:500;">
-								<?php echo esc_html( $up['title'] ); ?>
+							<a href="<?php echo esc_url( get_permalink( $aicc_up['id'] ) ); ?>" target="_blank" style="text-decoration:none; font-weight:500;">
+								<?php echo esc_html( $aicc_up['title'] ); ?>
 							</a>
-							<?php if ( ! empty( $up['linkedin'] ) ) : ?>
+							<?php if ( ! empty( $aicc_up['linkedin'] ) ) : ?>
 								<span class="dashicons dashicons-linkedin" style="color:#0a66c2; vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-left:4px;" title="<?php esc_attr_e( 'LinkedIn', 'ai-content-orchestrator' ); ?>"></span>
 							<?php endif; ?>
 						</div>
@@ -405,44 +405,44 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ( $aicc_linkedin_items as $li ) : ?>
-							<tr id="aicc-li-row-<?php echo esc_attr( $li['id'] ); ?>">
+						<?php foreach ( $aicc_linkedin_items as $aicc_li ) : ?>
+							<tr id="aicc-li-row-<?php echo esc_attr( $aicc_li['id'] ); ?>">
 								<td style="padding-left: 12px;">
-									<input type="checkbox" class="aicc-li-row-check" value="<?php echo esc_attr( $li['id'] ); ?>" />
+									<input type="checkbox" class="aicc-li-row-check" value="<?php echo esc_attr( $aicc_li['id'] ); ?>" />
 								</td>
 								<td>
-									<strong><?php echo esc_html( $li['title'] ); ?></strong>
+									<strong><?php echo esc_html( $aicc_li['title'] ); ?></strong>
 									<br>
-									<a href="<?php echo esc_url( $li['url'] ); ?>" target="_blank" class="description">
+									<a href="<?php echo esc_url( $aicc_li['url'] ); ?>" target="_blank" class="description">
 										<?php esc_html_e( 'View on WordPress', 'ai-content-orchestrator' ); ?> &rarr;
 									</a>
-									<?php if ( ! empty( $li['linkedin_commentary'] ) ) : ?>
+									<?php if ( ! empty( $aicc_li['linkedin_commentary'] ) ) : ?>
 										<br>
-										<a href="#" class="aicc-li-toggle-preview" data-post-id="<?php echo esc_attr( $li['id'] ); ?>" style="font-size: 12px;">
+										<a href="#" class="aicc-li-toggle-preview" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>" style="font-size: 12px;">
 											<span class="dashicons dashicons-visibility" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
 											<?php esc_html_e( 'Show LinkedIn post preview', 'ai-content-orchestrator' ); ?>
 										</a>
-										<div class="aicc-li-preview" id="aicc-li-preview-<?php echo esc_attr( $li['id'] ); ?>" style="display: none; margin-top: 8px;" data-post-id="<?php echo esc_attr( $li['id'] ); ?>">
+										<div class="aicc-li-preview" id="aicc-li-preview-<?php echo esc_attr( $aicc_li['id'] ); ?>" style="display: none; margin-top: 8px;" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
 											<!-- View mode -->
 											<div class="aicc-li-preview-view">
-												<div class="aicc-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 10px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 500px; border-radius: 2px;"><?php echo esc_html( $li['linkedin_commentary'] ); ?></div>
+												<div class="aicc-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 10px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 500px; border-radius: 2px;"><?php echo esc_html( $aicc_li['linkedin_commentary'] ); ?></div>
 												<p style="margin: 6px 0 0; font-size: 11px; color: #646970;">
 													<span class="aicc-li-char-count">
 														<?php
 														printf(
 															/* translators: %d: character count */
 															esc_html__( '%d characters', 'ai-content-orchestrator' ),
-															mb_strlen( $li['linkedin_commentary'] )
+															esc_html( mb_strlen( $aicc_li['linkedin_commentary'] ) )
 														);
 														?>
 													</span>
 												</p>
 												<p style="margin: 8px 0 0;">
-													<button type="button" class="button button-small aicc-li-edit-btn" data-post-id="<?php echo esc_attr( $li['id'] ); ?>">
+													<button type="button" class="button button-small aicc-li-edit-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
 														<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
 														<?php esc_html_e( 'Edit', 'ai-content-orchestrator' ); ?>
 													</button>
-													<button type="button" class="button button-small aicc-li-regen-btn" data-post-id="<?php echo esc_attr( $li['id'] ); ?>">
+													<button type="button" class="button button-small aicc-li-regen-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
 														<span class="dashicons dashicons-update" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
 														<?php esc_html_e( 'Regenerate', 'ai-content-orchestrator' ); ?>
 													</button>
@@ -450,23 +450,23 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 											</div>
 											<!-- Edit mode (hidden by default) -->
 											<div class="aicc-li-preview-edit" style="display: none;">
-												<textarea class="aicc-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 500px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;"><?php echo esc_textarea( $li['linkedin_commentary'] ); ?></textarea>
+												<textarea class="aicc-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 500px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;"><?php echo esc_textarea( $aicc_li['linkedin_commentary'] ); ?></textarea>
 												<p style="margin: 4px 0 0; font-size: 11px; color: #646970;">
 													<span class="aicc-li-edit-count">
 														<?php
 														printf(
 															/* translators: %d: character count */
 															esc_html__( '%d / 2900 characters', 'ai-content-orchestrator' ),
-															mb_strlen( $li['linkedin_commentary'] )
+															esc_html( mb_strlen( $aicc_li['linkedin_commentary'] ) )
 														);
 														?>
 													</span>
 												</p>
 												<p style="margin: 8px 0 0;">
-													<button type="button" class="button button-primary button-small aicc-li-save-btn" data-post-id="<?php echo esc_attr( $li['id'] ); ?>">
+													<button type="button" class="button button-primary button-small aicc-li-save-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
 														<?php esc_html_e( 'Save', 'ai-content-orchestrator' ); ?>
 													</button>
-													<button type="button" class="button button-small aicc-li-cancel-btn" data-post-id="<?php echo esc_attr( $li['id'] ); ?>">
+													<button type="button" class="button button-small aicc-li-cancel-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
 														<?php esc_html_e( 'Cancel', 'ai-content-orchestrator' ); ?>
 													</button>
 												</p>
@@ -475,36 +475,36 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 									<?php endif; ?>
 								</td>
 								<td>
-									<?php echo esc_html( wp_date( 'Y-m-d H:i', $li['published_at'] ) ); ?>
+									<?php echo esc_html( wp_date( 'Y-m-d H:i', $aicc_li['published_at'] ) ); ?>
 								</td>
-								<td class="aicc-li-status-<?php echo esc_attr( $li['id'] ); ?>">
-									<?php if ( 'shared' === $li['linkedin_status'] ) : ?>
+								<td class="aicc-li-status-<?php echo esc_attr( $aicc_li['id'] ); ?>">
+									<?php if ( 'shared' === $aicc_li['linkedin_status'] ) : ?>
 										<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
 										<strong style="color: #00a32a;"><?php esc_html_e( 'Shared', 'ai-content-orchestrator' ); ?></strong>
-										<br><small class="description"><?php echo esc_html( wp_date( 'Y-m-d H:i', $li['shared_at'] ) ); ?></small>
-									<?php elseif ( 'error' === $li['linkedin_status'] ) : ?>
+										<br><small class="description"><?php echo esc_html( wp_date( 'Y-m-d H:i', $aicc_li['shared_at'] ) ); ?></small>
+									<?php elseif ( 'error' === $aicc_li['linkedin_status'] ) : ?>
 										<span class="dashicons dashicons-warning" style="color: #d63638;"></span>
 										<strong style="color: #d63638;"><?php esc_html_e( 'Failed', 'ai-content-orchestrator' ); ?></strong>
-										<br><small class="description" style="color: #d63638;"><?php echo esc_html( mb_substr( $li['linkedin_error'], 0, 100 ) ); ?></small>
+										<br><small class="description" style="color: #d63638;"><?php echo esc_html( mb_substr( $aicc_li['linkedin_error'], 0, 100 ) ); ?></small>
 									<?php else : ?>
 										<span class="dashicons dashicons-minus" style="color: #646970;"></span>
 										<em class="description"><?php esc_html_e( 'Not shared yet', 'ai-content-orchestrator' ); ?></em>
 									<?php endif; ?>
 								</td>
 								<td>
-									<button type="button" class="button aicc-li-share-btn" data-post-id="<?php echo esc_attr( $li['id'] ); ?>">
+									<button type="button" class="button aicc-li-share-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
 										<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										<?php
-										if ( 'shared' === $li['linkedin_status'] ) {
+										if ( 'shared' === $aicc_li['linkedin_status'] ) {
 											esc_html_e( 'Re-share', 'ai-content-orchestrator' );
-										} elseif ( 'error' === $li['linkedin_status'] ) {
+										} elseif ( 'error' === $aicc_li['linkedin_status'] ) {
 											esc_html_e( 'Retry', 'ai-content-orchestrator' );
 										} else {
 											esc_html_e( 'Share Now', 'ai-content-orchestrator' );
 										}
 										?>
 									</button>
-									<button type="button" class="button aicc-li-remove-btn" data-post-id="<?php echo esc_attr( $li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'ai-content-orchestrator' ); ?>">
+									<button type="button" class="button aicc-li-remove-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'ai-content-orchestrator' ); ?>">
 										<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 									</button>
 								</td>

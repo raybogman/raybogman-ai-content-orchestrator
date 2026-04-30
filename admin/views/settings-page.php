@@ -18,6 +18,7 @@ $aicc_ideogram_set       = ! empty( AICC_Settings::get_ideogram_api_key() );
 $aicc_linkedin_connected = AICC_LinkedIn::is_connected();
 $aicc_linkedin_profile   = AICC_LinkedIn::get_profile();
 $aicc_linkedin_client_id = get_option( 'aicc_linkedin_client_id', '' );
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only tab/param check.
 $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
 ?>
 <div class="wrap">
@@ -27,16 +28,16 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 	</h1>
 
 	<nav class="nav-tab-wrapper" style="margin-bottom: 20px;">
-		<?php foreach ( AICC_Settings::get_tabs() as $slug => $label ) : ?>
-			<a href="<?php echo esc_url( add_query_arg( 'tab', $slug, admin_url( 'admin.php?page=aicc-settings' ) ) ); ?>"
-			   class="nav-tab <?php echo $aicc_active_tab === $slug ? 'nav-tab-active' : ''; ?>">
-				<?php echo esc_html( $label ); ?>
+		<?php foreach ( AICC_Settings::get_tabs() as $aicc_slug => $aicc_label ) : ?>
+			<a href="<?php echo esc_url( add_query_arg( 'tab', $aicc_slug, admin_url( 'admin.php?page=aicc-settings' ) ) ); ?>"
+			   class="nav-tab <?php echo $aicc_active_tab === $aicc_slug ? 'nav-tab-active' : ''; ?>">
+				<?php echo esc_html( $aicc_label ); ?>
 			</a>
 		<?php endforeach; ?>
 	</nav>
 
 	<?php if ( ! in_array( $aicc_active_tab, array( 'faq', 'about' ), true ) ) : ?>
-	<?php if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) : ?>
+	<?php if ( isset( $_GET['settings-updated'] /* phpcs:ignore WordPress.Security.NonceVerification.Recommended */ ) && 'true' === $_GET['settings-updated'] ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'ai-content-orchestrator' ); ?></p></div>
 	<?php endif; ?>
 	<form method="post" action="">
@@ -117,11 +118,13 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		</script>
 		<?php endif; ?>
 
+		<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only URL params. ?>
 		<?php if ( isset( $_GET['aicc_instagram_error'] ) ) : ?>
-			<div class="notice notice-error"><p><strong><?php esc_html_e( 'Error:', 'ai-content-orchestrator' ); ?></strong> <?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['aicc_instagram_error'] ) ) ); ?></p></div>
-		<?php elseif ( isset( $_GET['aicc_instagram_success'] ) ) : ?>
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+			<div class="notice notice-error"><p><strong><?php esc_html_e( 'Error:', 'ai-content-orchestrator' ); ?></strong> <?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['aicc_instagram_error'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p></div>
+		<?php elseif ( isset( $_GET['aicc_instagram_success'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 			<div class="notice notice-success"><p><?php esc_html_e( 'Instagram connected successfully!', 'ai-content-orchestrator' ); ?></p></div>
-		<?php elseif ( isset( $_GET['aicc_instagram_disconnected'] ) ) : ?>
+		<?php elseif ( isset( $_GET['aicc_instagram_disconnected'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 			<div class="notice notice-info"><p><?php esc_html_e( 'Instagram disconnected.', 'ai-content-orchestrator' ); ?></p></div>
 		<?php endif; ?>
 
@@ -216,8 +219,8 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			<div class="aicc-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'Table of Contents', 'ai-content-orchestrator' ); ?></h3>
 				<ol style="column-count:2; column-gap:24px; line-height:2;">
-					<?php foreach ( $aicc_faq_items as $id => $label ) : ?>
-						<li><a href="#faq-<?php echo esc_attr( $id ); ?>" style="text-decoration:none;"><?php echo esc_html( $label ); ?></a></li>
+					<?php foreach ( $aicc_faq_items as $id => $aicc_label ) : ?>
+						<li><a href="#faq-<?php echo esc_attr( $id ); ?>" style="text-decoration:none;"><?php echo esc_html( $aicc_label ); ?></a></li>
 					<?php endforeach; ?>
 				</ol>
 			</div>
@@ -450,10 +453,12 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 
 				<h3><?php esc_html_e( 'Free vs Enterprise', 'ai-content-orchestrator' ); ?></h3>
 				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static HTML with dashicons.
 				$aicc_check = '<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span>';
 				$aicc_cross = '<span class="dashicons dashicons-minus" style="color:#c3c4c7; vertical-align:text-bottom;"></span>';
 				$aicc_ent   = '<span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;">ENT</span>';
 				?>
+				<?php // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- Static dashicon HTML in comparison table. ?>
 				<table class="widefat striped" style="max-width:700px;">
 					<thead>
 						<tr>
@@ -463,28 +468,29 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 						</tr>
 					</thead>
 					<tbody>
-						<tr><td><?php esc_html_e( 'AI Content Creation', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'AI Content Creation', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'Blog Styles', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;">4</td><td style="text-align:center;"><?php esc_html_e( 'All 13', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'SEO Metadata + Yoast', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'SEO Metadata + Yoast', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'Website Scanning', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( '1 URL', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Unlimited', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Featured Images (DALL-E 3)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Featured Images (Ideogram)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Image Title Overlay', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Featured Images (DALL-E 3)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Featured Images (Ideogram)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Image Title Overlay', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'Internal Linking', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Inline, max 3', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Inline + Footer, max 15', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Competitor Gap Analysis', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Content Repurposing', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Bulk Create', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Refresh Content (Analyze + Fix)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'PDF Sources', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'LinkedIn Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Instagram Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Thrive Architect Output', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php esc_html_e( 'Beta', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Publishing Schedule (Auto-fill)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Publish Notifications (Email)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Scheduling + Review Queue', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Dashboard + Progress Log', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Competitor Gap Analysis', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Content Repurposing', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Bulk Create', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Refresh Content (Analyze + Fix)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'PDF Sources', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'LinkedIn Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Instagram Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Thrive Architect Output', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Beta', 'ai-content-orchestrator' ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Publishing Schedule (Auto-fill)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Publish Notifications (Email)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Scheduling + Review Queue', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Dashboard + Progress Log', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $aicc_check ); ?></td></tr>
 					</tbody>
 				</table>
+				<?php // phpcs:enable ?>
 				<?php if ( ! aicc_is_pro() ) : ?>
 				<p style="margin-top:16px; text-align:center;">
 					<a href="<?php echo esc_url( aco_fs()->get_upgrade_url() ); ?>" class="button button-primary button-hero" style="background:#E4405F; border-color:#E4405F;">
@@ -641,10 +647,10 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 						<tr>
 							<td style="font-weight: 600;"><?php esc_html_e( 'Granted Scopes', 'ai-content-orchestrator' ); ?></td>
 							<td>
-								<?php $granted = get_option( 'aicc_linkedin_scopes', '' ); ?>
-								<?php if ( ! empty( $granted ) ) : ?>
-									<code style="font-size: 12px;"><?php echo esc_html( $granted ); ?></code>
-									<?php if ( false === strpos( $granted, 'w_member_social' ) ) : ?>
+								<?php $aicc_granted = get_option( 'aicc_linkedin_scopes', '' ); ?>
+								<?php if ( ! empty( $aicc_granted ) ) : ?>
+									<code style="font-size: 12px;"><?php echo esc_html( $aicc_granted ); ?></code>
+									<?php if ( false === strpos( $aicc_granted, 'w_member_social' ) ) : ?>
 										<br><span class="dashicons dashicons-warning" style="color: #d63638;"></span>
 										<strong style="color: #d63638;"><?php esc_html_e( 'w_member_social is MISSING — you cannot post to LinkedIn!', 'ai-content-orchestrator' ); ?></strong>
 										<br><em class="description"><?php esc_html_e( 'Disconnect and reconnect to request the correct scopes. Make sure "Share on LinkedIn" product is added to your LinkedIn App.', 'ai-content-orchestrator' ); ?></em>
@@ -662,9 +668,10 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 					</a>
 				</p>
 			<?php else : ?>
+				<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 				<?php if ( ! empty( $_GET['aicc_linkedin_error'] ) ) : ?>
 					<div class="notice notice-error inline" style="margin-top: 0; margin-bottom: 16px;">
-						<p><?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['aicc_linkedin_error'] ) ) ); ?></p>
+						<p><?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['aicc_linkedin_error'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p>
 					</div>
 				<?php endif; ?>
 
@@ -749,9 +756,9 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 						<?php esc_html_e( 'Your Client ID and Secret are saved. Click below to authorize:', 'ai-content-orchestrator' ); ?>
 					</p>
 					<?php
-					$auth_url = AICC_LinkedIn::get_auth_url();
-					if ( $auth_url ) : ?>
-						<a href="<?php echo esc_url( $auth_url ); ?>" class="button button-primary button-hero">
+					$aicc_auth_url = AICC_LinkedIn::get_auth_url();
+					if ( $aicc_auth_url ) : ?>
+						<a href="<?php echo esc_url( $aicc_auth_url ); ?>" class="button button-primary button-hero">
 							<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
 							<?php esc_html_e( 'Connect LinkedIn Account', 'ai-content-orchestrator' ); ?>
 						</a>
@@ -765,17 +772,17 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 							<?php esc_html_e( 'This means a required product is not added to your LinkedIn App. Use these diagnostic buttons to find which one:', 'ai-content-orchestrator' ); ?>
 						</p>
 						<?php
-						$auth_signin_only = AICC_LinkedIn::get_auth_url( AICC_LinkedIn::SCOPES_SIGNIN_ONLY );
-						$auth_share_only  = AICC_LinkedIn::get_auth_url( AICC_LinkedIn::SCOPES_SHARE_ONLY );
+						$aicc_auth_signin_only = AICC_LinkedIn::get_auth_url( AICC_LinkedIn::SCOPES_SIGNIN_ONLY );
+						$aicc_auth_share_only  = AICC_LinkedIn::get_auth_url( AICC_LinkedIn::SCOPES_SHARE_ONLY );
 						?>
 						<p style="margin: 8px 0;">
-							<a href="<?php echo esc_url( $auth_signin_only ); ?>" class="button">
+							<a href="<?php echo esc_url( $aicc_auth_signin_only ); ?>" class="button">
 								<?php esc_html_e( 'Test 1: Sign In only (openid profile email)', 'ai-content-orchestrator' ); ?>
 							</a>
 							<span class="description"><?php esc_html_e( 'If this fails: "Sign In with LinkedIn using OpenID Connect" product is missing.', 'ai-content-orchestrator' ); ?></span>
 						</p>
 						<p style="margin: 8px 0;">
-							<a href="<?php echo esc_url( $auth_share_only ); ?>" class="button">
+							<a href="<?php echo esc_url( $aicc_auth_share_only ); ?>" class="button">
 								<?php esc_html_e( 'Test 2: Share only (w_member_social)', 'ai-content-orchestrator' ); ?>
 							</a>
 							<span class="description"><?php esc_html_e( 'If this fails: "Share on LinkedIn" product is missing.', 'ai-content-orchestrator' ); ?></span>
@@ -793,7 +800,7 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				<?php endif; ?>
 			<?php endif; ?>
 
-			<?php if ( ! empty( $_GET['aicc_linkedin_success'] ) ) : ?>
+			<?php if ( ! empty( $_GET['aicc_linkedin_success'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 				<div class="notice notice-success inline" style="margin-top: 12px;">
 					<p><?php esc_html_e( 'LinkedIn account connected successfully!', 'ai-content-orchestrator' ); ?></p>
 				</div>
@@ -847,8 +854,8 @@ $aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 						<td style="font-weight: 600;"><?php esc_html_e( 'Image Provider', 'ai-content-orchestrator' ); ?></td>
 						<td>
 							<?php
-							$image_labels = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
-							echo esc_html( isset( $image_labels[ $aicc_image_provider ] ) ? $image_labels[ $aicc_image_provider ] : $aicc_image_provider );
+							$aicc_image_labels = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
+							echo esc_html( isset( $aicc_image_labels[ $aicc_image_provider ] ) ? $aicc_image_labels[ $aicc_image_provider ] : $aicc_image_provider );
 							?>
 							<?php if ( AICC_Settings::is_image_configured() ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>

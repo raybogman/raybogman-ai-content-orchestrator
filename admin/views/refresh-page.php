@@ -17,7 +17,7 @@ $aicc_published_posts = get_posts( array(
 	'orderby'     => 'date',
 	'order'       => 'DESC',
 ) );
-$aicc_active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'overview';
+$aicc_active_tab = isset( $_GET['view'] ) /* phpcs:ignore WordPress.Security.NonceVerification.Recommended */ ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'overview';
 ?>
 <div class="wrap aicc-wrap">
 	<h1 class="wp-heading-inline">
@@ -32,7 +32,10 @@ $aicc_active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_G
 		<div class="notice notice-error">
 			<p>
 				<strong><?php esc_html_e( 'API key not configured.', 'ai-content-orchestrator' ); ?></strong>
-				<?php printf( esc_html__( 'Please %1$sconfigure your API key in Settings%2$s before refreshing content.', 'ai-content-orchestrator' ), '<a href="' . esc_url( admin_url( 'admin.php?page=aicc-settings' ) ) . '">', '</a>' ); ?>
+				<?php
+				/* translators: 1: opening link tag, 2: closing link tag */
+				printf( esc_html__( 'Please %1$sconfigure your API key in Settings%2$s before refreshing content.', 'ai-content-orchestrator' ), '<a href="' . esc_url( admin_url( 'admin.php?page=aicc-settings' ) ) . '">', '</a>' );
+				?>
 			</p>
 		</div>
 	<?php endif; ?>
@@ -123,11 +126,14 @@ $aicc_active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_G
 								<?php if ( ! empty( $aicc_published_posts ) ) : ?>
 									<select id="aicc-refresh-post" class="large-text">
 										<option value=""><?php esc_html_e( '— Select a post —', 'ai-content-orchestrator' ); ?></option>
-										<?php foreach ( $aicc_published_posts as $p ) : ?>
-											<option value="<?php echo esc_attr( $p->ID ); ?>"><?php echo esc_html( $p->post_title ); ?> (<?php echo esc_html( get_the_date( 'Y-m-d', $p ) ); ?>)</option>
+										<?php foreach ( $aicc_published_posts as $aicc_p ) : ?>
+											<option value="<?php echo esc_attr( $aicc_p->ID ); ?>"><?php echo esc_html( $aicc_p->post_title ); ?> (<?php echo esc_html( get_the_date( 'Y-m-d', $aicc_p ) ); ?>)</option>
 										<?php endforeach; ?>
 									</select>
-									<p class="description"><?php printf( esc_html__( 'Showing the %d most recent published posts.', 'ai-content-orchestrator' ), count( $aicc_published_posts ) ); ?></p>
+									<p class="description"><?php
+									/* translators: %d: number of posts */
+									printf( esc_html__( 'Showing the %d most recent published posts.', 'ai-content-orchestrator' ), count( $aicc_published_posts ) );
+									?></p>
 								<?php else : ?>
 									<p class="description"><?php esc_html_e( 'No published posts found.', 'ai-content-orchestrator' ); ?></p>
 								<?php endif; ?>

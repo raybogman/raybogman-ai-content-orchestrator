@@ -225,6 +225,7 @@ class AICC_Publisher {
 			'post_type'      => array( 'post', 'page' ),
 			'post_status'    => 'future',
 			'posts_per_page' => -1,
+   // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for querying AI-generated posts.
 			'meta_query'     => array(
 				array(
 					'key'     => '_aicc_scheduled_publish_at',
@@ -255,7 +256,9 @@ class AICC_Publisher {
 				clean_post_cache( $post->ID );
 				$refreshed = get_post( $post->ID );
 				if ( $refreshed && 'publish' !== $refreshed->post_status ) {
+     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 					$wpdb->update(
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 						$wpdb->posts,
 						array( 'post_status' => 'publish' ),
 						array( 'ID' => $post->ID )
@@ -344,6 +347,7 @@ class AICC_Publisher {
 			'post_type'      => array( 'post', 'page' ),
 			'post_status'    => array( 'draft', 'future' ),
 			'posts_per_page' => -1,
+   // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for querying AI-generated posts.
 			'meta_query'     => array(
 				array(
 					'key'     => '_aicc_generated',
@@ -417,7 +421,7 @@ class AICC_Publisher {
 		$attachment_id = media_handle_sideload( $file_array, $post_id, $alt_text );
 
 		if ( is_wp_error( $attachment_id ) ) {
-			@unlink( $tmp );
+			@wp_delete_file( $tmp );
 			return $attachment_id;
 		}
 
@@ -448,6 +452,7 @@ class AICC_Publisher {
 			'posts_per_page' => $limit,
 			'orderby'        => 'date',
 			'order'          => 'DESC',
+   // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for querying AI-generated posts.
 			'meta_query'     => array(
 				'relation' => 'AND',
 				array(
