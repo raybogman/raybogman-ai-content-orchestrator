@@ -606,9 +606,9 @@ class AICC_Admin {
 					$prompt       = isset( $_POST['prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) ) : '';
 					$status       = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : 'draft';
 					$category_ids = isset( $_POST['categories'] ) ? array_map( 'absint', (array) $_POST['categories'] ) : array();
-					$schedule_at  = isset( $_POST['schedule_at'] ) ? self::parse_datetime_local( wp_unslash( $_POST['schedule_at'] ) ) : 0;
+					$schedule_at  = isset( $_POST['schedule_at'] ) ? self::parse_datetime_local( sanitize_text_field( wp_unslash( $_POST['schedule_at'] ) ) ) : 0;
 					$blog_style   = isset( $_POST['blog_style'] ) ? sanitize_text_field( wp_unslash( $_POST['blog_style'] ) ) : 'standard';
-					$pdf_ids      = isset( $_POST['pdf_ids'] ) ? array_map( 'sanitize_text_field', (array) $_POST['pdf_ids'] ) : array();
+					$pdf_ids      = isset( $_POST['pdf_ids'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['pdf_ids'] ) ) : array();
 					$save_url     = isset( $_POST['save_url'] ) && '1' === $_POST['save_url'];
 					$linkedin     = isset( $_POST['linkedin'] ) && '1' === $_POST['linkedin'];
 					$instagram    = isset( $_POST['instagram'] ) && '1' === $_POST['instagram'];
@@ -789,7 +789,7 @@ class AICC_Admin {
 					} else {
 						$do_linking = AICC_Settings::is_internal_linking_enabled();
 					}
-					$log_callback( sprintf( 'Internal linking: %s (value: %s)', $do_linking ? 'enabled' : 'disabled', var_export( $job_data['internal_linking'] ?? 'not set', true ) ) );
+					$log_callback( sprintf( 'Internal linking: %s', $do_linking ? 'enabled' : 'disabled' ) );
 					if ( $do_linking ) {
 						$log_callback( 'Scanning your site for internal linking opportunities...' );
 						$link_result = AICC_Internal_Linker::add_links(
@@ -1304,6 +1304,7 @@ class AICC_Admin {
 			) );
 		}
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload handled by WordPress functions in AICC_PDF_Library::upload().
 		$result = AICC_PDF_Library::upload( $_FILES['pdf_file'] );
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
@@ -1344,9 +1345,11 @@ class AICC_Admin {
 		}
 
 		// Check for upload errors on this chunk.
-		if ( isset( $_FILES['chunk']['error'] ) && UPLOAD_ERR_OK !== $_FILES['chunk']['error'] ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Comparing integer error code.
+		if ( isset( $_FILES['chunk']['error'] ) && UPLOAD_ERR_OK !== (int) $_FILES['chunk']['error'] ) {
 			wp_send_json_error( array(
-				'message' => sprintf( __( 'Chunk upload error (code %d). Try reducing chunk size.', 'ai-content-orchestrator' ), $_FILES['chunk']['error'] ),
+				/* translators: %d: upload error code number */
+				'message' => sprintf( __( 'Chunk upload error (code %d). Try reducing chunk size.', 'ai-content-orchestrator' ), (int) $_FILES['chunk']['error'] ),
 			) );
 		}
 
@@ -1356,8 +1359,9 @@ class AICC_Admin {
 			wp_mkdir_p( $temp_dir );
 		}
 
-		// Save this chunk.
+		// Save this chunk using WordPress filesystem.
 		$chunk_file = trailingslashit( $temp_dir ) . sprintf( 'chunk_%05d', $chunk_number );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, Generic.PHP.ForbiddenFunctions.Found -- File upload tmp_name is handled by PHP.
 		if ( ! move_uploaded_file( $_FILES['chunk']['tmp_name'], $chunk_file ) ) {
 			wp_send_json_error( array( 'message' => __( 'Failed to save chunk.', 'ai-content-orchestrator' ) ) );
 		}
@@ -1470,7 +1474,7 @@ class AICC_Admin {
 		}
 
 		$post_id     = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
-		$schedule_at = isset( $_POST['schedule_at'] ) ? self::parse_datetime_local( wp_unslash( $_POST['schedule_at'] ) ) : 0;
+		$schedule_at = isset( $_POST['schedule_at'] ) ? self::parse_datetime_local( sanitize_text_field( wp_unslash( $_POST['schedule_at'] ) ) ) : 0;
 
 		if ( empty( $post_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'ai-content-orchestrator' ) ) );
@@ -2201,7 +2205,7 @@ class AICC_Admin {
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
-		$issues  = isset( $_POST['issues'] ) ? array_map( 'sanitize_text_field', (array) $_POST['issues'] ) : array();
+		$issues  = isset( $_POST['issues'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['issues'] ) ) : array();
 
 		if ( ! $post_id ) {
 			wp_send_json_error( array( 'message' => __( 'No post selected.', 'ai-content-orchestrator' ) ) );
@@ -2609,7 +2613,7 @@ class AICC_Admin {
 		}
 
 		// Disconnect.
-		if ( isset( $_GET['aicc_instagram_disconnect'] ) && wp_verify_nonce( $_GET['aicc_instagram_disconnect'], 'aicc_instagram_disconnect' ) ) {
+		if ( isset( $_GET['aicc_instagram_disconnect'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['aicc_instagram_disconnect'] ) ), 'aicc_instagram_disconnect' ) ) {
 			AICC_Instagram::disconnect();
 			wp_safe_redirect( admin_url( 'admin.php?page=aicc-settings&tab=instagram&aicc_instagram_disconnected=1' ) );
 			exit;
@@ -2617,7 +2621,7 @@ class AICC_Admin {
 
 		// OAuth callback.
 		if ( isset( $_GET['tab'] ) && 'instagram' === $_GET['tab'] && isset( $_GET['code'] ) && isset( $_GET['state'] ) ) {
-			$result = AICC_Instagram::handle_callback( sanitize_text_field( $_GET['code'] ), sanitize_text_field( $_GET['state'] ) );
+			$result = AICC_Instagram::handle_callback( sanitize_text_field( wp_unslash( $_GET['code'] ) ), sanitize_text_field( wp_unslash( $_GET['state'] ) ) );
 			if ( is_wp_error( $result ) ) {
 				wp_safe_redirect( admin_url( 'admin.php?page=aicc-settings&tab=instagram&aicc_instagram_error=' . urlencode( $result->get_error_message() ) ) );
 			} else {

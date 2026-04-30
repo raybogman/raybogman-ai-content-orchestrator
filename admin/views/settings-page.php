@@ -18,7 +18,7 @@ $ideogram_set       = ! empty( AICC_Settings::get_ideogram_api_key() );
 $linkedin_connected = AICC_LinkedIn::is_connected();
 $linkedin_profile   = AICC_LinkedIn::get_profile();
 $linkedin_client_id = get_option( 'aicc_linkedin_client_id', '' );
-$active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
+$active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
 ?>
 <div class="wrap">
 	<h1>

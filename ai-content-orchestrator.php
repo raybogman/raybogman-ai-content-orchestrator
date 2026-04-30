@@ -5,6 +5,7 @@
  * Description:       AI Content Orchestrator — End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
  * Version:           2.5.6
  * Requires at least: 5.8
+ * Tested up to:      6.8
  * Requires PHP:      7.4
  * Author:            Ray Bogman
  * Author URI:        https://bogman.info

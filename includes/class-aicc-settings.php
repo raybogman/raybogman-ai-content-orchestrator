@@ -1606,7 +1606,7 @@ class AICC_Settings {
 
 		$tab = sanitize_text_field( wp_unslash( $_POST['aicc_save_tab'] ) );
 
-		if ( ! wp_verify_nonce( wp_unslash( $_POST['aicc_settings_nonce'] ), 'aicc_save_settings_' . $tab ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['aicc_settings_nonce'] ) ), 'aicc_save_settings_' . $tab ) ) {
 			return;
 		}
 
@@ -1622,6 +1622,7 @@ class AICC_Settings {
 		$registered = get_registered_settings();
 
 		foreach ( $tab_options[ $tab ] as $option ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by the registered sanitize_callback on the next line.
 			$value = isset( $_POST[ $option ] ) ? wp_unslash( $_POST[ $option ] ) : '';
 
 			if ( isset( $registered[ $option ]['sanitize_callback'] ) ) {

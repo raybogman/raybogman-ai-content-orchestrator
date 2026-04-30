@@ -17,7 +17,7 @@ $published_posts = get_posts( array(
 	'orderby'     => 'date',
 	'order'       => 'DESC',
 ) );
-$active_tab = isset( $_GET['view'] ) ? sanitize_text_field( $_GET['view'] ) : 'overview';
+$active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'overview';
 ?>
 <div class="wrap aicc-wrap">
 	<h1 class="wp-heading-inline">

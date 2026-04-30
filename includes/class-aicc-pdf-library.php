@@ -147,7 +147,7 @@ class AICC_PDF_Library {
 		$filename = $id . '.pdf';
 		$filepath = trailingslashit( $dir ) . $filename;
 
-		// Move uploaded file.
+		// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Required for file upload handling.
 		if ( ! move_uploaded_file( $file['tmp_name'], $filepath ) ) {
 			return new WP_Error( 'upload_failed', __( 'Failed to save uploaded file.', 'ai-content-orchestrator' ) );
 		}
