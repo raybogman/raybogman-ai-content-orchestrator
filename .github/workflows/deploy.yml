@@ -18,26 +18,26 @@ jobs:
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
 
       - name: Create plugin zip
-        run: zip -r ai-content-orchestrator.zip . -x '.git/*' '.github/*' '*.DS_Store'
+        run: zip -r rayai-content-orchestrator.zip . -x '.git/*' '.github/*' '*.DS_Store'
 
       - name: Deploy to Freemius
         uses: buttonizer/freemius-deploy@v0.1.3
         env:
           DEV_ID: '33246'
           PLUGIN_ID: '28680'
-          PLUGIN_SLUG: 'ai-content-orchestrator'
+          PLUGIN_SLUG: 'rayai-content-orchestrator'
           PUBLIC_KEY: ${{ secrets.FREEMIUS_PUBLIC_KEY }}
           SECRET_KEY: ${{ secrets.FREEMIUS_SECRET_KEY }}
         with:
-          file_name: 'ai-content-orchestrator.zip'
+          file_name: 'rayai-content-orchestrator.zip'
           version: ${{ steps.version.outputs.VERSION }}
           release_mode: 'released'
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: ai-content-orchestrator-${{ steps.version.outputs.VERSION }}
+          name: rayai-content-orchestrator-${{ steps.version.outputs.VERSION }}
           path: |
-            ai-content-orchestrator.zip
-            ai-content-orchestrator__free.zip
+            rayai-content-orchestrator.zip
+            rayai-content-orchestrator__free.zip
           retention-days: 90
