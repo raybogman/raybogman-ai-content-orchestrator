@@ -1,5 +1,6 @@
 === RayAI – Content Orchestrator ===
 Contributors: raybogman
+Donate link: https://buymeacoffee.com/raybogman
 Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
@@ -124,6 +125,21 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 * Privacy: [freemius.com/privacy](https://freemius.com/privacy/)
 * Data sent: Site URL, plugin version, license key (if Enterprise)
 * When: On plugin activation (opt-in consent screen shown first)
+
+== Screenshots ==
+
+1. Dashboard — overview with total posts, monthly count, scheduled items, and posts needing a refresh.
+2. Create Content — enter a topic, scan websites, select blog style, and generate a full SEO-optimized post.
+3. Content result — SEO metadata, tags, categories, featured image options, internal links, and repurpose buttons.
+4. Bulk Create — queue multiple posts with AI topic suggestions and auto blog style recommendations.
+5. Refresh Content — analyze all published posts for issues and fix them with AI.
+6. Settings — configure AI providers, image settings, internal linking, publishing schedule, and social sharing.
+7. Scheduled Content — upcoming publications timeline with review queue and bulk actions.
+
+== Upgrade Notice ==
+
+= 3.0.0 =
+Major rebrand to RayAI – Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
 
