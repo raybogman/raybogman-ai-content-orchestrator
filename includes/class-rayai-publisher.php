@@ -2,7 +2,7 @@
 /**
  * WordPress content publisher.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,12 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class AICC_Publisher
+ * Class RAYAI_Publisher
  *
  * Publishes AI-generated content to WordPress with tags, categories,
  * and Yoast SEO support.
  */
-class AICC_Publisher {
+class RAYAI_Publisher {
 
 	/**
 	 * Create a WordPress post or page from AI-generated content.
@@ -88,10 +88,10 @@ class AICC_Publisher {
 		}
 
 		// Store scheduling meta.
-		update_post_meta( $post_id, '_aicc_generated', '1' );
+		update_post_meta( $post_id, '_rayai_generated', '1' );
 		if ( $is_scheduled ) {
-			update_post_meta( $post_id, '_aicc_scheduled_publish_at', $schedule_at );
-			update_post_meta( $post_id, '_aicc_needs_review', $needs_review ? '1' : '0' );
+			update_post_meta( $post_id, '_rayai_scheduled_publish_at', $schedule_at );
+			update_post_meta( $post_id, '_rayai_needs_review', $needs_review ? '1' : '0' );
 		}
 
 		// Update Yoast SEO fields.
@@ -124,14 +124,14 @@ class AICC_Publisher {
 		$post    = get_post( $post_id );
 
 		if ( ! $post ) {
-			return new WP_Error( 'not_found', __( 'Post not found.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'not_found', __( 'Post not found.', 'rayai-content-orchestrator' ) );
 		}
 
 		if ( 'draft' !== $post->post_status ) {
-			return new WP_Error( 'invalid_status', __( 'Only draft posts can be approved.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'invalid_status', __( 'Only draft posts can be approved.', 'rayai-content-orchestrator' ) );
 		}
 
-		$schedule_at = (int) get_post_meta( $post_id, '_aicc_scheduled_publish_at', true );
+		$schedule_at = (int) get_post_meta( $post_id, '_rayai_scheduled_publish_at', true );
 
 		// If no schedule, publish immediately on approval.
 		if ( $schedule_at <= 0 ) {
@@ -146,10 +146,10 @@ class AICC_Publisher {
 			), true );
 
 			if ( is_wp_error( $updated ) || 0 === $updated ) {
-				return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to publish post.', 'ai-content-orchestrator' ) );
+				return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to publish post.', 'rayai-content-orchestrator' ) );
 			}
 
-			update_post_meta( $post_id, '_aicc_needs_review', '0' );
+			update_post_meta( $post_id, '_rayai_needs_review', '0' );
 
 			return array(
 				'success' => true,
@@ -160,7 +160,7 @@ class AICC_Publisher {
 		}
 
 		if ( $schedule_at <= time() + 60 ) {
-			return new WP_Error( 'invalid_schedule', __( 'Scheduled time must be at least 1 minute in the future.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'invalid_schedule', __( 'Scheduled time must be at least 1 minute in the future.', 'rayai-content-orchestrator' ) );
 		}
 
 		// IMPORTANT: wp_update_post() ignores post_date changes for drafts unless
@@ -177,7 +177,7 @@ class AICC_Publisher {
 		), true );
 
 		if ( is_wp_error( $updated ) || 0 === $updated ) {
-			return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to update post.', 'ai-content-orchestrator' ) );
+			return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to update post.', 'rayai-content-orchestrator' ) );
 		}
 
 		// Verify the status actually stuck. If WordPress converted it back to
@@ -188,13 +188,13 @@ class AICC_Publisher {
 				'status_not_future',
 				sprintf(
 					/* translators: %s: actual post status */
-					__( 'WordPress did not accept the scheduled status (got: %s). The scheduled date may be too close to now.', 'ai-content-orchestrator' ),
+					__( 'WordPress did not accept the scheduled status (got: %s). The scheduled date may be too close to now.', 'rayai-content-orchestrator' ),
 					$refreshed->post_status
 				)
 			);
 		}
 
-		update_post_meta( $post_id, '_aicc_needs_review', '0' );
+		update_post_meta( $post_id, '_rayai_needs_review', '0' );
 
 		// Ensure the native publish_future_post cron event is registered.
 		wp_clear_scheduled_hook( 'publish_future_post', array( $post_id ) );
@@ -228,7 +228,7 @@ class AICC_Publisher {
    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for querying AI-generated posts.
 			'meta_query'     => array(
 				array(
-					'key'     => '_aicc_scheduled_publish_at',
+					'key'     => '_rayai_scheduled_publish_at',
 					'compare' => 'EXISTS',
 				),
 			),
@@ -239,7 +239,7 @@ class AICC_Publisher {
 		foreach ( $query->posts as $post ) {
 			// Use our stored scheduled timestamp as the source of truth. Fall
 			// back to post_date_gmt if the meta is missing for any reason.
-			$meta_time = (int) get_post_meta( $post->ID, '_aicc_scheduled_publish_at', true );
+			$meta_time = (int) get_post_meta( $post->ID, '_rayai_scheduled_publish_at', true );
 			$date_time = strtotime( $post->post_date_gmt . ' GMT' );
 			$target    = $meta_time > 0 ? $meta_time : $date_time;
 
@@ -279,7 +279,7 @@ class AICC_Publisher {
 		}
 
 		// Store a debug log of the last run for troubleshooting.
-		update_option( 'aicc_last_catchup_log', array(
+		update_option( 'rayai_last_catchup_log', array(
 			'time'      => time(),
 			'found'     => count( $query->posts ),
 			'published' => $published,
@@ -300,11 +300,11 @@ class AICC_Publisher {
 		$post    = get_post( $post_id );
 
 		if ( ! $post ) {
-			return new WP_Error( 'not_found', __( 'Post not found.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'not_found', __( 'Post not found.', 'rayai-content-orchestrator' ) );
 		}
 
 		if ( ! in_array( $post->post_status, array( 'draft', 'future' ), true ) ) {
-			return new WP_Error( 'invalid_status', __( 'Only drafts and scheduled posts can be published.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'invalid_status', __( 'Only drafts and scheduled posts can be published.', 'rayai-content-orchestrator' ) );
 		}
 
 		// Clear any pending cron event.
@@ -350,7 +350,7 @@ class AICC_Publisher {
    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for querying AI-generated posts.
 			'meta_query'     => array(
 				array(
-					'key'     => '_aicc_generated',
+					'key'     => '_rayai_generated',
 					'compare' => 'EXISTS',
 				),
 			),
@@ -360,7 +360,7 @@ class AICC_Publisher {
 
 		$items = array();
 		foreach ( $query->posts as $post ) {
-			$schedule_at = (int) get_post_meta( $post->ID, '_aicc_scheduled_publish_at', true );
+			$schedule_at = (int) get_post_meta( $post->ID, '_rayai_scheduled_publish_at', true );
 			// Any draft is awaiting human review (with or without a schedule).
 			// Once approved, the post transitions to 'future' (if scheduled) or 'publish' (immediate).
 			$needs_review = 'draft' === $post->post_status;
@@ -379,13 +379,13 @@ class AICC_Publisher {
 				'type'         => $post->post_type,
 				'status'       => $post->post_status,
 				'scheduled_at' => $schedule_at,
-				'scheduled_at_formatted' => $schedule_at > 0 ? wp_date( 'Y-m-d H:i', $schedule_at ) : __( 'Publish on approval', 'ai-content-orchestrator' ),
+				'scheduled_at_formatted' => $schedule_at > 0 ? wp_date( 'Y-m-d H:i', $schedule_at ) : __( 'Publish on approval', 'rayai-content-orchestrator' ),
 				'needs_review' => $needs_review,
 				'categories'   => $categories,
 				'edit_url'     => get_edit_post_link( $post->ID, 'raw' ),
 				'preview_url'  => get_preview_post_link( $post ),
 				'focus_keyphrase' => get_post_meta( $post->ID, '_yoast_wpseo_focuskw', true ),
-				'linkedin'     => (bool) get_post_meta( $post->ID, '_aicc_post_to_linkedin', true ),
+				'linkedin'     => (bool) get_post_meta( $post->ID, '_rayai_post_to_linkedin', true ),
 			);
 		}
 
@@ -414,7 +414,7 @@ class AICC_Publisher {
 
 		// Build the file array for sideload.
 		$file_array = array(
-			'name'     => 'aicc-' . $post_id . '-' . wp_generate_password( 8, false, false ) . '.png',
+			'name'     => 'rayai-' . $post_id . '-' . wp_generate_password( 8, false, false ) . '.png',
 			'tmp_name' => $tmp,
 		);
 
@@ -434,7 +434,7 @@ class AICC_Publisher {
 		}
 
 		// Mark as AICC-generated for tracking.
-		update_post_meta( $attachment_id, '_aicc_generated_image', '1' );
+		update_post_meta( $attachment_id, '_rayai_generated_image', '1' );
 
 		return $attachment_id;
 	}
@@ -456,11 +456,11 @@ class AICC_Publisher {
 			'meta_query'     => array(
 				'relation' => 'AND',
 				array(
-					'key'     => '_aicc_generated',
+					'key'     => '_rayai_generated',
 					'compare' => 'EXISTS',
 				),
 				array(
-					'key'     => '_aicc_post_to_linkedin',
+					'key'     => '_rayai_post_to_linkedin',
 					'value'   => '1',
 					'compare' => '=',
 				),
@@ -469,8 +469,8 @@ class AICC_Publisher {
 
 		$items = array();
 		foreach ( $query->posts as $post ) {
-			$shared_at = (int) get_post_meta( $post->ID, '_aicc_linkedin_shared', true );
-			$error     = get_post_meta( $post->ID, '_aicc_linkedin_error', true );
+			$shared_at = (int) get_post_meta( $post->ID, '_rayai_linkedin_shared', true );
+			$error     = get_post_meta( $post->ID, '_rayai_linkedin_error', true );
 
 			if ( $shared_at > 0 ) {
 				$status = 'shared';
@@ -490,7 +490,7 @@ class AICC_Publisher {
 				'shared_at'           => $shared_at,
 				'linkedin_status'     => $status,
 				'linkedin_error'      => $error,
-				'linkedin_commentary' => get_post_meta( $post->ID, '_aicc_linkedin_commentary', true ),
+				'linkedin_commentary' => get_post_meta( $post->ID, '_rayai_linkedin_commentary', true ),
 			);
 		}
 

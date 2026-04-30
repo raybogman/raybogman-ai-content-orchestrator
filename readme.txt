@@ -1,10 +1,10 @@
-=== AI Content Orchestrator ===
+=== RayAI – Content Orchestrator ===
 Contributors: raybogman
 Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.5.7
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ AI-powered content creation for WordPress. Generates SEO-optimized blog posts us
 
 == Description ==
 
-AI Content Orchestrator generates SEO-optimized blog posts and pages for your WordPress site using Claude AI (Anthropic) or OpenAI GPT models.
+RayAI – Content Orchestrator generates SEO-optimized blog posts and pages for your WordPress site using Claude AI (Anthropic) or OpenAI GPT models.
 
 **Key Features:**
 
@@ -127,14 +127,17 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 
 == Changelog ==
 
+= 3.0.0 =
+* Major: Full rebrand to RayAI – Content Orchestrator. All internal prefixes changed from aicc_ to rayai_. New text domain rayai-content-orchestrator. All class names, option names, meta keys, CSS classes, and JS variables updated. This is a breaking change from previous versions.
+
 = 2.5.7 =
 * Fixed: WordPress.org Plugin Check — all errors and warnings resolved. Passes all categories: General, Plugin Repo, Security, Performance, and Accessibility.
 * Fixed: Output escaping for all rendered settings fields (esc_attr, intval).
 * Fixed: Input sanitization and wp_unslash on all $_GET/$_POST/$_FILES usage.
 * Fixed: All translators comments for i18n strings with placeholders.
 * Fixed: Ordered placeholders in email notification (%1$s, %2$s, %3$s, %4$s).
-* Fixed: All global variables prefixed with aicc_ in view templates.
-* Fixed: Freemius function renamed from aco_fs to aicc_fs for prefix compliance.
+* Fixed: All global variables prefixed with rayai_ in view templates.
+* Fixed: Freemius function renamed from aco_fs to rayai_fs for prefix compliance.
 * Fixed: Third-party service disclosures added to readme.txt (Anthropic, OpenAI, Ideogram, LinkedIn, Instagram, Freemius).
 * Fixed: Tags reduced to 5 (WordPress.org maximum).
 * Fixed: Short description trimmed to under 150 characters.

@@ -6,14 +6,14 @@
  * post opens in the block editor with individually editable blocks instead
  * of one "Classic" block containing the entire article.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class AICC_Gutenberg_Converter {
+class RAYAI_Gutenberg_Converter {
 
 	/**
 	 * Convert HTML to Gutenberg block markup.
@@ -31,11 +31,11 @@ class AICC_Gutenberg_Converter {
 		$dom = new DOMDocument( '1.0', 'UTF-8' );
 		libxml_use_internal_errors( true );
 		// Wrap in a root element and declare UTF-8 so DOMDocument doesn't mangle non-ASCII.
-		$wrapped = '<?xml encoding="UTF-8"><div id="aicc-gb-root">' . $html . '</div>';
+		$wrapped = '<?xml encoding="UTF-8"><div id="rayai-gb-root">' . $html . '</div>';
 		$dom->loadHTML( $wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		libxml_clear_errors();
 
-		$root = $dom->getElementById( 'aicc-gb-root' );
+		$root = $dom->getElementById( 'rayai-gb-root' );
 		if ( ! $root ) {
 			return $html; // Fallback: return original if parsing failed.
 		}

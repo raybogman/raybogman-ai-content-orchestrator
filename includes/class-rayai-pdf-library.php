@@ -2,22 +2,22 @@
 /**
  * PDF library management — upload, store, retrieve, and delete PDFs.
  *
- * PDFs are uploaded to wp-content/uploads/aicc-pdfs/. Metadata and extracted
- * text are stored in the aicc_pdf_library WordPress option.
+ * PDFs are uploaded to wp-content/uploads/rayai-pdfs/. Metadata and extracted
+ * text are stored in the rayai_pdf_library WordPress option.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class AICC_PDF_Library {
+class RAYAI_PDF_Library {
 
 	/**
 	 * Option key for the PDF library index.
 	 */
-	const OPTION_KEY = 'aicc_pdf_library';
+	const OPTION_KEY = 'rayai_pdf_library';
 
 	/**
 	 * Get the upload directory for PDFs.
@@ -26,7 +26,7 @@ class AICC_PDF_Library {
 	 */
 	public static function get_upload_dir() {
 		$upload = wp_upload_dir();
-		$dir    = trailingslashit( $upload['basedir'] ) . 'aicc-pdfs';
+		$dir    = trailingslashit( $upload['basedir'] ) . 'rayai-pdfs';
 		if ( ! file_exists( $dir ) ) {
 			wp_mkdir_p( $dir );
 			// Prevent directory listing.
@@ -45,7 +45,7 @@ class AICC_PDF_Library {
 	 */
 	public static function get_upload_url() {
 		$upload = wp_upload_dir();
-		return trailingslashit( $upload['baseurl'] ) . 'aicc-pdfs';
+		return trailingslashit( $upload['baseurl'] ) . 'rayai-pdfs';
 	}
 
 	/**
@@ -110,27 +110,27 @@ class AICC_PDF_Library {
 			$messages = array(
 				UPLOAD_ERR_INI_SIZE   => sprintf(
      /* translators: %s: dynamic value */
-					__( 'File exceeds the server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'ai-content-orchestrator' ),
+					__( 'File exceeds the server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'rayai-content-orchestrator' ),
 					self::get_max_upload_size_formatted()
 				),
-				UPLOAD_ERR_FORM_SIZE  => __( 'File exceeds the form upload limit.', 'ai-content-orchestrator' ),
-				UPLOAD_ERR_PARTIAL    => __( 'File was only partially uploaded. Please try again.', 'ai-content-orchestrator' ),
-				UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'ai-content-orchestrator' ),
-				UPLOAD_ERR_NO_TMP_DIR => __( 'Server missing temporary folder. Contact your hosting provider.', 'ai-content-orchestrator' ),
-				UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk. Contact your hosting provider.', 'ai-content-orchestrator' ),
-				UPLOAD_ERR_EXTENSION  => __( 'Upload blocked by a server extension.', 'ai-content-orchestrator' ),
+				UPLOAD_ERR_FORM_SIZE  => __( 'File exceeds the form upload limit.', 'rayai-content-orchestrator' ),
+				UPLOAD_ERR_PARTIAL    => __( 'File was only partially uploaded. Please try again.', 'rayai-content-orchestrator' ),
+				UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'rayai-content-orchestrator' ),
+				UPLOAD_ERR_NO_TMP_DIR => __( 'Server missing temporary folder. Contact your hosting provider.', 'rayai-content-orchestrator' ),
+				UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk. Contact your hosting provider.', 'rayai-content-orchestrator' ),
+				UPLOAD_ERR_EXTENSION  => __( 'Upload blocked by a server extension.', 'rayai-content-orchestrator' ),
 			);
 			$msg = isset( $messages[ $file['error'] ] )
 				? $messages[ $file['error'] ]
     /* translators: %s: dynamic value */
-				: sprintf( __( 'Upload error code: %d', 'ai-content-orchestrator' ), $file['error'] );
+				: sprintf( __( 'Upload error code: %d', 'rayai-content-orchestrator' ), $file['error'] );
 			return new WP_Error( 'upload_error', $msg );
 		}
 
 		// Validate file type.
 		$file_type = wp_check_filetype( $file['name'], array( 'pdf' => 'application/pdf' ) );
 		if ( empty( $file_type['ext'] ) ) {
-			return new WP_Error( 'invalid_type', __( 'Only PDF files are allowed.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'invalid_type', __( 'Only PDF files are allowed.', 'rayai-content-orchestrator' ) );
 		}
 
 		// Validate file size against our limit.
@@ -138,7 +138,7 @@ class AICC_PDF_Library {
 		if ( $file['size'] > $max_size ) {
 			return new WP_Error( 'too_large', sprintf(
 				__( /* translators: 1: file size, 2: max size */
-			'PDF is too large (%1\$s). Maximum allowed: %2\$s.', 'ai-content-orchestrator' ),
+			'PDF is too large (%1\$s). Maximum allowed: %2\$s.', 'rayai-content-orchestrator' ),
 				size_format( $file['size'] ),
 				size_format( $max_size )
 			) );
@@ -152,11 +152,11 @@ class AICC_PDF_Library {
 
 		// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Required for file upload handling.
 		if ( ! move_uploaded_file( $file['tmp_name'], $filepath ) ) {
-			return new WP_Error( 'upload_failed', __( 'Failed to save uploaded file.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'upload_failed', __( 'Failed to save uploaded file.', 'rayai-content-orchestrator' ) );
 		}
 
 		// Extract text from PDF.
-		$text = AICC_PDF_Extractor::extract( $filepath );
+		$text = RAYAI_PDF_Extractor::extract( $filepath );
 		if ( empty( $text ) ) {
 			$text = '(Could not extract text from this PDF. It may be image-based or use complex encoding.)';
 		}
@@ -231,12 +231,12 @@ class AICC_PDF_Library {
 	 * Build site-context-style data from PDF text for the AI.
 	 *
 	 * @param array $ids Array of PDF IDs.
-	 * @return array Array of "page data" arrays compatible with AICC_Scanner format.
+	 * @return array Array of "page data" arrays compatible with RAYAI_Scanner format.
 	 */
 	public static function get_as_site_data( $ids ) {
 		$library   = self::get_all();
 		$site_data = array();
-		$max_chars = AICC_Settings::get_max_context_chars();
+		$max_chars = RAYAI_Settings::get_max_context_chars();
 
 		foreach ( $ids as $id ) {
 			if ( ! isset( $library[ $id ] ) || empty( $library[ $id ]['text'] ) ) {

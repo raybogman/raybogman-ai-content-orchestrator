@@ -1,7 +1,7 @@
 /**
- * AI Content Orchestrator - Admin JavaScript
+ * RayAI – Content Orchestrator - Admin JavaScript
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 /* global jQuery, aicc */
@@ -9,7 +9,7 @@
 (function ($) {
 	'use strict';
 
-	var aiccIsGenerating = false,
+	var rayaiIsGenerating = false,
 		$submitBtn,
 		$logArea,
 		$logBox,
@@ -21,16 +21,16 @@
 	 * Initialize on DOM ready.
 	 */
 	$(document).ready(function () {
-		$submitBtn     = $('#aicc-submit');
-		$logArea       = $('#aicc-log-area');
-		$logBox        = $('#aicc-log-box');
-		$resultCard    = $('#aicc-result-card');
-		$spinner       = $('#aicc-spinner');
-		$categoriesRow = $('#aicc-categories-row');
+		$submitBtn     = $('#rayai-submit');
+		$logArea       = $('#rayai-log-area');
+		$logBox        = $('#rayai-log-box');
+		$resultCard    = $('#rayai-result-card');
+		$spinner       = $('#rayai-spinner');
+		$categoriesRow = $('#rayai-categories-row');
 
 		// Warn before navigating away during content generation.
 		$(window).on('beforeunload', function () {
-			if (aiccIsGenerating) {
+			if (rayaiIsGenerating) {
 				return 'Content generation is still running. If you leave, it will be interrupted.';
 			}
 		});
@@ -39,16 +39,16 @@
 		$submitBtn.on('click', submitForm);
 
 		// Save Log button — downloads progress log as .txt file.
-		$(document).on('click', '.aicc-save-log', function () {
+		$(document).on('click', '.rayai-save-log', function () {
 			var logSelector = $(this).data('log');
 			var $log = $(logSelector);
 			if (!$log.length || !$log.text().trim()) return;
 
 			var lines = [];
-			$log.find('.aicc-log-line').each(function () {
+			$log.find('.rayai-log-line').each(function () {
 				lines.push($(this).text());
 			});
-			var text = 'AI Content Orchestrator — Progress Log\n'
+			var text = 'RayAI – Content Orchestrator — Progress Log\n'
 				+ 'Date: ' + new Date().toLocaleString() + '\n'
 				+ 'URL: ' + window.location.href + '\n'
 				+ '─'.repeat(60) + '\n\n'
@@ -58,7 +58,7 @@
 			var url  = URL.createObjectURL(blob);
 			var a    = document.createElement('a');
 			a.href     = url;
-			a.download = 'aicc-log-' + new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-') + '.txt';
+			a.download = 'rayai-log-' + new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-') + '.txt';
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
@@ -66,64 +66,64 @@
 		});
 
 		// Bind preview toggle.
-		$('#aicc-toggle-preview').on('click', function () {
-			$('#aicc-preview').slideToggle(200);
+		$('#rayai-toggle-preview').on('click', function () {
+			$('#rayai-preview').slideToggle(200);
 		});
 
 		// Featured Image — click to select (works for both single + bulk create).
-		$(document).on('click', '.aicc-image-option', function () {
+		$(document).on('click', '.rayai-image-option', function () {
 			var $opt    = $(this);
-			var $wrap   = $opt.closest('.aicc-image-options, #aicc-image-options');
+			var $wrap   = $opt.closest('.rayai-image-options, #rayai-image-options');
 			var postId  = $wrap.data('post-id');
 			var idx     = $opt.data('index');
 
-			if ($opt.hasClass('selected') || $opt.hasClass('aicc-loading')) {
+			if ($opt.hasClass('selected') || $opt.hasClass('rayai-loading')) {
 				return;
 			}
 
-			$opt.addClass('aicc-loading').css('opacity', '0.6');
+			$opt.addClass('rayai-loading').css('opacity', '0.6');
 
-			$.post(aicc.ajax_url, {
-				action:      'aicc_select_featured_image',
-				nonce:       aicc.nonce,
+			$.post(rayai.ajax_url, {
+				action:      'rayai_select_featured_image',
+				nonce:       rayai.nonce,
 				post_id:     postId,
 				image_index: idx,
 			}, function (response) {
-				$opt.removeClass('aicc-loading').css('opacity', '');
+				$opt.removeClass('rayai-loading').css('opacity', '');
 				if (response.success) {
 					// Mark this option as selected and unselect others.
-					$wrap.find('.aicc-image-option').removeClass('selected').css('border-color', 'transparent');
-					$wrap.find('.aicc-image-check').remove();
+					$wrap.find('.rayai-image-option').removeClass('selected').css('border-color', 'transparent');
+					$wrap.find('.rayai-image-check').remove();
 					$opt.addClass('selected').css('border-color', '#2271b1');
-					$opt.append('<div class="aicc-image-check" style="position: absolute; top: 6px; right: 6px; background: #2271b1; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="dashicons dashicons-yes" style="font-size: 16px; width: 16px; height: 16px;"></span></div>');
+					$opt.append('<div class="rayai-image-check" style="position: absolute; top: 6px; right: 6px; background: #2271b1; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="dashicons dashicons-yes" style="font-size: 16px; width: 16px; height: 16px;"></span></div>');
 				} else {
 					alert('Error: ' + (response.data && response.data.message ? response.data.message : 'Unknown error'));
 				}
 			}).fail(function (xhr) {
-				$opt.removeClass('aicc-loading').css('opacity', '');
+				$opt.removeClass('rayai-loading').css('opacity', '');
 				alert('Request failed: ' + xhr.status);
 			});
 		});
 
 		// Repurpose content — generate for a specific platform (single + bulk).
-		$(document).on('click', '.aicc-repurpose-btn', function () {
+		$(document).on('click', '.rayai-repurpose-btn', function () {
 			var $btn    = $(this);
-			var $wrap   = $btn.closest('.aicc-repurpose-wrap, #aicc-repurpose');
+			var $wrap   = $btn.closest('.rayai-repurpose-wrap, #rayai-repurpose');
 			var format  = $btn.data('format');
 			var postId  = $wrap.data('post-id');
-			var $result = $wrap.find('.aicc-repurpose-result, #aicc-repurpose-result').first();
-			var $text   = $wrap.find('.aicc-repurpose-text, #aicc-repurpose-text').first();
-			var $status = $wrap.find('.aicc-repurpose-status, #aicc-repurpose-status').first();
+			var $result = $wrap.find('.rayai-repurpose-result, #rayai-repurpose-result').first();
+			var $text   = $wrap.find('.rayai-repurpose-text, #rayai-repurpose-text').first();
+			var $status = $wrap.find('.rayai-repurpose-status, #rayai-repurpose-status').first();
 
-			$wrap.find('.aicc-repurpose-btn').removeClass('button-primary');
+			$wrap.find('.rayai-repurpose-btn').removeClass('button-primary');
 			$btn.addClass('button-primary').prop('disabled', true);
 			$result.show();
 			$text.html('<span class="spinner is-active" style="float:none;margin:0;"></span> Generating ' + format + ' version...');
 			$status.empty();
 
-			$.post(aicc.ajax_url, {
-				action:  'aicc_repurpose_content',
-				nonce:   aicc.nonce,
+			$.post(rayai.ajax_url, {
+				action:  'rayai_repurpose_content',
+				nonce:   rayai.nonce,
 				post_id: postId,
 				format:  format
 			}).done(function (response) {
@@ -141,10 +141,10 @@
 		});
 
 		// Copy repurposed content to clipboard (single + bulk).
-		$(document).on('click', '.aicc-repurpose-copy-btn, #aicc-repurpose-copy', function () {
-			var $wrap  = $(this).closest('.aicc-repurpose-wrap, #aicc-repurpose');
-			var $text  = $wrap.find('.aicc-repurpose-text, #aicc-repurpose-text').first();
-			var $status = $wrap.find('.aicc-repurpose-status, #aicc-repurpose-status').first();
+		$(document).on('click', '.rayai-repurpose-copy-btn, #rayai-repurpose-copy', function () {
+			var $wrap  = $(this).closest('.rayai-repurpose-wrap, #rayai-repurpose');
+			var $text  = $wrap.find('.rayai-repurpose-text, #rayai-repurpose-text').first();
+			var $status = $wrap.find('.rayai-repurpose-status, #rayai-repurpose-status').first();
 			var text   = $text.text();
 			if (navigator.clipboard && navigator.clipboard.writeText) {
 				navigator.clipboard.writeText(text).then(function () {
@@ -161,13 +161,13 @@
 		});
 
 		// Featured Image — regenerate overlay with custom text.
-		$(document).on('click', '#aicc-regenerate-overlay', function () {
+		$(document).on('click', '#rayai-regenerate-overlay', function () {
 			var $btn    = $(this);
-			var $editor = $('#aicc-overlay-editor');
+			var $editor = $('#rayai-overlay-editor');
 			var postId  = $editor.data('post-id');
-			var line1   = $('#aicc-overlay-line1').val().trim();
-			var line2   = $('#aicc-overlay-line2').val().trim();
-			var $status = $('#aicc-overlay-status');
+			var line1   = $('#rayai-overlay-line1').val().trim();
+			var line2   = $('#rayai-overlay-line2').val().trim();
+			var $status = $('#rayai-overlay-status');
 
 			if (!line1) {
 				$status.html('<strong style="color:#d63638;">Line 1 is required.</strong>');
@@ -177,15 +177,15 @@
 			$btn.prop('disabled', true);
 			$status.html('<span class="spinner is-active" style="float:none; margin:0;"></span> Regenerating...');
 
-			$.post(aicc.ajax_url, {
-				action:  'aicc_regenerate_overlay',
-				nonce:   aicc.nonce,
+			$.post(rayai.ajax_url, {
+				action:  'rayai_regenerate_overlay',
+				nonce:   rayai.nonce,
 				post_id: postId,
 				line1:   line1,
 				line2:   line2
 			}).done(function (response) {
 				if (response.success && response.data.featured_image) {
-					$('#aicc-overlay-preview').attr('src', response.data.featured_image + '?t=' + Date.now());
+					$('#rayai-overlay-preview').attr('src', response.data.featured_image + '?t=' + Date.now());
 					$status.html('<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span> <strong style="color:#00a32a;">Updated!</strong>');
 				} else {
 					var msg = (response.data && response.data.message) ? response.data.message : 'Failed.';
@@ -199,10 +199,10 @@
 		});
 
 		// Featured Image — regenerate 4 new options.
-		$(document).on('click', '.aicc-regen-images-btn', function () {
+		$(document).on('click', '.rayai-regen-images-btn', function () {
 			var $btn   = $(this);
 			var postId = $btn.data('post-id');
-			var $wrap  = $btn.closest('.aicc-image-options, #aicc-image-options');
+			var $wrap  = $btn.closest('.rayai-image-options, #rayai-image-options');
 
 			if (!confirm('Regenerate 4 new images? This will take 1-2 minutes and replaces all current options.')) {
 				return;
@@ -212,26 +212,26 @@
 			$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> Generating 4 images (1-2 min)...');
 
 			$.ajax({
-				url:      aicc.ajax_url,
+				url:      rayai.ajax_url,
 				type:     'POST',
 				dataType: 'json',
 				data:     {
-					action:  'aicc_regenerate_featured_images',
-					nonce:   aicc.nonce,
+					action:  'rayai_regenerate_featured_images',
+					nonce:   rayai.nonce,
 					post_id: postId,
 				},
 				timeout: 300000, // 5 minutes for 4 sequential image generations
 			}).done(function (response) {
 				if (response.success) {
 					// Replace the entire image grid.
-					var $grid = $wrap.find('.aicc-image-grid');
+					var $grid = $wrap.find('.rayai-image-grid');
 					$grid.empty();
 					for (var i = 0; i < response.data.image_urls.length; i++) {
 						var isSelected = (i === 0);
-						var optHtml = '<div class="aicc-image-option' + (isSelected ? ' selected' : '') + '" data-index="' + i + '" data-url="' + escAttr(response.data.image_urls[i]) + '" style="position: relative; cursor: pointer; border: 3px solid ' + (isSelected ? '#2271b1' : 'transparent') + '; border-radius: 6px; overflow: hidden; transition: border-color 0.15s;">' +
+						var optHtml = '<div class="rayai-image-option' + (isSelected ? ' selected' : '') + '" data-index="' + i + '" data-url="' + escAttr(response.data.image_urls[i]) + '" style="position: relative; cursor: pointer; border: 3px solid ' + (isSelected ? '#2271b1' : 'transparent') + '; border-radius: 6px; overflow: hidden; transition: border-color 0.15s;">' +
 							'<img src="' + escAttr(response.data.image_urls[i]) + '" alt="Option ' + (i + 1) + '" style="width: 100%; height: auto; display: block;" />' +
-							'<div class="aicc-image-badge" style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">' + (i + 1) + '</div>' +
-							(isSelected ? '<div class="aicc-image-check" style="position: absolute; top: 6px; right: 6px; background: #2271b1; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="dashicons dashicons-yes" style="font-size: 16px; width: 16px; height: 16px;"></span></div>' : '') +
+							'<div class="rayai-image-badge" style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">' + (i + 1) + '</div>' +
+							(isSelected ? '<div class="rayai-image-check" style="position: absolute; top: 6px; right: 6px; background: #2271b1; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="dashicons dashicons-yes" style="font-size: 16px; width: 16px; height: 16px;"></span></div>' : '') +
 							'</div>';
 						$grid.append(optHtml);
 					}
@@ -247,49 +247,49 @@
 		});
 
 		// LinkedIn Post Preview — Edit button (switch to edit mode).
-		$(document).on('click', '#aicc-result-li-preview .aicc-li-edit-btn', function () {
-			var $wrap = $('#aicc-result-li-preview');
-			$wrap.find('.aicc-li-preview-view').hide();
-			$wrap.find('.aicc-li-preview-edit').show();
-			$wrap.find('.aicc-li-edit-textarea').focus();
+		$(document).on('click', '#rayai-result-li-preview .rayai-li-edit-btn', function () {
+			var $wrap = $('#rayai-result-li-preview');
+			$wrap.find('.rayai-li-preview-view').hide();
+			$wrap.find('.rayai-li-preview-edit').show();
+			$wrap.find('.rayai-li-edit-textarea').focus();
 		});
 
 		// LinkedIn Post Preview — Cancel edit (restore original).
-		$(document).on('click', '#aicc-result-li-preview .aicc-li-cancel-btn', function () {
-			var $wrap    = $('#aicc-result-li-preview');
-			var original = $wrap.find('.aicc-li-preview-text').text();
-			$wrap.find('.aicc-li-edit-textarea').val(original);
-			$wrap.find('.aicc-li-edit-count').text(original.length + ' / 2900 characters');
-			$wrap.find('.aicc-li-preview-edit').hide();
-			$wrap.find('.aicc-li-preview-view').show();
+		$(document).on('click', '#rayai-result-li-preview .rayai-li-cancel-btn', function () {
+			var $wrap    = $('#rayai-result-li-preview');
+			var original = $wrap.find('.rayai-li-preview-text').text();
+			$wrap.find('.rayai-li-edit-textarea').val(original);
+			$wrap.find('.rayai-li-edit-count').text(original.length + ' / 2900 characters');
+			$wrap.find('.rayai-li-preview-edit').hide();
+			$wrap.find('.rayai-li-preview-view').show();
 		});
 
 		// LinkedIn Post Preview — live char count while editing.
-		$(document).on('input', '#aicc-result-li-preview .aicc-li-edit-textarea', function () {
+		$(document).on('input', '#rayai-result-li-preview .rayai-li-edit-textarea', function () {
 			var len = $(this).val().length;
-			$('#aicc-result-li-preview .aicc-li-edit-count').text(len + ' / 2900 characters');
+			$('#rayai-result-li-preview .rayai-li-edit-count').text(len + ' / 2900 characters');
 		});
 
 		// LinkedIn Post Preview — Save edited commentary.
-		$(document).on('click', '#aicc-result-li-preview .aicc-li-save-btn', function () {
+		$(document).on('click', '#rayai-result-li-preview .rayai-li-save-btn', function () {
 			var $btn       = $(this);
-			var $wrap      = $('#aicc-result-li-preview');
+			var $wrap      = $('#rayai-result-li-preview');
 			var postId     = $btn.data('post-id');
-			var commentary = $wrap.find('.aicc-li-edit-textarea').val();
+			var commentary = $wrap.find('.rayai-li-edit-textarea').val();
 
 			$btn.prop('disabled', true).text('Saving...');
 
-			$.post(aicc.ajax_url, {
-				action:     'aicc_linkedin_save_commentary',
-				nonce:      aicc.nonce,
+			$.post(rayai.ajax_url, {
+				action:     'rayai_linkedin_save_commentary',
+				nonce:      rayai.nonce,
 				post_id:    postId,
 				commentary: commentary,
 			}, function (response) {
 				if (response.success) {
-					$wrap.find('.aicc-li-preview-text').text(response.data.commentary);
-					$wrap.find('.aicc-li-char-count').text(response.data.length + ' characters');
-					$wrap.find('.aicc-li-preview-edit').hide();
-					$wrap.find('.aicc-li-preview-view').show();
+					$wrap.find('.rayai-li-preview-text').text(response.data.commentary);
+					$wrap.find('.rayai-li-char-count').text(response.data.length + ' characters');
+					$wrap.find('.rayai-li-preview-edit').hide();
+					$wrap.find('.rayai-li-preview-view').show();
 					$btn.prop('disabled', false).text('Save');
 				} else {
 					alert('Error: ' + (response.data && response.data.message ? response.data.message : 'Unknown error'));
@@ -302,9 +302,9 @@
 		});
 
 		// LinkedIn Post Preview — Regenerate via AI.
-		$(document).on('click', '#aicc-result-li-preview .aicc-li-regen-btn', function () {
+		$(document).on('click', '#rayai-result-li-preview .rayai-li-regen-btn', function () {
 			var $btn   = $(this);
-			var $wrap  = $('#aicc-result-li-preview');
+			var $wrap  = $('#rayai-result-li-preview');
 			var postId = $btn.data('post-id');
 
 			if (!confirm('Regenerate the LinkedIn post via AI? The current text will be replaced.')) {
@@ -315,21 +315,21 @@
 			$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> Generating...');
 
 			$.ajax({
-				url:     aicc.ajax_url,
+				url:     rayai.ajax_url,
 				type:    'POST',
 				dataType: 'json',
 				data:    {
-					action:  'aicc_linkedin_regenerate_commentary',
-					nonce:   aicc.nonce,
+					action:  'rayai_linkedin_regenerate_commentary',
+					nonce:   rayai.nonce,
 					post_id: postId,
 				},
 				timeout: 120000,
 			}).done(function (response) {
 				if (response.success) {
-					$wrap.find('.aicc-li-preview-text').text(response.data.commentary);
-					$wrap.find('.aicc-li-edit-textarea').val(response.data.commentary);
-					$wrap.find('.aicc-li-char-count').text(response.data.length + ' characters');
-					$wrap.find('.aicc-li-edit-count').text(response.data.length + ' / 2900 characters');
+					$wrap.find('.rayai-li-preview-text').text(response.data.commentary);
+					$wrap.find('.rayai-li-edit-textarea').val(response.data.commentary);
+					$wrap.find('.rayai-li-char-count').text(response.data.length + ' characters');
+					$wrap.find('.rayai-li-edit-count').text(response.data.length + ' / 2900 characters');
 					$btn.prop('disabled', false).html(originalHtml);
 				} else {
 					alert('Regeneration failed: ' + (response.data && response.data.message ? response.data.message : 'Unknown error'));
@@ -342,23 +342,23 @@
 		});
 
 		// Toggle categories row based on content type.
-		$('input[name="aicc-type"]').on('change', function () {
+		$('input[name="rayai-type"]').on('change', function () {
 			toggleCategoriesRow();
 		});
 
 		// Toggle schedule fields.
-		$('#aicc-schedule-enabled').on('change', function () {
+		$('#rayai-schedule-enabled').on('change', function () {
 			if ($(this).is(':checked')) {
-				$('#aicc-schedule-fields').slideDown(200);
+				$('#rayai-schedule-fields').slideDown(200);
 			} else {
-				$('#aicc-schedule-fields').slideUp(200);
+				$('#rayai-schedule-fields').slideUp(200);
 			}
 		});
 
 		// Saved URL chips: click to populate URL field.
-		$(document).on('click', '.aicc-url-chip-text', function () {
-			var url = $(this).closest('.aicc-url-chip').data('url');
-			var $urlField = $('#aicc-url');
+		$(document).on('click', '.rayai-url-chip-text', function () {
+			var url = $(this).closest('.rayai-url-chip').data('url');
+			var $urlField = $('#rayai-url');
 			var current = $.trim($urlField.val());
 			if (current && current.indexOf(url) === -1) {
 				$urlField.val(current + ', ' + url);
@@ -369,21 +369,21 @@
 		});
 
 		// Saved URL chips: click × to remove.
-		$(document).on('click', '.aicc-url-chip-remove', function (e) {
+		$(document).on('click', '.rayai-url-chip-remove', function (e) {
 			e.stopPropagation();
-			var $chip = $(this).closest('.aicc-url-chip');
+			var $chip = $(this).closest('.rayai-url-chip');
 			var url   = $chip.data('url');
 
-			$.post(aicc.ajax_url, {
-				action: 'aicc_remove_saved_url',
-				nonce:  aicc.nonce,
+			$.post(rayai.ajax_url, {
+				action: 'rayai_remove_saved_url',
+				nonce:  rayai.nonce,
 				url:    url,
 			}, function (response) {
 				if (response.success) {
 					$chip.fadeOut(200, function () {
 						$chip.remove();
-						if ($('#aicc-saved-urls-list .aicc-url-chip').length === 0) {
-							$('#aicc-saved-urls-row').slideUp(200);
+						if ($('#rayai-saved-urls-list .rayai-url-chip').length === 0) {
+							$('#rayai-saved-urls-row').slideUp(200);
 						}
 					});
 				}
@@ -391,21 +391,21 @@
 		});
 
 		// Update schedule help text based on status selection.
-		$('input[name="aicc-status"]').on('change', updateScheduleHelp);
+		$('input[name="rayai-status"]').on('change', updateScheduleHelp);
 
 		// PDF upload button trigger.
-		$('#aicc-pdf-upload-btn').on('click', function () {
-			$('#aicc-pdf-file').click();
+		$('#rayai-pdf-upload-btn').on('click', function () {
+			$('#rayai-pdf-file').click();
 		});
 
 		// PDF file selected — upload via chunked AJAX (works with any server upload limit).
-		$('#aicc-pdf-file').on('change', function () {
+		$('#rayai-pdf-file').on('change', function () {
 			var file = this.files[0];
 			if (!file) return;
 			this.value = '';
 
-			var $status    = $('#aicc-pdf-upload-status');
-			var $btn       = $('#aicc-pdf-upload-btn');
+			var $status    = $('#rayai-pdf-upload-status');
+			var $btn       = $('#rayai-pdf-upload-btn');
 			var maxSize    = 100 * 1024 * 1024; // 100MB
 
 			if (file.size > maxSize) {
@@ -429,8 +429,8 @@
 				$status.html('<span class="spinner is-active" style="float:none; margin:0;"></span> Uploading... ' + pct + '%');
 
 				var fd = new FormData();
-				fd.append('action', 'aicc_upload_pdf_chunk');
-				fd.append('nonce', aicc.nonce);
+				fd.append('action', 'rayai_upload_pdf_chunk');
+				fd.append('nonce', rayai.nonce);
 				fd.append('chunk', blob, file.name);
 				fd.append('chunk_number', chunkNum);
 				fd.append('total_chunks', totalChunks);
@@ -438,7 +438,7 @@
 				fd.append('filename', file.name);
 
 				$.ajax({
-					url:         aicc.ajax_url,
+					url:         rayai.ajax_url,
 					type:        'POST',
 					data:        fd,
 					processData: false,
@@ -473,23 +473,23 @@
 		});
 
 		// PDF delete button.
-		$(document).on('click', '.aicc-pdf-delete-btn', function (e) {
+		$(document).on('click', '.rayai-pdf-delete-btn', function (e) {
 			e.preventDefault();
 			if (!confirm('Delete this PDF from the library?')) return;
 			var $btn   = $(this);
 			var pdfId  = $btn.data('pdf-id');
-			var $item  = $btn.closest('.aicc-pdf-item');
+			var $item  = $btn.closest('.rayai-pdf-item');
 
-			$.post(aicc.ajax_url, {
-				action: 'aicc_delete_pdf',
-				nonce:  aicc.nonce,
+			$.post(rayai.ajax_url, {
+				action: 'rayai_delete_pdf',
+				nonce:  rayai.nonce,
 				pdf_id: pdfId,
 			}, function (response) {
 				if (response.success) {
 					$item.fadeOut(200, function () {
 						$item.remove();
-						if ($('#aicc-pdf-library .aicc-pdf-item').length === 0) {
-							$('#aicc-pdf-library').hide();
+						if ($('#rayai-pdf-library .rayai-pdf-item').length === 0) {
+							$('#rayai-pdf-library').hide();
 						}
 					});
 				}
@@ -497,19 +497,19 @@
 		});
 
 		// Update blog style description on change.
-		$('#aicc-blog-style').on('change', function () {
+		$('#rayai-blog-style').on('change', function () {
 			var key = $(this).val();
 			var style = null;
-			if (aicc.blog_styles) {
-				for (var i = 0; i < aicc.blog_styles.length; i++) {
-					if (aicc.blog_styles[i].key === key) {
-						style = aicc.blog_styles[i];
+			if (rayai.blog_styles) {
+				for (var i = 0; i < rayai.blog_styles.length; i++) {
+					if (rayai.blog_styles[i].key === key) {
+						style = rayai.blog_styles[i];
 						break;
 					}
 				}
 			}
 			if (style) {
-				$('#aicc-style-description').text(style.description);
+				$('#rayai-style-description').text(style.description);
 			}
 			// Update preview content if panel is visible.
 			updateStylePreview();
@@ -517,24 +517,24 @@
 
 		// Style preview on hover.
 		var previewTimeout;
-		$('#aicc-style-preview-trigger').on('mouseenter', function () {
+		$('#rayai-style-preview-trigger').on('mouseenter', function () {
 			clearTimeout(previewTimeout);
 			updateStylePreview();
-			$('#aicc-style-preview-panel').fadeIn(150);
+			$('#rayai-style-preview-panel').fadeIn(150);
 		});
 
-		$('#aicc-style-preview-trigger, #aicc-style-preview-panel').on('mouseleave', function (e) {
+		$('#rayai-style-preview-trigger, #rayai-style-preview-panel').on('mouseleave', function (e) {
 			// Only hide if not moving to the panel or trigger.
 			var related = e.relatedTarget;
-			if ($(related).closest('#aicc-style-preview-panel, #aicc-style-preview-trigger').length) {
+			if ($(related).closest('#rayai-style-preview-panel, #rayai-style-preview-trigger').length) {
 				return;
 			}
 			previewTimeout = setTimeout(function () {
-				$('#aicc-style-preview-panel').fadeOut(100);
+				$('#rayai-style-preview-panel').fadeOut(100);
 			}, 200);
 		});
 
-		$('#aicc-style-preview-panel').on('mouseenter', function () {
+		$('#rayai-style-preview-panel').on('mouseenter', function () {
 			clearTimeout(previewTimeout);
 		});
 
@@ -547,39 +547,39 @@
 	 * Update the style hover preview panel with the current selection.
 	 */
 	function updateStylePreview() {
-		var key = $('#aicc-blog-style').val();
-		var $dataEl = $('#aicc-style-preview-data-' + key);
+		var key = $('#rayai-blog-style').val();
+		var $dataEl = $('#rayai-style-preview-data-' + key);
 
 		if ($dataEl.length) {
-			$('#aicc-style-preview-content').html($dataEl.html());
+			$('#rayai-style-preview-content').html($dataEl.html());
 		} else {
-			$('#aicc-style-preview-content').html('<p class="description"><em>No preview available.</em></p>');
+			$('#rayai-style-preview-content').html('<p class="description"><em>No preview available.</em></p>');
 		}
 
 		// Set title.
 		var style = null;
-		if (aicc.blog_styles) {
-			for (var i = 0; i < aicc.blog_styles.length; i++) {
-				if (aicc.blog_styles[i].key === key) {
-					style = aicc.blog_styles[i];
+		if (rayai.blog_styles) {
+			for (var i = 0; i < rayai.blog_styles.length; i++) {
+				if (rayai.blog_styles[i].key === key) {
+					style = rayai.blog_styles[i];
 					break;
 				}
 			}
 		}
-		$('#aicc-style-preview-title').text(style ? style.name + ' — Layout Preview' : 'Preview');
+		$('#rayai-style-preview-title').text(style ? style.name + ' — Layout Preview' : 'Preview');
 	}
 
 	/**
 	 * Show the correct schedule help text based on draft/publish selection.
 	 */
 	function updateScheduleHelp() {
-		var status = $('input[name="aicc-status"]:checked').val();
+		var status = $('input[name="rayai-status"]:checked').val();
 		if ('publish' === status) {
-			$('#aicc-schedule-help-draft').hide();
-			$('#aicc-schedule-help-publish').show();
+			$('#rayai-schedule-help-draft').hide();
+			$('#rayai-schedule-help-publish').show();
 		} else {
-			$('#aicc-schedule-help-draft').show();
-			$('#aicc-schedule-help-publish').hide();
+			$('#rayai-schedule-help-draft').show();
+			$('#rayai-schedule-help-publish').hide();
 		}
 	}
 
@@ -588,13 +588,13 @@
 	 * Categories and blog style only apply to blog posts, not pages.
 	 */
 	function toggleCategoriesRow() {
-		var contentType = $('input[name="aicc-type"]:checked').val();
+		var contentType = $('input[name="rayai-type"]:checked').val();
 		if ('page' === contentType) {
 			$categoriesRow.hide();
-			$('#aicc-style-row').hide();
+			$('#rayai-style-row').hide();
 		} else {
 			$categoriesRow.show();
-			$('#aicc-style-row').show();
+			$('#rayai-style-row').show();
 		}
 	}
 
@@ -605,7 +605,7 @@
 	 * @param {string} cls     CSS class (step, success, error).
 	 */
 	function addLog(message, cls) {
-		var $line = $('<div class="aicc-log-line"></div>');
+		var $line = $('<div class="rayai-log-line"></div>');
 		$line.text(message);
 		if (cls) {
 			$line.addClass(cls);
@@ -662,7 +662,7 @@
 	 */
 	function setLoading() {
 		$submitBtn.prop('disabled', true);
-		$submitBtn.html('<span class="aicc-btn-spinner"></span> ' + aicc.i18n.working);
+		$submitBtn.html('<span class="rayai-btn-spinner"></span> ' + rayai.i18n.working);
 	}
 
 	/**
@@ -671,8 +671,8 @@
 	function resetButton() {
 		$submitBtn.prop('disabled', false);
 		$submitBtn.html(
-			'<span class="dashicons dashicons-admin-post aicc-btn-icon"></span> ' +
-			aicc.i18n.create_content
+			'<span class="dashicons dashicons-admin-post rayai-btn-icon"></span> ' +
+			rayai.i18n.create_content
 		);
 	}
 
@@ -683,7 +683,7 @@
 	 */
 	function getSelectedPdfIds() {
 		var ids = [];
-		$('.aicc-pdf-checkbox:checked').each(function () {
+		$('.rayai-pdf-checkbox:checked').each(function () {
 			ids.push($(this).val());
 		});
 		return ids;
@@ -695,24 +695,24 @@
 	 * @param {Object} pdf PDF data from server response.
 	 */
 	function addPdfToLibrary(pdf) {
-		var $library = $('#aicc-pdf-library');
+		var $library = $('#rayai-pdf-library');
 		$library.show();
 
-		var html = '<div class="aicc-pdf-item" data-pdf-id="' + escAttr(pdf.id) + '">'
-			+ '<label class="aicc-pdf-label">'
-			+ '<input type="checkbox" name="aicc-pdf-ids[]" value="' + escAttr(pdf.id) + '" class="aicc-pdf-checkbox" checked />'
+		var html = '<div class="rayai-pdf-item" data-pdf-id="' + escAttr(pdf.id) + '">'
+			+ '<label class="rayai-pdf-label">'
+			+ '<input type="checkbox" name="rayai-pdf-ids[]" value="' + escAttr(pdf.id) + '" class="rayai-pdf-checkbox" checked />'
 			+ '<span class="dashicons dashicons-pdf" style="color: #d63638; vertical-align: text-bottom;"></span> '
 			+ '<strong>' + escHtml(pdf.name) + '</strong> '
 			+ '<span class="description">&mdash; ' + escHtml(pdf.upload_date) + ' &middot; ' + pdf.text_length + ' chars</span>'
 			+ '</label>'
-			+ '<button type="button" class="aicc-pdf-delete-btn" data-pdf-id="' + escAttr(pdf.id) + '" title="Delete">'
+			+ '<button type="button" class="rayai-pdf-delete-btn" data-pdf-id="' + escAttr(pdf.id) + '" title="Delete">'
 			+ '<span class="dashicons dashicons-trash" style="color: #d63638; font-size: 14px; width: 14px; height: 14px;"></span>'
 			+ '</button>'
-			+ '<div class="aicc-pdf-preview description">' + escHtml(pdf.text_preview) + '</div>'
+			+ '<div class="rayai-pdf-preview description">' + escHtml(pdf.text_preview) + '</div>'
 			+ '</div>';
 
 		// Add header if this is the first PDF.
-		if ($library.find('.aicc-pdf-item').length === 0) {
+		if ($library.find('.rayai-pdf-item').length === 0) {
 			$library.html('<p class="description" style="margin-bottom: 8px;"><strong>Saved PDFs — check to use as source:</strong></p>');
 		}
 		$library.append(html);
@@ -725,21 +725,21 @@
 	 */
 	function addSavedUrlsToList(urlString) {
 		var urls = urlString.split(',').map(function (u) { return u.trim().replace(/\/$/, ''); }).filter(Boolean);
-		var $list = $('#aicc-saved-urls-list');
+		var $list = $('#rayai-saved-urls-list');
 
 		urls.forEach(function (url) {
 			// Skip if already in list.
-			if ($list.find('.aicc-url-chip[data-url="' + url + '"]').length > 0) return;
+			if ($list.find('.rayai-url-chip[data-url="' + url + '"]').length > 0) return;
 
-			var $chip = $('<span class="aicc-url-chip" data-url="' + escAttr(url) + '">' +
-				'<span class="aicc-url-chip-text">' + escHtml(url) + '</span>' +
-				'<button type="button" class="aicc-url-chip-remove" title="Remove">&times;</button>' +
+			var $chip = $('<span class="rayai-url-chip" data-url="' + escAttr(url) + '">' +
+				'<span class="rayai-url-chip-text">' + escHtml(url) + '</span>' +
+				'<button type="button" class="rayai-url-chip-remove" title="Remove">&times;</button>' +
 				'</span>');
 			$list.append($chip);
 		});
 
-		if ($list.find('.aicc-url-chip').length > 0) {
-			$('#aicc-saved-urls-row').show();
+		if ($list.find('.rayai-url-chip').length > 0) {
+			$('#rayai-saved-urls-row').show();
 		}
 	}
 
@@ -750,7 +750,7 @@
 	 */
 	function getSelectedCategories() {
 		var ids = [];
-		$('input[name="aicc-categories[]"]:checked').each(function () {
+		$('input[name="rayai-categories[]"]:checked').each(function () {
 			ids.push($(this).val());
 		});
 		return ids;
@@ -765,26 +765,26 @@
 	 *   Step 4: Publish to WordPress  (<5s)
 	 */
 	function submitForm() {
-		var prompt = $.trim($('#aicc-prompt').val());
+		var prompt = $.trim($('#rayai-prompt').val());
 		if (!prompt) {
-			alert(aicc.i18n.prompt_required);
+			alert(rayai.i18n.prompt_required);
 			return;
 		}
 
-		if (!aicc.configured) {
-			alert(aicc.i18n.not_configured);
+		if (!rayai.configured) {
+			alert(rayai.i18n.not_configured);
 			return;
 		}
 
-		var url         = $.trim($('#aicc-url').val());
-		var contentType = $('input[name="aicc-type"]:checked').val();
-		var status      = $('input[name="aicc-status"]:checked').val();
+		var url         = $.trim($('#rayai-url').val());
+		var contentType = $('input[name="rayai-type"]:checked').val();
+		var status      = $('input[name="rayai-status"]:checked').val();
 		var categories  = getSelectedCategories();
 
 		// Schedule.
 		var scheduleAt = '';
-		if ($('#aicc-schedule-enabled').is(':checked')) {
-			scheduleAt = $('#aicc-schedule-at').val();
+		if ($('#rayai-schedule-enabled').is(':checked')) {
+			scheduleAt = $('#rayai-schedule-at').val();
 			if (!scheduleAt) {
 				alert('Please select a date and time for scheduling, or uncheck "Schedule for later".');
 				return;
@@ -802,8 +802,8 @@
 		$logBox.empty();
 		$resultCard.hide();
 		$spinner.show();
-		$('#aicc-preview').hide();
-		$('#aicc-view-scheduled').hide();
+		$('#rayai-preview').hide();
+		$('#rayai-view-scheduled').hide();
 
 		// Scroll the page to the progress area so the user can see updates immediately.
 		$('html, body').animate({
@@ -811,12 +811,12 @@
 		}, 300);
 
 		// Step 1 POST data — includes all form fields.
-		var blogStyle = ('blog' === contentType) ? $('#aicc-blog-style').val() : 'standard';
+		var blogStyle = ('blog' === contentType) ? $('#rayai-blog-style').val() : 'standard';
 		var pdfIds    = getSelectedPdfIds();
 
 		var step1Data = {
-			action:       'aicc_create_content',
-			nonce:        aicc.nonce,
+			action:       'rayai_create_content',
+			nonce:        rayai.nonce,
 			step:         1,
 			content_type: contentType,
 			url:          url,
@@ -824,22 +824,22 @@
 			status:       status,
 			schedule_at:  scheduleAt,
 			blog_style:   blogStyle,
-			save_url:     $('#aicc-save-url').is(':checked') ? '1' : '0',
-			linkedin:     $('#aicc-linkedin').is(':checked') ? '1' : '0',
-			instagram:    $('#aicc-instagram').is(':checked') ? '1' : '0',
-			generate_image:      $('#aicc-generate-image').is(':checked') ? '1' : '0',
-			internal_linking:    $('#aicc-internal-linking').is(':checked') ? '1' : '0',
-			competitor_analysis: $('#aicc-competitor-analysis').is(':checked') ? '1' : '0',
-			output_format:       $('#aicc-output-format').val() || 'wordpress',
+			save_url:     $('#rayai-save-url').is(':checked') ? '1' : '0',
+			linkedin:     $('#rayai-linkedin').is(':checked') ? '1' : '0',
+			instagram:    $('#rayai-instagram').is(':checked') ? '1' : '0',
+			generate_image:      $('#rayai-generate-image').is(':checked') ? '1' : '0',
+			internal_linking:    $('#rayai-internal-linking').is(':checked') ? '1' : '0',
+			competitor_analysis: $('#rayai-competitor-analysis').is(':checked') ? '1' : '0',
+			output_format:       $('#rayai-output-format').val() || 'wordpress',
 			'categories[]': categories,
 			'pdf_ids[]':    pdfIds,
 		};
 
 		// If URL was saved, update chips after step 1 succeeds.
-		var savedUrl = ($('#aicc-save-url').is(':checked') && url) ? url : '';
+		var savedUrl = ($('#rayai-save-url').is(':checked') && url) ? url : '';
 
 		// Run step 1, then chain 2 → 3 → 4.
-		aiccIsGenerating = true;
+		rayaiIsGenerating = true;
 		runStep(step1Data, savedUrl);
 	}
 
@@ -851,7 +851,7 @@
 	 */
 	function runStep(postData, savedUrl) {
 		$.ajax({
-			url:      aicc.ajax_url,
+			url:      rayai.ajax_url,
 			type:     'POST',
 			dataType: 'json',
 			data:     postData,
@@ -866,7 +866,7 @@
 						});
 					}
 					var errorMsg = (response.data && response.data.message) ? response.data.message : 'Unknown error';
-					addLog(aicc.i18n.error + ': ' + errorMsg, 'error');
+					addLog(rayai.i18n.error + ': ' + errorMsg, 'error');
 					if (response.data && response.data.debug) {
 						addLog('Debug: ' + response.data.debug, 'error');
 					}
@@ -886,14 +886,14 @@
 				// After step 1: update saved URL chips.
 				if (data.step === 1 && savedUrl) {
 					addSavedUrlsToList(savedUrl);
-					$('#aicc-save-url').prop('checked', false);
+					$('#rayai-save-url').prop('checked', false);
 				}
 
 				// If there's a next step, chain it.
 				if (data.next_step) {
 					runStep({
-						action: 'aicc_create_content',
-						nonce:  aicc.nonce,
+						action: 'rayai_create_content',
+						nonce:  rayai.nonce,
 						step:   data.next_step,
 						job_id: data.job_id,
 					}, null);
@@ -901,16 +901,16 @@
 				}
 
 				// Final step (4) — show results.
-				aiccIsGenerating = false;
+				rayaiIsGenerating = false;
 				$spinner.hide();
-				addLog(aicc.i18n.done, 'success');
+				addLog(rayai.i18n.done, 'success');
 				showResult(data.ai_result, data.wp_result);
 				resetButton();
 			},
 			error: function (xhr, textStatus, errorThrown) {
-				aiccIsGenerating = false;
+				rayaiIsGenerating = false;
 				$spinner.hide();
-				addLog(aicc.i18n.request_failed + ': ' + (errorThrown || textStatus), 'error');
+				addLog(rayai.i18n.request_failed + ': ' + (errorThrown || textStatus), 'error');
 				addLog('HTTP Status: ' + xhr.status + ' ' + xhr.statusText, 'error');
 
 				var raw = xhr.responseText || '';
@@ -945,7 +945,7 @@
 	 * @param {Object} wp WordPress result data.
 	 */
 	function showResult(ai, wp) {
-		var $tbody = $('#aicc-result-table tbody');
+		var $tbody = $('#rayai-result-table tbody');
 		$tbody.empty();
 
 		function addRow(label, value) {
@@ -963,7 +963,7 @@
 				addRow('Prompt', escHtml(ai.prompt));
 			}
 
-			addRow('Status', wp.status === 'publish' ? aicc.i18n.published : aicc.i18n.draft);
+			addRow('Status', wp.status === 'publish' ? rayai.i18n.published : rayai.i18n.draft);
 			addRow('Post ID', escHtml(String(wp.id)));
 			addRow('Title', escHtml(ai.seo_title));
 			addRow('Slug', '<code>' + escHtml(ai.slug) + '</code>');
@@ -975,7 +975,7 @@
 			var tagsHtml = '';
 			if (ai.tags && ai.tags.length) {
 				$.each(ai.tags, function (i, tag) {
-					tagsHtml += '<span class="aicc-tag">' + escHtml(tag) + '</span> ';
+					tagsHtml += '<span class="rayai-tag">' + escHtml(tag) + '</span> ';
 				});
 			} else {
 				tagsHtml = '&mdash;';
@@ -986,7 +986,7 @@
 			var catsHtml = '';
 			if (ai.categories && ai.categories.length) {
 				$.each(ai.categories, function (i, cat) {
-					catsHtml += '<span class="aicc-tag">' + escHtml(cat) + '</span> ';
+					catsHtml += '<span class="rayai-tag">' + escHtml(cat) + '</span> ';
 				});
 			} else {
 				catsHtml = '&mdash;';
@@ -994,26 +994,26 @@
 			addRow('Categories', catsHtml);
 
 			// Yoast.
-			if (aicc.has_yoast) {
+			if (rayai.has_yoast) {
 				addRow('Yoast SEO', wp.yoast
-					? '<span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span> ' + aicc.i18n.updated
-					: aicc.i18n.not_available
+					? '<span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span> ' + rayai.i18n.updated
+					: rayai.i18n.not_available
 				);
 			}
 
 			// AI Provider.
-			addRow('AI Provider', escHtml(aicc.provider.charAt(0).toUpperCase() + aicc.provider.slice(1)) + ' (' + escHtml(aicc.model) + ')');
+			addRow('AI Provider', escHtml(rayai.provider.charAt(0).toUpperCase() + rayai.provider.slice(1)) + ' (' + escHtml(rayai.model) + ')');
 
 			// Featured image options (4 AI-generated thumbnails).
 			if (ai.image_urls && ai.image_urls.length) {
-				var imgHtml = '<div id="aicc-image-options" data-post-id="' + escAttr(String(wp.id)) + '">';
-				imgHtml += '<div class="aicc-image-grid" style="display: grid; grid-template-columns: repeat(2, minmax(200px, 1fr)); gap: 10px; max-width: 700px;">';
+				var imgHtml = '<div id="rayai-image-options" data-post-id="' + escAttr(String(wp.id)) + '">';
+				imgHtml += '<div class="rayai-image-grid" style="display: grid; grid-template-columns: repeat(2, minmax(200px, 1fr)); gap: 10px; max-width: 700px;">';
 				for (var i = 0; i < ai.image_urls.length; i++) {
 					var isSelected = (i === 0);
-					imgHtml += '<div class="aicc-image-option' + (isSelected ? ' selected' : '') + '" data-index="' + i + '" data-url="' + escAttr(ai.image_urls[i]) + '" style="position: relative; cursor: pointer; border: 3px solid ' + (isSelected ? '#2271b1' : 'transparent') + '; border-radius: 6px; overflow: hidden; transition: border-color 0.15s;">' +
+					imgHtml += '<div class="rayai-image-option' + (isSelected ? ' selected' : '') + '" data-index="' + i + '" data-url="' + escAttr(ai.image_urls[i]) + '" style="position: relative; cursor: pointer; border: 3px solid ' + (isSelected ? '#2271b1' : 'transparent') + '; border-radius: 6px; overflow: hidden; transition: border-color 0.15s;">' +
 						'<img src="' + escAttr(ai.image_urls[i]) + '" alt="Option ' + (i + 1) + '" style="width: 100%; height: auto; display: block;" />' +
-						'<div class="aicc-image-badge" style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">' + (i + 1) + '</div>' +
-						(isSelected ? '<div class="aicc-image-check" style="position: absolute; top: 6px; right: 6px; background: #2271b1; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="dashicons dashicons-yes" style="font-size: 16px; width: 16px; height: 16px;"></span></div>' : '') +
+						'<div class="rayai-image-badge" style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">' + (i + 1) + '</div>' +
+						(isSelected ? '<div class="rayai-image-check" style="position: absolute; top: 6px; right: 6px; background: #2271b1; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="dashicons dashicons-yes" style="font-size: 16px; width: 16px; height: 16px;"></span></div>' : '') +
 						'</div>';
 				}
 				imgHtml += '</div>';
@@ -1025,7 +1025,7 @@
 					imgHtml += '<p style="margin: 4px 0 0; font-size: 11px; color: #646970;"><strong>Prompt:</strong> ' + escHtml(ai.image_prompt) + '</p>';
 				}
 				imgHtml += '<p style="margin: 8px 0 0;">' +
-					'<button type="button" class="button button-small aicc-regen-images-btn" data-post-id="' + escAttr(String(wp.id)) + '">' +
+					'<button type="button" class="button button-small rayai-regen-images-btn" data-post-id="' + escAttr(String(wp.id)) + '">' +
 					'<span class="dashicons dashicons-update" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span> Regenerate 4 New Images' +
 					'</button>' +
 					'</p>';
@@ -1033,20 +1033,20 @@
 
 				addRow('Featured Image (4 options)', imgHtml);
 			} else if (wp.featured_image) {
-				var overlayHtml = '<div><img id="aicc-overlay-preview" src="' + escAttr(wp.featured_image) + '" alt="" style="max-width: 600px; height: auto; border: 1px solid #c3c4c7; border-radius: 4px; display: block; margin-bottom: 10px;" /></div>';
+				var overlayHtml = '<div><img id="rayai-overlay-preview" src="' + escAttr(wp.featured_image) + '" alt="" style="max-width: 600px; height: auto; border: 1px solid #c3c4c7; border-radius: 4px; display: block; margin-bottom: 10px;" /></div>';
 
 				// If this is an overlay image, add text editing fields.
 				if (wp.overlay_line1 !== undefined) {
-					overlayHtml += '<div id="aicc-overlay-editor" data-post-id="' + escAttr(String(wp.id)) + '" style="max-width:600px;">';
+					overlayHtml += '<div id="rayai-overlay-editor" data-post-id="' + escAttr(String(wp.id)) + '" style="max-width:600px;">';
 					overlayHtml += '<p style="margin:0 0 6px;"><strong>Edit overlay text:</strong></p>';
 					overlayHtml += '<div style="display:flex;gap:8px;margin-bottom:8px;">';
-					overlayHtml += '<input type="text" id="aicc-overlay-line1" value="' + escAttr(wp.overlay_line1 || '') + '" placeholder="Line 1 (bold)" class="regular-text" style="flex:1;" />';
+					overlayHtml += '<input type="text" id="rayai-overlay-line1" value="' + escAttr(wp.overlay_line1 || '') + '" placeholder="Line 1 (bold)" class="regular-text" style="flex:1;" />';
 					overlayHtml += '</div>';
 					overlayHtml += '<div style="display:flex;gap:8px;margin-bottom:8px;">';
-					overlayHtml += '<input type="text" id="aicc-overlay-line2" value="' + escAttr(wp.overlay_line2 || '') + '" placeholder="Line 2 (italic)" class="regular-text" style="flex:1;" />';
+					overlayHtml += '<input type="text" id="rayai-overlay-line2" value="' + escAttr(wp.overlay_line2 || '') + '" placeholder="Line 2 (italic)" class="regular-text" style="flex:1;" />';
 					overlayHtml += '</div>';
-					overlayHtml += '<button type="button" class="button" id="aicc-regenerate-overlay">Regenerate Image with Custom Text</button>';
-					overlayHtml += ' <span id="aicc-overlay-status" style="margin-left:8px;"></span>';
+					overlayHtml += '<button type="button" class="button" id="rayai-regenerate-overlay">Regenerate Image with Custom Text</button>';
+					overlayHtml += ' <span id="rayai-overlay-status" style="margin-left:8px;"></span>';
 					overlayHtml += '</div>';
 				}
 
@@ -1066,20 +1066,20 @@
 				var liPostId  = wp.id;
 				var hasButtons = !!liPostId;
 
-				var html = '<div id="aicc-result-li-preview" data-post-id="' + escAttr(String(liPostId || '')) + '">' +
+				var html = '<div id="rayai-result-li-preview" data-post-id="' + escAttr(String(liPostId || '')) + '">' +
 					// View mode
-					'<div class="aicc-li-preview-view">' +
-						'<div class="aicc-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 12px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 600px; border-radius: 2px;">' + escHtml(ai.linkedin_commentary) + '</div>' +
+					'<div class="rayai-li-preview-view">' +
+						'<div class="rayai-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 12px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 600px; border-radius: 2px;">' + escHtml(ai.linkedin_commentary) + '</div>' +
 						'<p style="margin: 6px 0 0; font-size: 11px; color: #646970;">' +
-							'<span class="aicc-li-char-count">' + liLen + ' characters</span>' +
+							'<span class="rayai-li-char-count">' + liLen + ' characters</span>' +
 						'</p>';
 
 				if (hasButtons) {
 					html += '<p style="margin: 8px 0 0;">' +
-						'<button type="button" class="button button-small aicc-li-edit-btn" data-post-id="' + escAttr(String(liPostId)) + '">' +
+						'<button type="button" class="button button-small rayai-li-edit-btn" data-post-id="' + escAttr(String(liPostId)) + '">' +
 							'<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span> Edit' +
 						'</button> ' +
-						'<button type="button" class="button button-small aicc-li-regen-btn" data-post-id="' + escAttr(String(liPostId)) + '">' +
+						'<button type="button" class="button button-small rayai-li-regen-btn" data-post-id="' + escAttr(String(liPostId)) + '">' +
 							'<span class="dashicons dashicons-update" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span> Regenerate' +
 						'</button>' +
 					'</p>';
@@ -1089,14 +1089,14 @@
 
 				if (hasButtons) {
 					// Edit mode (hidden by default)
-					html += '<div class="aicc-li-preview-edit" style="display: none;">' +
-						'<textarea class="aicc-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 600px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;">' + escHtml(ai.linkedin_commentary) + '</textarea>' +
+					html += '<div class="rayai-li-preview-edit" style="display: none;">' +
+						'<textarea class="rayai-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 600px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;">' + escHtml(ai.linkedin_commentary) + '</textarea>' +
 						'<p style="margin: 4px 0 0; font-size: 11px; color: #646970;">' +
-							'<span class="aicc-li-edit-count">' + liLen + ' / 2900 characters</span>' +
+							'<span class="rayai-li-edit-count">' + liLen + ' / 2900 characters</span>' +
 						'</p>' +
 						'<p style="margin: 8px 0 0;">' +
-							'<button type="button" class="button button-primary button-small aicc-li-save-btn" data-post-id="' + escAttr(String(liPostId)) + '">Save</button> ' +
-							'<button type="button" class="button button-small aicc-li-cancel-btn" data-post-id="' + escAttr(String(liPostId)) + '">Cancel</button>' +
+							'<button type="button" class="button button-primary button-small rayai-li-save-btn" data-post-id="' + escAttr(String(liPostId)) + '">Save</button> ' +
+							'<button type="button" class="button button-small rayai-li-cancel-btn" data-post-id="' + escAttr(String(liPostId)) + '">Cancel</button>' +
 						'</p>' +
 					'</div>';
 				}
@@ -1122,7 +1122,7 @@
 
 			// Repurpose content.
 			if (wp.id) {
-				var repurposeHtml = '<div id="aicc-repurpose" data-post-id="' + wp.id + '" style="max-width:700px;">';
+				var repurposeHtml = '<div id="rayai-repurpose" data-post-id="' + wp.id + '" style="max-width:700px;">';
 				repurposeHtml += '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">';
 				var formats = [
 					{ key: 'email', label: 'Email Newsletter', icon: 'dashicons-email-alt' },
@@ -1131,25 +1131,25 @@
 					{ key: 'pinterest', label: 'Pinterest', icon: 'dashicons-share' }
 				];
 				for (var f = 0; f < formats.length; f++) {
-					repurposeHtml += '<button type="button" class="button aicc-repurpose-btn" data-format="' + formats[f].key + '">' +
+					repurposeHtml += '<button type="button" class="button rayai-repurpose-btn" data-format="' + formats[f].key + '">' +
 						'<span class="dashicons ' + formats[f].icon + '" style="vertical-align:text-bottom;font-size:16px;width:16px;height:16px;margin-right:4px;"></span>' +
 						formats[f].label + '</button>';
 				}
 				repurposeHtml += '</div>';
-				repurposeHtml += '<div id="aicc-repurpose-result" style="display:none;">';
-				repurposeHtml += '<div style="background:#f6f7f7;border-left:3px solid #2271b1;padding:12px;white-space:pre-wrap;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;border-radius:2px;max-height:400px;overflow:auto;" id="aicc-repurpose-text"></div>';
+				repurposeHtml += '<div id="rayai-repurpose-result" style="display:none;">';
+				repurposeHtml += '<div style="background:#f6f7f7;border-left:3px solid #2271b1;padding:12px;white-space:pre-wrap;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;border-radius:2px;max-height:400px;overflow:auto;" id="rayai-repurpose-text"></div>';
 				repurposeHtml += '<div style="margin-top:8px;">';
-				repurposeHtml += '<button type="button" class="button" id="aicc-repurpose-copy">Copy to Clipboard</button>';
-				repurposeHtml += ' <span id="aicc-repurpose-status" style="margin-left:8px;"></span>';
+				repurposeHtml += '<button type="button" class="button" id="rayai-repurpose-copy">Copy to Clipboard</button>';
+				repurposeHtml += ' <span id="rayai-repurpose-status" style="margin-left:8px;"></span>';
 				repurposeHtml += '</div></div></div>';
 
 				addRow('Repurpose This Content', repurposeHtml);
 			}
 
 			// Set action links.
-			$('#aicc-view-post').attr('href', wp.url);
+			$('#rayai-view-post').attr('href', wp.url);
 			if (wp.edit_url) {
-				$('#aicc-edit-post').attr('href', wp.edit_url).show();
+				$('#rayai-edit-post').attr('href', wp.edit_url).show();
 			}
 
 			// Show "View Scheduled" button when:
@@ -1157,19 +1157,19 @@
 			//  - it was saved as 'future' (scheduled), or
 			//  - LinkedIn sharing was requested (so user can manage LinkedIn share status)
 			if (wp.needs_review || 'future' === wp.status || ai.linkedin_requested) {
-				$('#aicc-view-scheduled').show();
+				$('#rayai-view-scheduled').show();
 			} else {
-				$('#aicc-view-scheduled').hide();
+				$('#rayai-view-scheduled').hide();
 			}
 		} else {
-			addRow(aicc.i18n.error, escHtml(wp.error || 'Unknown error'));
+			addRow(rayai.i18n.error, escHtml(wp.error || 'Unknown error'));
 			if (wp.detail) {
 				addRow('Detail', escHtml(wp.detail));
 			}
 		}
 
 		// Set preview content.
-		$('#aicc-preview').html(ai.content);
+		$('#rayai-preview').html(ai.content);
 
 		$resultCard.show();
 

@@ -10,14 +10,14 @@
  * encodings may produce garbled output. For these cases, the user should
  * paste the text manually.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class AICC_PDF_Extractor {
+class RAYAI_PDF_Extractor {
 
 	/**
 	 * Extract text from a PDF file.

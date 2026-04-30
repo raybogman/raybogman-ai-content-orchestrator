@@ -2,7 +2,7 @@
 /**
  * Settings management.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,35 +10,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class AICC_Settings
+ * Class RAYAI_Settings
  *
  * Handles plugin settings registration and sanitization.
  */
-class AICC_Settings {
+class RAYAI_Settings {
 
 	/**
 	 * Option group name.
 	 *
 	 * @var string
 	 */
-	const OPTION_GROUP = 'aicc_settings';
+	const OPTION_GROUP = 'rayai_settings';
 
 	/**
 	 * Settings page slug.
 	 *
 	 * @var string
 	 */
-	const PAGE_SLUG = 'aicc-settings';
+	const PAGE_SLUG = 'rayai-settings';
 
-	const TAB_GENERAL  = 'aicc-tab-general';
-	const TAB_CONTENT  = 'aicc-tab-content';
-	const TAB_IMAGES   = 'aicc-tab-images';
-	const TAB_THRIVE   = 'aicc-tab-thrive';
-	const TAB_LINKEDIN  = 'aicc-tab-linkedin';
-	const TAB_INSTAGRAM = 'aicc-tab-instagram';
-	const TAB_SCANNER   = 'aicc-tab-scanner';
-	const TAB_FAQ       = 'aicc-tab-faq';
-	const TAB_ABOUT    = 'aicc-tab-about';
+	const TAB_GENERAL  = 'rayai-tab-general';
+	const TAB_CONTENT  = 'rayai-tab-content';
+	const TAB_IMAGES   = 'rayai-tab-images';
+	const TAB_THRIVE   = 'rayai-tab-thrive';
+	const TAB_LINKEDIN  = 'rayai-tab-linkedin';
+	const TAB_INSTAGRAM = 'rayai-tab-instagram';
+	const TAB_SCANNER   = 'rayai-tab-scanner';
+	const TAB_FAQ       = 'rayai-tab-faq';
+	const TAB_ABOUT    = 'rayai-tab-about';
 
 	/**
 	 * Register settings.
@@ -46,158 +46,158 @@ class AICC_Settings {
 	public static function register() {
 		// ── Project Vision Section ──────────────────────────────────
 		add_settings_section(
-			'aicc_project_vision_section',
-			__( 'Project Vision', 'ai-content-orchestrator' ),
+			'rayai_project_vision_section',
+			__( 'Project Vision', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_project_vision_section' ),
 			self::TAB_CONTENT
 		);
 
-		register_setting( 'aicc_settings_content', 'aicc_project_vision', array(
+		register_setting( 'rayai_settings_content', 'rayai_project_vision', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_textarea_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_project_vision',
-			__( 'Baseline Instructions', 'ai-content-orchestrator' ),
+			'rayai_project_vision',
+			__( 'Baseline Instructions', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_textarea_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'          => 'aicc_project_vision',
+				'id'          => 'rayai_project_vision',
 				'rows'        => 8,
-				'placeholder' => __( 'e.g. Always write in a friendly, professional tone. Our brand name is "Acme Corp". Target audience is small business owners...', 'ai-content-orchestrator' ),
-				'description' => __( 'These instructions are automatically included with every AI content generation request. Use this to define your brand voice, tone, audience, or any rules the AI should always follow.', 'ai-content-orchestrator' ),
+				'placeholder' => __( 'e.g. Always write in a friendly, professional tone. Our brand name is "Acme Corp". Target audience is small business owners...', 'rayai-content-orchestrator' ),
+				'description' => __( 'These instructions are automatically included with every AI content generation request. Use this to define your brand voice, tone, audience, or any rules the AI should always follow.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── AI Provider Section ──────────────────────────────────────
 		add_settings_section(
-			'aicc_provider_section',
-			__( 'AI Provider', 'ai-content-orchestrator' ),
+			'rayai_provider_section',
+			__( 'AI Provider', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_provider_section' ),
 			self::TAB_GENERAL
 		);
 
 		// AI Provider selector.
-		register_setting( 'aicc_settings_general', 'aicc_ai_provider', array(
+		register_setting( 'rayai_settings_general', 'rayai_ai_provider', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'claude',
 		) );
 
 		add_settings_field(
-			'aicc_ai_provider',
-			__( 'Active Provider', 'ai-content-orchestrator' ),
+			'rayai_ai_provider',
+			__( 'Active Provider', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_GENERAL,
-			'aicc_provider_section',
+			'rayai_provider_section',
 			array(
-				'id'      => 'aicc_ai_provider',
+				'id'      => 'rayai_ai_provider',
 				'options' => array(
 					'claude' => 'Claude (Anthropic)',
 					'openai' => 'OpenAI (GPT)',
 				),
-				'description' => __( 'Choose which AI provider to use for content generation.', 'ai-content-orchestrator' ),
+				'description' => __( 'Choose which AI provider to use for content generation.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── Claude (Anthropic) Section ──────────────────────────────
 		add_settings_section(
-			'aicc_claude_section',
-			__( 'Claude (Anthropic)', 'ai-content-orchestrator' ),
+			'rayai_claude_section',
+			__( 'Claude (Anthropic)', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_claude_section' ),
 			self::TAB_GENERAL
 		);
 
 		// Anthropic API Key.
-		register_setting( 'aicc_settings_general', 'aicc_anthropic_api_key', array(
+		register_setting( 'rayai_settings_general', 'rayai_anthropic_api_key', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_anthropic_api_key',
-			__( 'Anthropic API Key', 'ai-content-orchestrator' ),
+			'rayai_anthropic_api_key',
+			__( 'Anthropic API Key', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_GENERAL,
-			'aicc_claude_section',
+			'rayai_claude_section',
 			array(
-				'id'          => 'aicc_anthropic_api_key',
+				'id'          => 'rayai_anthropic_api_key',
 				'placeholder' => 'sk-ant-api03-...',
-				'description' => __( 'Your Claude API key. Sign up free at console.anthropic.com to get one.', 'ai-content-orchestrator' ),
+				'description' => __( 'Your Claude API key. Sign up free at console.anthropic.com to get one.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Claude Model.
-		register_setting( 'aicc_settings_general', 'aicc_claude_model', array(
+		register_setting( 'rayai_settings_general', 'rayai_claude_model', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'claude-sonnet-4-6',
 		) );
 
 		add_settings_field(
-			'aicc_claude_model',
-			__( 'Claude Model', 'ai-content-orchestrator' ),
+			'rayai_claude_model',
+			__( 'Claude Model', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_GENERAL,
-			'aicc_claude_section',
+			'rayai_claude_section',
 			array(
-				'id'      => 'aicc_claude_model',
+				'id'      => 'rayai_claude_model',
 				'options' => array(
 					'claude-sonnet-4-6'         => 'Claude Sonnet 4.6 (recommended)',
 					'claude-opus-4-6'           => 'Claude Opus 4.6',
 					'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5',
 				),
-				'description' => __( 'Which Claude model to use. Sonnet is recommended for most users (fast and high quality). Opus is the most capable but slower. Haiku is the fastest and cheapest.', 'ai-content-orchestrator' ),
+				'description' => __( 'Which Claude model to use. Sonnet is recommended for most users (fast and high quality). Opus is the most capable but slower. Haiku is the fastest and cheapest.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── OpenAI Section ──────────────────────────────────────────
 		add_settings_section(
-			'aicc_openai_section',
-			__( 'OpenAI (GPT)', 'ai-content-orchestrator' ),
+			'rayai_openai_section',
+			__( 'OpenAI (GPT)', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_openai_section' ),
 			self::TAB_GENERAL
 		);
 
 		// OpenAI API Key.
-		register_setting( 'aicc_settings_general', 'aicc_openai_api_key', array(
+		register_setting( 'rayai_settings_general', 'rayai_openai_api_key', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_openai_api_key',
-			__( 'OpenAI API Key', 'ai-content-orchestrator' ),
+			'rayai_openai_api_key',
+			__( 'OpenAI API Key', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_GENERAL,
-			'aicc_openai_section',
+			'rayai_openai_section',
 			array(
-				'id'          => 'aicc_openai_api_key',
+				'id'          => 'rayai_openai_api_key',
 				'placeholder' => 'sk-...',
-				'description' => __( 'Your OpenAI API key. Sign up free at platform.openai.com to get one.', 'ai-content-orchestrator' ),
+				'description' => __( 'Your OpenAI API key. Sign up free at platform.openai.com to get one.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// OpenAI Model.
-		register_setting( 'aicc_settings_general', 'aicc_openai_model', array(
+		register_setting( 'rayai_settings_general', 'rayai_openai_model', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'gpt-4o',
 		) );
 
 		add_settings_field(
-			'aicc_openai_model',
-			__( 'OpenAI Model', 'ai-content-orchestrator' ),
+			'rayai_openai_model',
+			__( 'OpenAI Model', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_GENERAL,
-			'aicc_openai_section',
+			'rayai_openai_section',
 			array(
-				'id'      => 'aicc_openai_model',
+				'id'      => 'rayai_openai_model',
 				'options' => array(
 					'gpt-4o'      => 'GPT-4o (recommended)',
 					'gpt-4o-mini' => 'GPT-4o Mini',
@@ -206,76 +206,76 @@ class AICC_Settings {
 					'gpt-4.1-mini' => 'GPT-4.1 Mini',
 					'gpt-4.1-nano' => 'GPT-4.1 Nano',
 				),
-				'description' => __( 'Which OpenAI model to use. GPT-4o is recommended for most users (fast and high quality). Mini and Nano versions are faster and cheaper but less capable.', 'ai-content-orchestrator' ),
+				'description' => __( 'Which OpenAI model to use. GPT-4o is recommended for most users (fast and high quality). Mini and Nano versions are faster and cheaper but less capable.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── Image Provider Section ──────────────────────────────────
 		add_settings_section(
-			'aicc_image_provider_section',
-			__( 'Featured Image Provider', 'ai-content-orchestrator' ),
+			'rayai_image_provider_section',
+			__( 'Featured Image Provider', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_image_provider_section' ),
 			self::TAB_IMAGES
 		);
 
 		// Image Provider selector.
-		register_setting( 'aicc_settings_images', 'aicc_image_provider', array(
+		register_setting( 'rayai_settings_images', 'rayai_image_provider', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'openai',
 		) );
 
 		add_settings_field(
-			'aicc_image_provider',
-			__( 'Image Provider', 'ai-content-orchestrator' ),
+			'rayai_image_provider',
+			__( 'Image Provider', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_IMAGES,
-			'aicc_image_provider_section',
+			'rayai_image_provider_section',
 			array(
-				'id'      => 'aicc_image_provider',
+				'id'      => 'rayai_image_provider',
 				'options' => array(
 					'openai'   => 'OpenAI (DALL-E 3)',
-					'ideogram' => aicc_is_pro() ? 'Ideogram' : 'Ideogram (Enterprise)',
+					'ideogram' => rayai_is_pro() ? 'Ideogram' : 'Ideogram (Enterprise)',
 				),
-				'description' => __( 'Choose which service creates your featured images. OpenAI (DALL-E 3) produces realistic images. Ideogram produces stylized, high-quality images. Each requires its own API key.', 'ai-content-orchestrator' ),
+				'description' => __( 'Choose which service creates your featured images. OpenAI (DALL-E 3) produces realistic images. Ideogram produces stylized, high-quality images. Each requires its own API key.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Ideogram API Key.
-		register_setting( 'aicc_settings_images', 'aicc_ideogram_api_key', array(
+		register_setting( 'rayai_settings_images', 'rayai_ideogram_api_key', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_ideogram_api_key',
-			__( 'Ideogram API Key', 'ai-content-orchestrator' ),
+			'rayai_ideogram_api_key',
+			__( 'Ideogram API Key', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_IMAGES,
-			'aicc_image_provider_section',
+			'rayai_image_provider_section',
 			array(
-				'id'          => 'aicc_ideogram_api_key',
+				'id'          => 'rayai_ideogram_api_key',
 				'placeholder' => 'ig-...',
-				'description' => __( 'Your Ideogram API key. Sign up at ideogram.ai/manage-api to get one.', 'ai-content-orchestrator' ),
+				'description' => __( 'Your Ideogram API key. Sign up at ideogram.ai/manage-api to get one.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Image Visual Style (Ideogram style_type).
-		register_setting( 'aicc_settings_images', 'aicc_image_style', array(
+		register_setting( 'rayai_settings_images', 'rayai_image_style', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'auto',
 		) );
 
 		add_settings_field(
-			'aicc_image_style',
-			__( 'Image Visual Style', 'ai-content-orchestrator' ),
+			'rayai_image_style',
+			__( 'Image Visual Style', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_IMAGES,
-			'aicc_image_provider_section',
+			'rayai_image_provider_section',
 			array(
-				'id'      => 'aicc_image_style',
+				'id'      => 'rayai_image_style',
 				'options' => array(
 					'auto'      => 'Auto (match blog style)',
 					'REALISTIC' => 'Realistic / Photographic',
@@ -283,566 +283,566 @@ class AICC_Settings {
 					'DESIGN'    => 'Design / Graphic',
 					'FICTION'   => 'Fiction / Cinematic',
 				),
-				'description' => __( 'The look and feel of generated images. "Auto" picks the best style based on your blog format (e.g. Storytelling gets cinematic images, Data-Driven gets infographic-style images). Works with both image providers.', 'ai-content-orchestrator' ),
+				'description' => __( 'The look and feel of generated images. "Auto" picks the best style based on your blog format (e.g. Storytelling gets cinematic images, Data-Driven gets infographic-style images). Works with both image providers.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Brand Colors.
-		register_setting( 'aicc_settings_images', 'aicc_brand_colors', array(
+		register_setting( 'rayai_settings_images', 'rayai_brand_colors', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_brand_colors',
-			__( 'Brand Colors', 'ai-content-orchestrator' ),
+			'rayai_brand_colors',
+			__( 'Brand Colors', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_brand_colors_field' ),
 			self::TAB_IMAGES,
-			'aicc_image_provider_section',
+			'rayai_image_provider_section',
 			array(
-				'id'          => 'aicc_brand_colors',
+				'id'          => 'rayai_brand_colors',
 				'placeholder' => '#1a73e8, #34a853, #ea4335',
-				'description' => __( 'Your brand colors as hex codes (e.g. #1a73e8), separated by commas. The AI will try to use these colors in your featured images. Leave empty to let the AI choose. Use the "Scan Theme Colors" button to auto-detect your website\'s colors.', 'ai-content-orchestrator' ),
+				'description' => __( 'Your brand colors as hex codes (e.g. #1a73e8), separated by commas. The AI will try to use these colors in your featured images. Leave empty to let the AI choose. Use the "Scan Theme Colors" button to auto-detect your website\'s colors.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Negative Prompt.
-		register_setting( 'aicc_settings_images', 'aicc_image_negative_prompt', array(
+		register_setting( 'rayai_settings_images', 'rayai_image_negative_prompt', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_textarea_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_image_negative_prompt',
-			__( 'Avoid in Images', 'ai-content-orchestrator' ),
+			'rayai_image_negative_prompt',
+			__( 'Avoid in Images', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_textarea_field' ),
 			self::TAB_IMAGES,
-			'aicc_image_provider_section',
+			'rayai_image_provider_section',
 			array(
-				'id'          => 'aicc_image_negative_prompt',
+				'id'          => 'rayai_image_negative_prompt',
 				'rows'        => 3,
-				'placeholder' => __( 'e.g. clipart, stock photo, generic office, blurry, low quality, text overlay', 'ai-content-orchestrator' ),
-				'description' => __( 'Describe what you do NOT want in your images. For example: clipart, blurry, stock photo, text overlay. The AI will try to avoid these things.', 'ai-content-orchestrator' ),
+				'placeholder' => __( 'e.g. clipart, stock photo, generic office, blurry, low quality, text overlay', 'rayai-content-orchestrator' ),
+				'description' => __( 'Describe what you do NOT want in your images. For example: clipart, blurry, stock photo, text overlay. The AI will try to avoid these things.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── Default Featured Image Section ──────────────────────────
 		add_settings_section(
-			'aicc_default_image_section',
-			__( 'Default Featured Image', 'ai-content-orchestrator' ),
+			'rayai_default_image_section',
+			__( 'Default Featured Image', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_default_image_section' ),
 			self::TAB_IMAGES
 		);
 
-		register_setting( 'aicc_settings_images', 'aicc_default_featured_image', array(
+		register_setting( 'rayai_settings_images', 'rayai_default_featured_image', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 0,
 		) );
 
 		add_settings_field(
-			'aicc_default_featured_image',
-			__( 'Base Image', 'ai-content-orchestrator' ),
+			'rayai_default_featured_image',
+			__( 'Base Image', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_media_upload_field' ),
 			self::TAB_IMAGES,
-			'aicc_default_image_section',
+			'rayai_default_image_section',
 			array(
-				'id'          => 'aicc_default_featured_image',
-				'description' => __( 'Choose a background image from your media library. This image is used as the featured image when AI image generation is turned off. If title overlay is enabled, the blog title is placed on top of this image.', 'ai-content-orchestrator' ),
+				'id'          => 'rayai_default_featured_image',
+				'description' => __( 'Choose a background image from your media library. This image is used as the featured image when AI image generation is turned off. If title overlay is enabled, the blog title is placed on top of this image.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_images', 'aicc_overlay_enabled', array(
+		register_setting( 'rayai_settings_images', 'rayai_overlay_enabled', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_overlay_enabled',
-			__( 'Title Overlay', 'ai-content-orchestrator' ),
+			'rayai_overlay_enabled',
+			__( 'Title Overlay', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_IMAGES,
-			'aicc_default_image_section',
+			'rayai_default_image_section',
 			array(
-				'id'      => 'aicc_overlay_enabled',
+				'id'      => 'rayai_overlay_enabled',
 				'options' => array(
-					'1' => __( 'Enabled — overlay blog title on image', 'ai-content-orchestrator' ),
-					''  => __( 'Disabled', 'ai-content-orchestrator' ),
+					'1' => __( 'Enabled — overlay blog title on image', 'rayai-content-orchestrator' ),
+					''  => __( 'Disabled', 'rayai-content-orchestrator' ),
 				),
-				'description' => __( 'The blog title is automatically split across 2 lines, displayed in uppercase, and centered on your background image. Each post gets its own unique featured image.', 'ai-content-orchestrator' ),
+				'description' => __( 'The blog title is automatically split across 2 lines, displayed in uppercase, and centered on your background image. Each post gets its own unique featured image.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_images', 'aicc_overlay_text_color', array(
+		register_setting( 'rayai_settings_images', 'rayai_overlay_text_color', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '#0d5e50',
 		) );
 
 		add_settings_field(
-			'aicc_overlay_text_color',
-			__( 'Overlay Text Color', 'ai-content-orchestrator' ),
+			'rayai_overlay_text_color',
+			__( 'Overlay Text Color', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_color_field' ),
 			self::TAB_IMAGES,
-			'aicc_default_image_section',
+			'rayai_default_image_section',
 			array(
-				'id'          => 'aicc_overlay_text_color',
+				'id'          => 'rayai_overlay_text_color',
 				'default'     => '#0d5e50',
-				'description' => __( 'Text color for the title overlay. Used for both lines.', 'ai-content-orchestrator' ),
+				'description' => __( 'Text color for the title overlay. Used for both lines.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_images', 'aicc_overlay_font_bold', array(
+		register_setting( 'rayai_settings_images', 'rayai_overlay_font_bold', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 0,
 		) );
 
 		add_settings_field(
-			'aicc_overlay_font_bold',
-			__( 'Bold Font File', 'ai-content-orchestrator' ),
+			'rayai_overlay_font_bold',
+			__( 'Bold Font File', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_media_upload_field' ),
 			self::TAB_IMAGES,
-			'aicc_default_image_section',
+			'rayai_default_image_section',
 			array(
-				'id'          => 'aicc_overlay_font_bold',
-				'button_text' => __( 'Upload Font', 'ai-content-orchestrator' ),
+				'id'          => 'rayai_overlay_font_bold',
+				'button_text' => __( 'Upload Font', 'rayai-content-orchestrator' ),
 				'media_type'  => 'application',
-				'description' => __( 'Upload a font file (.ttf) for the first line of text. We recommend downloading Poppins-Bold.ttf from Google Fonts for a clean, modern look.', 'ai-content-orchestrator' ),
+				'description' => __( 'Upload a font file (.ttf) for the first line of text. We recommend downloading Poppins-Bold.ttf from Google Fonts for a clean, modern look.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_images', 'aicc_overlay_font_italic', array(
+		register_setting( 'rayai_settings_images', 'rayai_overlay_font_italic', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 0,
 		) );
 
 		add_settings_field(
-			'aicc_overlay_font_italic',
-			__( 'Italic Font File', 'ai-content-orchestrator' ),
+			'rayai_overlay_font_italic',
+			__( 'Italic Font File', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_media_upload_field' ),
 			self::TAB_IMAGES,
-			'aicc_default_image_section',
+			'rayai_default_image_section',
 			array(
-				'id'          => 'aicc_overlay_font_italic',
-				'button_text' => __( 'Upload Font', 'ai-content-orchestrator' ),
+				'id'          => 'rayai_overlay_font_italic',
+				'button_text' => __( 'Upload Font', 'rayai-content-orchestrator' ),
 				'media_type'  => 'application',
-				'description' => __( 'Upload a font file (.ttf) for the second line of text. If not set, the bold font is used for both lines.', 'ai-content-orchestrator' ),
+				'description' => __( 'Upload a font file (.ttf) for the second line of text. If not set, the bold font is used for both lines.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Default Output Format (pre-selects the dropdown on Create Content).
-		register_setting( 'aicc_settings_content', 'aicc_default_output_format', array(
+		register_setting( 'rayai_settings_content', 'rayai_default_output_format', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'wordpress',
 		) );
 
 		add_settings_field(
-			'aicc_default_output_format',
-			__( 'Default Output Format', 'ai-content-orchestrator' ),
+			'rayai_default_output_format',
+			__( 'Default Output Format', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'      => 'aicc_default_output_format',
+				'id'      => 'rayai_default_output_format',
 				'options' => array(
 					'wordpress' => 'WordPress (Standard)',
 					'thrive'    => 'Thrive Architect',
 				),
-				'description' => __( 'The output format that is selected by default when you create new content. You can still change it for each individual post.', 'ai-content-orchestrator' ),
+				'description' => __( 'The output format that is selected by default when you create new content. You can still change it for each individual post.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Internal Linking toggle.
-		register_setting( 'aicc_settings_content', 'aicc_internal_linking', array(
+		register_setting( 'rayai_settings_content', 'rayai_internal_linking', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '1',
 		) );
 
 		add_settings_field(
-			'aicc_internal_linking',
-			__( 'Automatic Internal Links', 'ai-content-orchestrator' ),
+			'rayai_internal_linking',
+			__( 'Automatic Internal Links', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'      => 'aicc_internal_linking',
+				'id'      => 'rayai_internal_linking',
 				'options' => array(
-					'1' => __( 'Enabled — automatically add internal links', 'ai-content-orchestrator' ),
-					'0' => __( 'Disabled', 'ai-content-orchestrator' ),
+					'1' => __( 'Enabled — automatically add internal links', 'rayai-content-orchestrator' ),
+					'0' => __( 'Disabled', 'rayai-content-orchestrator' ),
 				),
-				'description' => __( 'After the AI writes the article, the plugin scans your existing published posts and adds 3-5 relevant links within the text. This boosts your SEO by strengthening your site\'s internal link structure — no manual effort needed.', 'ai-content-orchestrator' ),
+				'description' => __( 'After the AI writes the article, the plugin scans your existing published posts and adds 3-5 relevant links within the text. This boosts your SEO by strengthening your site\'s internal link structure — no manual effort needed.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Max internal links.
-		register_setting( 'aicc_settings_content', 'aicc_max_internal_links', array(
+		register_setting( 'rayai_settings_content', 'rayai_max_internal_links', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 5,
 		) );
 
 		add_settings_field(
-			'aicc_max_internal_links',
-			__( 'Max Internal Links', 'ai-content-orchestrator' ),
+			'rayai_max_internal_links',
+			__( 'Max Internal Links', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'          => 'aicc_max_internal_links',
+				'id'          => 'rayai_max_internal_links',
 				'min'         => 1,
 				'max'         => 15,
-				'description' => __( 'Maximum number of internal links to add per post. 3-5 is recommended for most blogs. Too many links can look spammy.', 'ai-content-orchestrator' ),
+				'description' => __( 'Maximum number of internal links to add per post. 3-5 is recommended for most blogs. Too many links can look spammy.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Link Placement.
-		register_setting( 'aicc_settings_content', 'aicc_link_placement', array(
+		register_setting( 'rayai_settings_content', 'rayai_link_placement', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'both',
 		) );
 
 		add_settings_field(
-			'aicc_link_placement',
-			__( 'Link Placement', 'ai-content-orchestrator' ),
+			'rayai_link_placement',
+			__( 'Link Placement', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'      => 'aicc_link_placement',
+				'id'      => 'rayai_link_placement',
 				'options' => array(
-					'both'   => __( 'Inline + Related Articles section (recommended)', 'ai-content-orchestrator' ),
-					'inline' => __( 'Inline only — links spread naturally through paragraphs', 'ai-content-orchestrator' ),
-					'footer' => __( 'Related Articles section only — clean list at the bottom', 'ai-content-orchestrator' ),
+					'both'   => __( 'Inline + Related Articles section (recommended)', 'rayai-content-orchestrator' ),
+					'inline' => __( 'Inline only — links spread naturally through paragraphs', 'rayai-content-orchestrator' ),
+					'footer' => __( 'Related Articles section only — clean list at the bottom', 'rayai-content-orchestrator' ),
 				),
-				'description' => __( 'Where to place internal links. "Inline" inserts links within your paragraphs (best for SEO). "Related Articles" adds a styled section at the bottom (best for readers). "Both" tries inline first and puts remaining links in the footer section.', 'ai-content-orchestrator' ),
+				'description' => __( 'Where to place internal links. "Inline" inserts links within your paragraphs (best for SEO). "Related Articles" adds a styled section at the bottom (best for readers). "Both" tries inline first and puts remaining links in the footer section.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Competitor Gap Analysis toggle.
-		register_setting( 'aicc_settings_content', 'aicc_competitor_analysis', array(
+		register_setting( 'rayai_settings_content', 'rayai_competitor_analysis', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '0',
 		) );
 
 		add_settings_field(
-			'aicc_competitor_analysis',
-			__( 'Competitor Gap Analysis', 'ai-content-orchestrator' ),
+			'rayai_competitor_analysis',
+			__( 'Competitor Gap Analysis', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'      => 'aicc_competitor_analysis',
+				'id'      => 'rayai_competitor_analysis',
 				'options' => array(
-					'1' => __( 'Enabled — analyze competitors for every post', 'ai-content-orchestrator' ),
-					'0' => __( 'Disabled', 'ai-content-orchestrator' ),
+					'1' => __( 'Enabled — analyze competitors for every post', 'rayai-content-orchestrator' ),
+					'0' => __( 'Disabled', 'rayai-content-orchestrator' ),
 				),
-				'description' => __( 'Before writing, the AI scans what top Google results typically cover for your keyword, then identifies 2-3 topics they miss. Your article is written to fill those gaps — giving you a competitive edge. You can still toggle this per post on the Create Content page.', 'ai-content-orchestrator' ),
+				'description' => __( 'Before writing, the AI scans what top Google results typically cover for your keyword, then identifies 2-3 topics they miss. Your article is written to fill those gaps — giving you a competitive edge. You can still toggle this per post on the Create Content page.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Publishing Schedule defaults.
-		register_setting( 'aicc_settings_content', 'aicc_schedule_frequency', array(
+		register_setting( 'rayai_settings_content', 'rayai_schedule_frequency', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => 'none',
 		) );
 
 		add_settings_field(
-			'aicc_schedule_frequency',
-			__( 'Publishing Schedule', 'ai-content-orchestrator' ),
+			'rayai_schedule_frequency',
+			__( 'Publishing Schedule', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'      => 'aicc_schedule_frequency',
+				'id'      => 'rayai_schedule_frequency',
 				'options' => array(
-					'none'      => __( 'No schedule — publish dates set manually', 'ai-content-orchestrator' ),
-					'daily'     => __( 'Daily — one post per day', 'ai-content-orchestrator' ),
-					'every2'    => __( 'Every 2 days', 'ai-content-orchestrator' ),
-					'every3'    => __( 'Every 3 days', 'ai-content-orchestrator' ),
-					'weekly'    => __( 'Weekly — one post per week', 'ai-content-orchestrator' ),
-					'biweekly'  => __( 'Bi-weekly — every two weeks', 'ai-content-orchestrator' ),
-					'monthly'   => __( 'Monthly — one post per month', 'ai-content-orchestrator' ),
+					'none'      => __( 'No schedule — publish dates set manually', 'rayai-content-orchestrator' ),
+					'daily'     => __( 'Daily — one post per day', 'rayai-content-orchestrator' ),
+					'every2'    => __( 'Every 2 days', 'rayai-content-orchestrator' ),
+					'every3'    => __( 'Every 3 days', 'rayai-content-orchestrator' ),
+					'weekly'    => __( 'Weekly — one post per week', 'rayai-content-orchestrator' ),
+					'biweekly'  => __( 'Bi-weekly — every two weeks', 'rayai-content-orchestrator' ),
+					'monthly'   => __( 'Monthly — one post per month', 'rayai-content-orchestrator' ),
 				),
-				'description' => __( 'Default publishing frequency for Bulk Create. When set, the "Auto-fill Dates" button on the Bulk Create page uses this interval. You can override it per batch.', 'ai-content-orchestrator' ),
+				'description' => __( 'Default publishing frequency for Bulk Create. When set, the "Auto-fill Dates" button on the Bulk Create page uses this interval. You can override it per batch.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_content', 'aicc_schedule_time', array(
+		register_setting( 'rayai_settings_content', 'rayai_schedule_time', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '09:00',
 		) );
 
 		add_settings_field(
-			'aicc_schedule_time',
-			__( 'Default Publish Time', 'ai-content-orchestrator' ),
+			'rayai_schedule_time',
+			__( 'Default Publish Time', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_time_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'          => 'aicc_schedule_time',
-				'description' => __( 'The time of day to publish posts. Research shows Tuesday-Wednesday between 9-11 AM gets the most organic traffic.', 'ai-content-orchestrator' ),
+				'id'          => 'rayai_schedule_time',
+				'description' => __( 'The time of day to publish posts. Research shows Tuesday-Wednesday between 9-11 AM gets the most organic traffic.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_content', 'aicc_schedule_skip_weekends', array(
+		register_setting( 'rayai_settings_content', 'rayai_schedule_skip_weekends', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '0',
 		) );
 
 		add_settings_field(
-			'aicc_schedule_skip_weekends',
-			__( 'Skip Weekends', 'ai-content-orchestrator' ),
+			'rayai_schedule_skip_weekends',
+			__( 'Skip Weekends', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'      => 'aicc_schedule_skip_weekends',
+				'id'      => 'rayai_schedule_skip_weekends',
 				'options' => array(
-					'1' => __( 'Yes — only schedule on weekdays (Mon-Fri)', 'ai-content-orchestrator' ),
-					'0' => __( 'No — include weekends', 'ai-content-orchestrator' ),
+					'1' => __( 'Yes — only schedule on weekdays (Mon-Fri)', 'rayai-content-orchestrator' ),
+					'0' => __( 'No — include weekends', 'rayai-content-orchestrator' ),
 				),
-				'description' => __( 'When enabled, auto-filled dates skip Saturday and Sunday.', 'ai-content-orchestrator' ),
+				'description' => __( 'When enabled, auto-filled dates skip Saturday and Sunday.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Publish notification email.
-		register_setting( 'aicc_settings_content', 'aicc_notify_emails', array(
+		register_setting( 'rayai_settings_content', 'rayai_notify_emails', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_notify_emails',
-			__( 'Publish Notification', 'ai-content-orchestrator' ),
+			'rayai_notify_emails',
+			__( 'Publish Notification', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_text_field' ),
 			self::TAB_CONTENT,
-			'aicc_project_vision_section',
+			'rayai_project_vision_section',
 			array(
-				'id'          => 'aicc_notify_emails',
+				'id'          => 'rayai_notify_emails',
 				'placeholder' => 'you@example.com, team@example.com',
-				'description' => __( 'Email addresses to notify when a scheduled post is published (comma-separated). Leave empty to disable notifications.', 'ai-content-orchestrator' ),
+				'description' => __( 'Email addresses to notify when a scheduled post is published (comma-separated). Leave empty to disable notifications.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── Thrive Architect Section ────────────────────────────────
 		add_settings_section(
-			'aicc_thrive_section',
-			__( 'Thrive Architect', 'ai-content-orchestrator' ),
+			'rayai_thrive_section',
+			__( 'Thrive Architect', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_thrive_section' ),
 			self::TAB_THRIVE
 		);
 
-		register_setting( 'aicc_settings_thrive', 'aicc_thrive_toc_id', array(
+		register_setting( 'rayai_settings_thrive', 'rayai_thrive_toc_id', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 0,
 		) );
 
 		add_settings_field(
-			'aicc_thrive_toc_id',
-			__( 'Table of Contents', 'ai-content-orchestrator' ),
+			'rayai_thrive_toc_id',
+			__( 'Table of Contents', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_thrive_library_dropdown' ),
 			self::TAB_THRIVE,
-			'aicc_thrive_section',
+			'rayai_thrive_section',
 			array(
-				'id'          => 'aicc_thrive_toc_id',
-				'description' => __( 'Choose a saved Table of Contents block from your Thrive library. It will be placed right after the introduction paragraph. Leave empty if you don\'t want a Table of Contents.', 'ai-content-orchestrator' ),
+				'id'          => 'rayai_thrive_toc_id',
+				'description' => __( 'Choose a saved Table of Contents block from your Thrive library. It will be placed right after the introduction paragraph. Leave empty if you don\'t want a Table of Contents.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_thrive', 'aicc_thrive_cta_symbol_id', array(
+		register_setting( 'rayai_settings_thrive', 'rayai_thrive_cta_symbol_id', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 0,
 		) );
 
 		add_settings_field(
-			'aicc_thrive_cta_symbol_id',
-			__( 'Call-to-Action Button', 'ai-content-orchestrator' ),
+			'rayai_thrive_cta_symbol_id',
+			__( 'Call-to-Action Button', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_thrive_library_dropdown' ),
 			self::TAB_THRIVE,
-			'aicc_thrive_section',
+			'rayai_thrive_section',
 			array(
-				'id'          => 'aicc_thrive_cta_symbol_id',
-				'description' => __( 'Choose a saved call-to-action block from your Thrive library (e.g. your "Download" button). It appears after the Table of Contents and at the bottom of every post.', 'ai-content-orchestrator' ),
+				'id'          => 'rayai_thrive_cta_symbol_id',
+				'description' => __( 'Choose a saved call-to-action block from your Thrive library (e.g. your "Download" button). It appears after the Table of Contents and at the bottom of every post.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── Scanner Section ─────────────────────────────────────────
 		add_settings_section(
-			'aicc_scanner_section',
-			__( 'Website Scanner', 'ai-content-orchestrator' ),
+			'rayai_scanner_section',
+			__( 'Website Scanner', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_scanner_section' ),
 			self::TAB_SCANNER
 		);
 
 		// Max Pages to Crawl.
-		register_setting( 'aicc_settings_scanner', 'aicc_max_pages_to_crawl', array(
+		register_setting( 'rayai_settings_scanner', 'rayai_max_pages_to_crawl', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 25,
 		) );
 
 		add_settings_field(
-			'aicc_max_pages_to_crawl',
-			__( 'Max Pages to Scan', 'ai-content-orchestrator' ),
+			'rayai_max_pages_to_crawl',
+			__( 'Max Pages to Scan', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_SCANNER,
-			'aicc_scanner_section',
+			'rayai_scanner_section',
 			array(
-				'id'          => 'aicc_max_pages_to_crawl',
+				'id'          => 'rayai_max_pages_to_crawl',
 				'min'         => 1,
 				'max'         => 100,
-				'description' => __( 'How many pages the plugin will scan from the website you enter. More pages = more context for the AI, but takes longer.', 'ai-content-orchestrator' ),
+				'description' => __( 'How many pages the plugin will scan from the website you enter. More pages = more context for the AI, but takes longer.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Max Context Characters.
-		register_setting( 'aicc_settings_scanner', 'aicc_max_context_chars', array(
+		register_setting( 'rayai_settings_scanner', 'rayai_max_context_chars', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 18000,
 		) );
 
 		add_settings_field(
-			'aicc_max_context_chars',
-			__( 'Max Text to Send to AI', 'ai-content-orchestrator' ),
+			'rayai_max_context_chars',
+			__( 'Max Text to Send to AI', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_SCANNER,
-			'aicc_scanner_section',
+			'rayai_scanner_section',
 			array(
-				'id'          => 'aicc_max_context_chars',
+				'id'          => 'rayai_max_context_chars',
 				'min'         => 5000,
 				'max'         => 50000,
 				'step'        => 1000,
-				'description' => __( 'Maximum amount of scanned text (in characters) sent to the AI. Higher values give the AI more context but cost more. Default (18,000) works well for most sites.', 'ai-content-orchestrator' ),
+				'description' => __( 'Maximum amount of scanned text (in characters) sent to the AI. Higher values give the AI more context but cost more. Default (18,000) works well for most sites.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// Request Timeout.
-		register_setting( 'aicc_settings_scanner', 'aicc_request_timeout', array(
+		register_setting( 'rayai_settings_scanner', 'rayai_request_timeout', array(
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'default'           => 15,
 		) );
 
 		add_settings_field(
-			'aicc_request_timeout',
-			__( 'Scan Timeout (seconds)', 'ai-content-orchestrator' ),
+			'rayai_request_timeout',
+			__( 'Scan Timeout (seconds)', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_SCANNER,
-			'aicc_scanner_section',
+			'rayai_scanner_section',
 			array(
-				'id'          => 'aicc_request_timeout',
+				'id'          => 'rayai_request_timeout',
 				'min'         => 5,
 				'max'         => 60,
-				'description' => __( 'How long (in seconds) to wait for each page to load during scanning. Increase this if scanning fails on slow websites.', 'ai-content-orchestrator' ),
+				'description' => __( 'How long (in seconds) to wait for each page to load during scanning. Increase this if scanning fails on slow websites.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// ── LinkedIn Section ────────────────────────────────────────
 		add_settings_section(
-			'aicc_linkedin_section',
-			__( 'LinkedIn Integration', 'ai-content-orchestrator' ),
+			'rayai_linkedin_section',
+			__( 'LinkedIn Integration', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_linkedin_section' ),
 			self::TAB_LINKEDIN
 		);
 
 		// LinkedIn Client ID.
-		register_setting( 'aicc_settings_linkedin', 'aicc_linkedin_client_id', array(
+		register_setting( 'rayai_settings_linkedin', 'rayai_linkedin_client_id', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_linkedin_client_id',
-			__( 'LinkedIn Client ID', 'ai-content-orchestrator' ),
+			'rayai_linkedin_client_id',
+			__( 'LinkedIn Client ID', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_text_field' ),
 			self::TAB_LINKEDIN,
-			'aicc_linkedin_section',
+			'rayai_linkedin_section',
 			array(
-				'id'          => 'aicc_linkedin_client_id',
+				'id'          => 'rayai_linkedin_client_id',
 				'placeholder' => '86abc123def456',
-				'description' => __( 'From your LinkedIn Developer App.', 'ai-content-orchestrator' ),
+				'description' => __( 'From your LinkedIn Developer App.', 'rayai-content-orchestrator' ),
 			)
 		);
 
 		// LinkedIn Client Secret.
-		register_setting( 'aicc_settings_linkedin', 'aicc_linkedin_client_secret', array(
+		register_setting( 'rayai_settings_linkedin', 'rayai_linkedin_client_secret', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_linkedin_client_secret',
-			__( 'LinkedIn Client Secret', 'ai-content-orchestrator' ),
+			'rayai_linkedin_client_secret',
+			__( 'LinkedIn Client Secret', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_LINKEDIN,
-			'aicc_linkedin_section',
+			'rayai_linkedin_section',
 			array(
-				'id'          => 'aicc_linkedin_client_secret',
+				'id'          => 'rayai_linkedin_client_secret',
 				'placeholder' => '',
-				'description' => __( 'From your LinkedIn Developer App. Keep this secret.', 'ai-content-orchestrator' ),
+				'description' => __( 'From your LinkedIn Developer App. Keep this secret.', 'rayai-content-orchestrator' ),
 			)
 		);
 		// ── Instagram Section ───────────────────────────────────
 		add_settings_section(
-			'aicc_instagram_section',
-			__( 'Instagram', 'ai-content-orchestrator' ),
+			'rayai_instagram_section',
+			__( 'Instagram', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_instagram_section' ),
 			self::TAB_INSTAGRAM
 		);
 
-		register_setting( 'aicc_settings_instagram', 'aicc_instagram_app_id', array(
+		register_setting( 'rayai_settings_instagram', 'rayai_instagram_app_id', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_instagram_app_id',
-			__( 'Meta App ID', 'ai-content-orchestrator' ),
+			'rayai_instagram_app_id',
+			__( 'Meta App ID', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_text_field' ),
 			self::TAB_INSTAGRAM,
-			'aicc_instagram_section',
+			'rayai_instagram_section',
 			array(
-				'id'          => 'aicc_instagram_app_id',
+				'id'          => 'rayai_instagram_app_id',
 				'placeholder' => '',
-				'description' => __( 'From your Meta App at developers.facebook.com. This is the App ID, not the Instagram account ID.', 'ai-content-orchestrator' ),
+				'description' => __( 'From your Meta App at developers.facebook.com. This is the App ID, not the Instagram account ID.', 'rayai-content-orchestrator' ),
 			)
 		);
 
-		register_setting( 'aicc_settings_instagram', 'aicc_instagram_app_secret', array(
+		register_setting( 'rayai_settings_instagram', 'rayai_instagram_app_secret', array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'aicc_instagram_app_secret',
-			__( 'Meta App Secret', 'ai-content-orchestrator' ),
+			'rayai_instagram_app_secret',
+			__( 'Meta App Secret', 'rayai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_INSTAGRAM,
-			'aicc_instagram_section',
+			'rayai_instagram_section',
 			array(
-				'id'          => 'aicc_instagram_app_secret',
+				'id'          => 'rayai_instagram_app_secret',
 				'placeholder' => '',
-				'description' => __( 'From your Meta App. Keep this secret.', 'ai-content-orchestrator' ),
+				'description' => __( 'From your Meta App. Keep this secret.', 'rayai-content-orchestrator' ),
 			)
 		);
 	}
@@ -850,23 +850,23 @@ class AICC_Settings {
 	/* ── Section descriptions ──────────────────────────────────── */
 
 	public static function render_project_vision_section() {
-		echo '<p>' . esc_html__( 'Set instructions that the AI always follows when writing content. These are included with every content generation.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Set instructions that the AI always follows when writing content. These are included with every content generation.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_provider_section() {
-		echo '<p>' . esc_html__( 'Select which AI provider to use for generating content. You can configure both and switch between them.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Select which AI provider to use for generating content. You can configure both and switch between them.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_claude_section() {
-		echo '<p>' . esc_html__( 'Configure your Anthropic Claude API credentials and model.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your Anthropic Claude API credentials and model.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_openai_section() {
-		echo '<p>' . esc_html__( 'Configure your OpenAI API credentials and model.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your OpenAI API credentials and model.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_default_image_section() {
-		echo '<p>' . esc_html__( 'Configure a default featured image that is used when AI image generation is not enabled. Optionally overlay the blog title on the image to create a unique branded featured image for each post.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure a default featured image that is used when AI image generation is not enabled. Optionally overlay the blog title on the image to create a unique branded featured image for each post.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	/**
@@ -874,7 +874,7 @@ class AICC_Settings {
 	 */
 	public static function render_media_upload_field( $args ) {
 		$value       = (int) get_option( $args['id'], 0 );
-		$button_text = isset( $args['button_text'] ) ? $args['button_text'] : __( 'Select Image', 'ai-content-orchestrator' );
+		$button_text = isset( $args['button_text'] ) ? $args['button_text'] : __( 'Select Image', 'rayai-content-orchestrator' );
 		$description = isset( $args['description'] ) ? $args['description'] : '';
 		$preview_url = '';
 		$file_name   = '';
@@ -892,21 +892,21 @@ class AICC_Settings {
 		printf( '<input type="hidden" id="%s" name="%s" value="%d" />', $field_id, $field_id, $value );
 
 		printf(
-			'<button type="button" class="button aicc-media-upload-btn" data-target="%s">%s</button>',
+			'<button type="button" class="button rayai-media-upload-btn" data-target="%s">%s</button>',
 			esc_attr( $field_id ),
 			esc_html( $button_text )
 		);
 
 		if ( $value > 0 ) {
 			printf(
-				' <button type="button" class="button aicc-media-remove-btn" data-target="%s">%s</button>',
+				' <button type="button" class="button rayai-media-remove-btn" data-target="%s">%s</button>',
 				esc_attr( $field_id ),
-				esc_html__( 'Remove', 'ai-content-orchestrator' )
+				esc_html__( 'Remove', 'rayai-content-orchestrator' )
 			);
 		}
 
 		// Preview area.
-		echo '<div class="aicc-media-preview" data-target="' . esc_attr( $field_id ) . '" style="margin-top:8px;">';
+		echo '<div class="rayai-media-preview" data-target="' . esc_attr( $field_id ) . '" style="margin-top:8px;">';
 		if ( ! empty( $preview_url ) ) {
 			if ( preg_match( '/\.(jpe?g|png|gif|webp|svg)$/i', $preview_url ) ) {
 				printf( '<img src="%s" style="max-width:300px;max-height:150px;border:1px solid #ccc;border-radius:4px;" />', esc_url( $preview_url ) );
@@ -931,16 +931,16 @@ class AICC_Settings {
 			?>
 			<script>
 			jQuery(document).ready(function($) {
-				$('.aicc-media-upload-btn').on('click', function(e) {
+				$('.rayai-media-upload-btn').on('click', function(e) {
 					e.preventDefault();
 					var $btn    = $(this);
 					var target  = $btn.data('target');
 					var $input  = $('#' + target);
-					var $preview = $('.aicc-media-preview[data-target="' + target + '"]');
+					var $preview = $('.rayai-media-preview[data-target="' + target + '"]');
 
 					var frame = wp.media({
-						title: '<?php echo esc_js( __( 'Select or Upload', 'ai-content-orchestrator' ) ); ?>',
-						button: { text: '<?php echo esc_js( __( 'Use This', 'ai-content-orchestrator' ) ); ?>' },
+						title: '<?php echo esc_js( __( 'Select or Upload', 'rayai-content-orchestrator' ) ); ?>',
+						button: { text: '<?php echo esc_js( __( 'Use This', 'rayai-content-orchestrator' ) ); ?>' },
 						multiple: false
 					});
 
@@ -954,19 +954,19 @@ class AICC_Settings {
 							$preview.html('<span class="dashicons dashicons-media-default" style="vertical-align:text-bottom;"></span> <code>' + attachment.filename + '</code> (#' + attachment.id + ')');
 						}
 						// Show remove button.
-						if (!$btn.next('.aicc-media-remove-btn').length) {
-							$btn.after(' <button type="button" class="button aicc-media-remove-btn" data-target="' + target + '"><?php echo esc_js( __( 'Remove', 'ai-content-orchestrator' ) ); ?></button>');
+						if (!$btn.next('.rayai-media-remove-btn').length) {
+							$btn.after(' <button type="button" class="button rayai-media-remove-btn" data-target="' + target + '"><?php echo esc_js( __( 'Remove', 'rayai-content-orchestrator' ) ); ?></button>');
 						}
 					});
 
 					frame.open();
 				});
 
-				$(document).on('click', '.aicc-media-remove-btn', function(e) {
+				$(document).on('click', '.rayai-media-remove-btn', function(e) {
 					e.preventDefault();
 					var target = $(this).data('target');
 					$('#' + target).val('0');
-					$('.aicc-media-preview[data-target="' + target + '"]').empty();
+					$('.rayai-media-preview[data-target="' + target + '"]').empty();
 					$(this).remove();
 				});
 			});
@@ -1019,8 +1019,8 @@ class AICC_Settings {
 	}
 
 	public static function render_thrive_section() {
-		echo '<p>' . esc_html__( 'Settings for Thrive Architect integration. When Thrive Architect is selected as the output format, each heading, paragraph, and list becomes its own editable block in Thrive\'s visual editor.', 'ai-content-orchestrator' ) . '</p>';
-		echo '<p>' . esc_html__( 'Choose a saved Thrive block to use as your call-to-action. It appears in two places: right after the Table of Contents and at the bottom of every post.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Settings for Thrive Architect integration. When Thrive Architect is selected as the output format, each heading, paragraph, and list becomes its own editable block in Thrive\'s visual editor.', 'rayai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Choose a saved Thrive block to use as your call-to-action. It appears in two places: right after the Table of Contents and at the bottom of every post.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	/**
@@ -1032,7 +1032,7 @@ class AICC_Settings {
 	public static function render_thrive_library_dropdown( $args ) {
 		$value       = (int) get_option( $args['id'], 0 );
 		$description = isset( $args['description'] ) ? $args['description'] : '';
-		$groups      = class_exists( 'AICC_Thrive_Converter' ) ? AICC_Thrive_Converter::get_available_library_items() : array();
+		$groups      = class_exists( 'RAYAI_Thrive_Converter' ) ? RAYAI_Thrive_Converter::get_available_library_items() : array();
 
 		$total = 0;
 		foreach ( $groups as $items ) {
@@ -1044,7 +1044,7 @@ class AICC_Settings {
 			printf(
 				'<option value="0" %s>%s</option>',
 				selected( $value, 0, false ),
-				esc_html__( '— None —', 'ai-content-orchestrator' )
+				esc_html__( '— None —', 'rayai-content-orchestrator' )
 			);
 			foreach ( $groups as $group_label => $items ) {
 				if ( empty( $items ) ) {
@@ -1077,19 +1077,19 @@ class AICC_Settings {
 	}
 
 	public static function render_image_provider_section() {
-		echo '<p>' . esc_html__( 'Choose which AI service creates your blog\'s featured images, and configure its settings.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Choose which AI service creates your blog\'s featured images, and configure its settings.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_scanner_section() {
-		echo '<p>' . esc_html__( 'Control how the plugin scans websites. When you enter a URL on the Create Content page, the plugin reads pages from that website to give the AI useful background information.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Control how the plugin scans websites. When you enter a URL on the Create Content page, the plugin reads pages from that website to give the AI useful background information.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_linkedin_section() {
-		echo '<p>' . esc_html__( 'Connect your LinkedIn account to automatically share your blog posts when they are published. Follow the setup guide below to connect your account.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Connect your LinkedIn account to automatically share your blog posts when they are published. Follow the setup guide below to connect your account.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_instagram_section() {
-		echo '<p>' . esc_html__( 'Connect your Instagram Business account to automatically share posts with a featured image and AI-generated caption when they are published.', 'ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Connect your Instagram Business account to automatically share posts with a featured image and AI-generated caption when they are published.', 'rayai-content-orchestrator' ) . '</p>';
 	}
 
 	/* ── Field renderers ───────────────────────────────────────── */
@@ -1219,14 +1219,14 @@ class AICC_Settings {
 		);
 
 		echo '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">';
-		echo '<div id="aicc-brand-swatches" style="display:flex; gap:4px; flex-wrap:wrap;">';
+		echo '<div id="rayai-brand-swatches" style="display:flex; gap:4px; flex-wrap:wrap;">';
 
 		if ( ! empty( $value ) ) {
 			$colors = array_map( 'trim', explode( ',', $value ) );
 			foreach ( $colors as $color ) {
 				if ( preg_match( '/^#[0-9a-fA-F]{3,6}$/', $color ) ) {
 					printf(
-						'<span class="aicc-color-swatch aicc-color-selected" data-color="%1$s" style="display:inline-block;width:28px;height:28px;background:%1$s;border:3px solid #2271b1;border-radius:4px;cursor:pointer;position:relative;" title="%1$s"><span style="position:absolute;bottom:-2px;right:-2px;background:#2271b1;color:#fff;width:12px;height:12px;border-radius:50%%;font-size:9px;line-height:12px;text-align:center;">&#10003;</span></span>',
+						'<span class="rayai-color-swatch rayai-color-selected" data-color="%1$s" style="display:inline-block;width:28px;height:28px;background:%1$s;border:3px solid #2271b1;border-radius:4px;cursor:pointer;position:relative;" title="%1$s"><span style="position:absolute;bottom:-2px;right:-2px;background:#2271b1;color:#fff;width:12px;height:12px;border-radius:50%%;font-size:9px;line-height:12px;text-align:center;">&#10003;</span></span>',
 						esc_attr( $color )
 					);
 				}
@@ -1234,19 +1234,19 @@ class AICC_Settings {
 		}
 
 		echo '</div>';
-		echo ' <button type="button" class="button" id="aicc-scan-theme-colors">';
+		echo ' <button type="button" class="button" id="rayai-scan-theme-colors">';
 		echo '<span class="dashicons dashicons-art" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; margin-right:4px;"></span>';
-		esc_html_e( 'Scan Theme Colors', 'ai-content-orchestrator' );
+		esc_html_e( 'Scan Theme Colors', 'rayai-content-orchestrator' );
 		echo '</button>';
-		echo '<span style="color:#787c82; font-size:12px;" id="aicc-color-count">';
+		echo '<span style="color:#787c82; font-size:12px;" id="rayai-color-count">';
 		if ( ! empty( $value ) ) {
    /* translators: %s: dynamic value */
-			printf( esc_html__( '%d/4 selected', 'ai-content-orchestrator' ), intval( min( count( array_filter( $colors ) ), 4 ) ) );
+			printf( esc_html__( '%d/4 selected', 'rayai-content-orchestrator' ), intval( min( count( array_filter( $colors ) ), 4 ) ) );
 		}
 		echo '</span>';
 		echo '</div>';
 
-		echo '<div id="aicc-scan-colors-result" style="margin-top:8px;"></div>';
+		echo '<div id="rayai-scan-colors-result" style="margin-top:8px;"></div>';
 
 		if ( ! empty( $args['description'] ) ) {
 			printf( '<p class="description">%s</p>', wp_kses( $args['description'], array( 'strong' => array(), 'em' => array(), 'a' => array( 'href' => array() ) ) ) );
@@ -1256,76 +1256,76 @@ class AICC_Settings {
 	/* ── Getters ───────────────────────────────────────────────── */
 
 	public static function get_project_vision() {
-		return trim( get_option( 'aicc_project_vision', '' ) );
+		return trim( get_option( 'rayai_project_vision', '' ) );
 	}
 
 	public static function get_ai_provider() {
-		return get_option( 'aicc_ai_provider', 'claude' );
+		return get_option( 'rayai_ai_provider', 'claude' );
 	}
 
 	public static function get_anthropic_api_key() {
-		return get_option( 'aicc_anthropic_api_key', '' );
+		return get_option( 'rayai_anthropic_api_key', '' );
 	}
 
 	public static function get_claude_model() {
-		return get_option( 'aicc_claude_model', 'claude-sonnet-4-6' );
+		return get_option( 'rayai_claude_model', 'claude-sonnet-4-6' );
 	}
 
 	public static function get_openai_api_key() {
-		return get_option( 'aicc_openai_api_key', '' );
+		return get_option( 'rayai_openai_api_key', '' );
 	}
 
 	public static function get_openai_model() {
-		return get_option( 'aicc_openai_model', 'gpt-4o' );
+		return get_option( 'rayai_openai_model', 'gpt-4o' );
 	}
 
 	public static function is_internal_linking_enabled() {
-		return '1' === get_option( 'aicc_internal_linking', '1' );
+		return '1' === get_option( 'rayai_internal_linking', '1' );
 	}
 
 	public static function get_max_internal_links() {
-		$max = (int) get_option( 'aicc_max_internal_links', 5 );
-		if ( ! aicc_is_pro() ) {
+		$max = (int) get_option( 'rayai_max_internal_links', 5 );
+		if ( ! rayai_is_pro() ) {
 			return min( $max, 3 );
 		}
 		return $max;
 	}
 
 	public static function get_default_output_format() {
-		$format = get_option( 'aicc_default_output_format', 'wordpress' );
-		if ( 'thrive' === $format && ! aicc_is_pro() ) {
+		$format = get_option( 'rayai_default_output_format', 'wordpress' );
+		if ( 'thrive' === $format && ! rayai_is_pro() ) {
 			return 'wordpress';
 		}
 		return $format;
 	}
 
 	public static function get_link_placement() {
-		if ( ! aicc_is_pro() ) {
+		if ( ! rayai_is_pro() ) {
 			return 'inline';
 		}
-		return get_option( 'aicc_link_placement', 'both' );
+		return get_option( 'rayai_link_placement', 'both' );
 	}
 
 	public static function get_schedule_frequency() {
-		if ( ! aicc_is_pro() ) {
+		if ( ! rayai_is_pro() ) {
 			return 'none';
 		}
-		return get_option( 'aicc_schedule_frequency', 'none' );
+		return get_option( 'rayai_schedule_frequency', 'none' );
 	}
 
 	public static function get_schedule_time() {
-		return get_option( 'aicc_schedule_time', '09:00' );
+		return get_option( 'rayai_schedule_time', '09:00' );
 	}
 
 	public static function get_schedule_skip_weekends() {
-		return '1' === get_option( 'aicc_schedule_skip_weekends', '0' );
+		return '1' === get_option( 'rayai_schedule_skip_weekends', '0' );
 	}
 
 	public static function get_notify_emails() {
-		if ( ! aicc_is_pro() ) {
+		if ( ! rayai_is_pro() ) {
 			return array();
 		}
-		$value = get_option( 'aicc_notify_emails', '' );
+		$value = get_option( 'rayai_notify_emails', '' );
 		if ( empty( $value ) ) {
 			return array();
 		}
@@ -1333,57 +1333,57 @@ class AICC_Settings {
 	}
 
 	public static function get_competitor_analysis_enabled() {
-		return '1' === get_option( 'aicc_competitor_analysis', '0' );
+		return '1' === get_option( 'rayai_competitor_analysis', '0' );
 	}
 
 	public static function get_default_featured_image() {
-		return (int) get_option( 'aicc_default_featured_image', 0 );
+		return (int) get_option( 'rayai_default_featured_image', 0 );
 	}
 
 	public static function is_overlay_enabled() {
-		return '1' === get_option( 'aicc_overlay_enabled', '' );
+		return '1' === get_option( 'rayai_overlay_enabled', '' );
 	}
 
 	public static function get_overlay_text_color() {
-		return get_option( 'aicc_overlay_text_color', '#0d5e50' );
+		return get_option( 'rayai_overlay_text_color', '#0d5e50' );
 	}
 
 	public static function get_overlay_font_bold_path() {
-		$id = (int) get_option( 'aicc_overlay_font_bold', 0 );
+		$id = (int) get_option( 'rayai_overlay_font_bold', 0 );
 		return $id > 0 ? get_attached_file( $id ) : '';
 	}
 
 	public static function get_overlay_font_italic_path() {
-		$id = (int) get_option( 'aicc_overlay_font_italic', 0 );
+		$id = (int) get_option( 'rayai_overlay_font_italic', 0 );
 		return $id > 0 ? get_attached_file( $id ) : '';
 	}
 
 	public static function get_thrive_toc_id() {
-		return (int) get_option( 'aicc_thrive_toc_id', 0 );
+		return (int) get_option( 'rayai_thrive_toc_id', 0 );
 	}
 
 	public static function get_thrive_cta_symbol_id() {
-		return (int) get_option( 'aicc_thrive_cta_symbol_id', 0 );
+		return (int) get_option( 'rayai_thrive_cta_symbol_id', 0 );
 	}
 
 	public static function get_image_provider() {
-		$provider = get_option( 'aicc_image_provider', 'openai' );
-		if ( 'ideogram' === $provider && ! aicc_is_pro() ) {
+		$provider = get_option( 'rayai_image_provider', 'openai' );
+		if ( 'ideogram' === $provider && ! rayai_is_pro() ) {
 			return 'openai';
 		}
 		return $provider;
 	}
 
 	public static function get_ideogram_api_key() {
-		return get_option( 'aicc_ideogram_api_key', '' );
+		return get_option( 'rayai_ideogram_api_key', '' );
 	}
 
 	public static function get_image_style() {
-		return get_option( 'aicc_image_style', 'auto' );
+		return get_option( 'rayai_image_style', 'auto' );
 	}
 
 	public static function get_brand_colors() {
-		$raw = trim( get_option( 'aicc_brand_colors', '' ) );
+		$raw = trim( get_option( 'rayai_brand_colors', '' ) );
 		if ( empty( $raw ) ) {
 			return array();
 		}
@@ -1395,7 +1395,7 @@ class AICC_Settings {
 	}
 
 	public static function get_image_negative_prompt() {
-		return trim( get_option( 'aicc_image_negative_prompt', '' ) );
+		return trim( get_option( 'rayai_image_negative_prompt', '' ) );
 	}
 
 	/**
@@ -1423,15 +1423,15 @@ class AICC_Settings {
 	}
 
 	public static function get_max_pages() {
-		return (int) get_option( 'aicc_max_pages_to_crawl', 25 );
+		return (int) get_option( 'rayai_max_pages_to_crawl', 25 );
 	}
 
 	public static function get_max_context_chars() {
-		return (int) get_option( 'aicc_max_context_chars', 18000 );
+		return (int) get_option( 'rayai_max_context_chars', 18000 );
 	}
 
 	public static function get_request_timeout() {
-		return (int) get_option( 'aicc_request_timeout', 15 );
+		return (int) get_option( 'rayai_request_timeout', 15 );
 	}
 
 	/**
@@ -1471,7 +1471,7 @@ class AICC_Settings {
 	 * @return array Array of URL strings.
 	 */
 	public static function get_saved_urls() {
-		$urls = get_option( 'aicc_saved_urls', array() );
+		$urls = get_option( 'rayai_saved_urls', array() );
 		if ( ! is_array( $urls ) ) {
 			return array();
 		}
@@ -1496,7 +1496,7 @@ class AICC_Settings {
 		if ( ! in_array( $url, $urls, true ) ) {
 			$urls[] = $url;
 			sort( $urls );
-			update_option( 'aicc_saved_urls', $urls );
+			update_option( 'rayai_saved_urls', $urls );
 		}
 		return true;
 	}
@@ -1515,7 +1515,7 @@ class AICC_Settings {
 		} ) );
 
 		if ( count( $new ) !== count( $urls ) ) {
-			update_option( 'aicc_saved_urls', $new );
+			update_option( 'rayai_saved_urls', $new );
 			return true;
 		}
 		return false;
@@ -1528,15 +1528,15 @@ class AICC_Settings {
 	 */
 	public static function get_tabs() {
 		return array(
-			'general'  => __( 'General', 'ai-content-orchestrator' ),
-			'content'  => __( 'Content', 'ai-content-orchestrator' ),
-			'images'   => __( 'Images', 'ai-content-orchestrator' ),
-			'thrive'   => __( 'Thrive Architect (Beta)', 'ai-content-orchestrator' ),
-			'linkedin'  => __( 'LinkedIn', 'ai-content-orchestrator' ),
-			'instagram' => __( 'Instagram', 'ai-content-orchestrator' ),
-			'scanner'  => __( 'Scanner', 'ai-content-orchestrator' ),
-			'faq'      => __( 'FAQ', 'ai-content-orchestrator' ),
-			'about'    => __( 'About', 'ai-content-orchestrator' ),
+			'general'  => __( 'General', 'rayai-content-orchestrator' ),
+			'content'  => __( 'Content', 'rayai-content-orchestrator' ),
+			'images'   => __( 'Images', 'rayai-content-orchestrator' ),
+			'thrive'   => __( 'Thrive Architect (Beta)', 'rayai-content-orchestrator' ),
+			'linkedin'  => __( 'LinkedIn', 'rayai-content-orchestrator' ),
+			'instagram' => __( 'Instagram', 'rayai-content-orchestrator' ),
+			'scanner'  => __( 'Scanner', 'rayai-content-orchestrator' ),
+			'faq'      => __( 'FAQ', 'rayai-content-orchestrator' ),
+			'about'    => __( 'About', 'rayai-content-orchestrator' ),
 		);
 	}
 
@@ -1548,52 +1548,52 @@ class AICC_Settings {
 	public static function get_tab_options() {
 		return array(
 			'general' => array(
-				'aicc_ai_provider',
-				'aicc_anthropic_api_key',
-				'aicc_claude_model',
-				'aicc_openai_api_key',
-				'aicc_openai_model',
+				'rayai_ai_provider',
+				'rayai_anthropic_api_key',
+				'rayai_claude_model',
+				'rayai_openai_api_key',
+				'rayai_openai_model',
 			),
 			'content' => array(
-				'aicc_project_vision',
-				'aicc_default_output_format',
-				'aicc_internal_linking',
-				'aicc_max_internal_links',
-				'aicc_link_placement',
-				'aicc_competitor_analysis',
-				'aicc_schedule_frequency',
-				'aicc_schedule_time',
-				'aicc_schedule_skip_weekends',
-				'aicc_notify_emails',
+				'rayai_project_vision',
+				'rayai_default_output_format',
+				'rayai_internal_linking',
+				'rayai_max_internal_links',
+				'rayai_link_placement',
+				'rayai_competitor_analysis',
+				'rayai_schedule_frequency',
+				'rayai_schedule_time',
+				'rayai_schedule_skip_weekends',
+				'rayai_notify_emails',
 			),
 			'images' => array(
-				'aicc_image_provider',
-				'aicc_ideogram_api_key',
-				'aicc_image_style',
-				'aicc_brand_colors',
-				'aicc_image_negative_prompt',
-				'aicc_default_featured_image',
-				'aicc_overlay_enabled',
-				'aicc_overlay_text_color',
-				'aicc_overlay_font_bold',
-				'aicc_overlay_font_italic',
+				'rayai_image_provider',
+				'rayai_ideogram_api_key',
+				'rayai_image_style',
+				'rayai_brand_colors',
+				'rayai_image_negative_prompt',
+				'rayai_default_featured_image',
+				'rayai_overlay_enabled',
+				'rayai_overlay_text_color',
+				'rayai_overlay_font_bold',
+				'rayai_overlay_font_italic',
 			),
 			'thrive' => array(
-				'aicc_thrive_toc_id',
-				'aicc_thrive_cta_symbol_id',
+				'rayai_thrive_toc_id',
+				'rayai_thrive_cta_symbol_id',
 			),
 			'scanner' => array(
-				'aicc_max_pages_to_crawl',
-				'aicc_max_context_chars',
-				'aicc_request_timeout',
+				'rayai_max_pages_to_crawl',
+				'rayai_max_context_chars',
+				'rayai_request_timeout',
 			),
 			'linkedin' => array(
-				'aicc_linkedin_client_id',
-				'aicc_linkedin_client_secret',
+				'rayai_linkedin_client_id',
+				'rayai_linkedin_client_secret',
 			),
 			'instagram' => array(
-				'aicc_instagram_app_id',
-				'aicc_instagram_app_secret',
+				'rayai_instagram_app_id',
+				'rayai_instagram_app_secret',
 			),
 		);
 	}
@@ -1602,13 +1602,13 @@ class AICC_Settings {
 	 * Handle custom settings save (bypasses options.php).
 	 */
 	public static function handle_save() {
-		if ( empty( $_POST['aicc_save_tab'] ) || empty( $_POST['aicc_settings_nonce'] ) ) {
+		if ( empty( $_POST['rayai_save_tab'] ) || empty( $_POST['rayai_settings_nonce'] ) ) {
 			return;
 		}
 
-		$tab = sanitize_text_field( wp_unslash( $_POST['aicc_save_tab'] ) );
+		$tab = sanitize_text_field( wp_unslash( $_POST['rayai_save_tab'] ) );
 
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['aicc_settings_nonce'] ) ), 'aicc_save_settings_' . $tab ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rayai_settings_nonce'] ) ), 'rayai_save_settings_' . $tab ) ) {
 			return;
 		}
 
@@ -1636,7 +1636,7 @@ class AICC_Settings {
 
 		$redirect = add_query_arg(
 			array(
-				'page'             => 'aicc-settings',
+				'page'             => 'rayai-settings',
 				'tab'              => $tab,
 				'settings-updated' => 'true',
 			),

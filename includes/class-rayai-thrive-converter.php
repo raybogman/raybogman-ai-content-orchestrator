@@ -15,14 +15,14 @@
  *   - TOC entries generated dynamically from actual headings, with
  *     `data-css` values taken from the template's `data-heading-style`
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class AICC_Thrive_Converter {
+class RAYAI_Thrive_Converter {
 
 	/**
 	 * Counter used to generate unique heading IDs for a single conversion.
@@ -58,11 +58,11 @@ class AICC_Thrive_Converter {
 
 		$dom = new DOMDocument( '1.0', 'UTF-8' );
 		libxml_use_internal_errors( true );
-		$wrapped = '<?xml encoding="UTF-8"><div id="aicc-thrive-root">' . $html . '</div>';
+		$wrapped = '<?xml encoding="UTF-8"><div id="rayai-thrive-root">' . $html . '</div>';
 		$dom->loadHTML( $wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		libxml_clear_errors();
 
-		$root = $dom->getElementById( 'aicc-thrive-root' );
+		$root = $dom->getElementById( 'rayai-thrive-root' );
 		if ( ! $root ) {
 			return $html;
 		}
@@ -282,7 +282,7 @@ class AICC_Thrive_Converter {
 	 * @return string Content with TOC inserted, or original content if no TOC configured.
 	 */
 	public static function insert_toc_after_intro( $content ) {
-		$toc_id = (int) AICC_Settings::get_thrive_toc_id();
+		$toc_id = (int) RAYAI_Settings::get_thrive_toc_id();
 		if ( $toc_id <= 0 ) {
 			return $content;
 		}
@@ -316,7 +316,7 @@ class AICC_Thrive_Converter {
 		// Insert the CTA block right after the TOC (same button also
 		// appears at the bottom via append_cta).
 		$cta_after_toc = '';
-		$cta_id = (int) AICC_Settings::get_thrive_cta_symbol_id();
+		$cta_id = (int) RAYAI_Settings::get_thrive_cta_symbol_id();
 		if ( $cta_id > 0 ) {
 			$cta_after_toc = self::build_library_reference( $cta_id );
 			if ( ! empty( $cta_after_toc ) ) {
@@ -341,7 +341,7 @@ class AICC_Thrive_Converter {
 	 * @return string Content with CTA heading + block appended.
 	 */
 	public static function append_cta( $ai_content ) {
-		$cta_id = (int) AICC_Settings::get_thrive_cta_symbol_id();
+		$cta_id = (int) RAYAI_Settings::get_thrive_cta_symbol_id();
 		if ( $cta_id <= 0 ) {
 			return $ai_content;
 		}
@@ -618,11 +618,11 @@ class AICC_Thrive_Converter {
 		update_post_meta( $post_id, 'tve_save_post', time() );
 
 		// Inject CSS from Thrive user templates (TOC styling, button colors, etc.).
-		self::inject_user_template_css( $post_id, (int) AICC_Settings::get_thrive_toc_id() );
-		self::inject_user_template_css( $post_id, (int) AICC_Settings::get_thrive_cta_symbol_id() );
+		self::inject_user_template_css( $post_id, (int) RAYAI_Settings::get_thrive_toc_id() );
+		self::inject_user_template_css( $post_id, (int) RAYAI_Settings::get_thrive_cta_symbol_id() );
 
 		// Mark this post as AICC-generated in Thrive mode so we can identify it later.
-		update_post_meta( $post_id, '_aicc_thrive_generated', '1' );
+		update_post_meta( $post_id, '_rayai_thrive_generated', '1' );
 	}
 
 	/**

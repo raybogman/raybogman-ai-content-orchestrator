@@ -5,7 +5,7 @@
  * Each style provides a unique content generation prompt tailored to a specific
  * blog format. These are based on SEO and content marketing best practices.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,12 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class AICC_Styles
+ * Class RAYAI_Styles
  *
  * Defines available blog post styles with their display metadata and
  * AI content generation prompts.
  */
-class AICC_Styles {
+class RAYAI_Styles {
 
 	/**
 	 * Get all available blog styles.
@@ -29,8 +29,8 @@ class AICC_Styles {
 		return array(
 
 			'standard' => array(
-				'name'        => __( 'Standard Blog Post', 'ai-content-orchestrator' ),
-				'description' => __( 'Well-rounded article with introduction, table of contents, key sections, and FAQ. Good all-purpose format.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Standard Blog Post', 'rayai-content-orchestrator' ),
+				'description' => __( 'Well-rounded article with introduction, table of contents, key sections, and FAQ. Good all-purpose format.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-admin-post',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -56,8 +56,8 @@ class AICC_Styles {
 			),
 
 			'how-to' => array(
-				'name'        => __( 'How-To Guide', 'ai-content-orchestrator' ),
-				'description' => __( 'Step-by-step instructions. Optimized for featured snippets and "how to" search queries.', 'ai-content-orchestrator' ),
+				'name'        => __( 'How-To Guide', 'rayai-content-orchestrator' ),
+				'description' => __( 'Step-by-step instructions. Optimized for featured snippets and "how to" search queries.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-editor-ol',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -84,8 +84,8 @@ class AICC_Styles {
 			),
 
 			'listicle' => array(
-				'name'        => __( 'Listicle', 'ai-content-orchestrator' ),
-				'description' => __( 'Numbered list format (e.g., "10 Best..."). Highly scannable with 36% higher CTR in search results.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Listicle', 'rayai-content-orchestrator' ),
+				'description' => __( 'Numbered list format (e.g., "10 Best..."). Highly scannable with 36% higher CTR in search results.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-list-view',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -112,8 +112,8 @@ class AICC_Styles {
 			),
 
 			'ultimate-guide' => array(
-				'name'        => __( 'Ultimate Guide', 'ai-content-orchestrator' ),
-				'description' => __( 'Comprehensive deep-dive pillar content. Ranks for hundreds of long-tail keywords and builds topical authority.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Ultimate Guide', 'rayai-content-orchestrator' ),
+				'description' => __( 'Comprehensive deep-dive pillar content. Ranks for hundreds of long-tail keywords and builds topical authority.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-book',
 				'target_words' => '2500-4000',
 				'prompt'      => implode( "\n", array(
@@ -141,8 +141,8 @@ class AICC_Styles {
 			),
 
 			'comparison' => array(
-				'name'        => __( 'Comparison / Versus', 'ai-content-orchestrator' ),
-				'description' => __( '"X vs Y" format. Captures high-intent decision-stage searches with structured comparisons.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Comparison / Versus', 'rayai-content-orchestrator' ),
+				'description' => __( '"X vs Y" format. Captures high-intent decision-stage searches with structured comparisons.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-columns',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -168,8 +168,8 @@ class AICC_Styles {
 			),
 
 			'case-study' => array(
-				'name'        => __( 'Case Study', 'ai-content-orchestrator' ),
-				'description' => __( 'Real-world success story with data. Builds trust and credibility. Great for conversions and backlinks.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Case Study', 'rayai-content-orchestrator' ),
+				'description' => __( 'Real-world success story with data. Builds trust and credibility. Great for conversions and backlinks.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-chart-bar',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -197,8 +197,8 @@ class AICC_Styles {
 			),
 
 			'problem-solution' => array(
-				'name'        => __( 'Problem-Solution', 'ai-content-orchestrator' ),
-				'description' => __( 'Identifies a pain point, then provides the fix. Directly matches search intent for problem-based queries.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Problem-Solution', 'rayai-content-orchestrator' ),
+				'description' => __( 'Identifies a pain point, then provides the fix. Directly matches search intent for problem-based queries.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-lightbulb',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -225,8 +225,8 @@ class AICC_Styles {
 			),
 
 			'beginners-guide' => array(
-				'name'        => __( 'Beginner\'s Guide', 'ai-content-orchestrator' ),
-				'description' => __( 'Entry-level explainer. Captures "what is" and "how to start" top-of-funnel search traffic.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Beginner\'s Guide', 'rayai-content-orchestrator' ),
+				'description' => __( 'Entry-level explainer. Captures "what is" and "how to start" top-of-funnel search traffic.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-welcome-learn-more',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -256,8 +256,8 @@ class AICC_Styles {
 			),
 
 			'data-driven' => array(
-				'name'        => __( 'Data-Driven / Research', 'ai-content-orchestrator' ),
-				'description' => __( 'Statistics and research-backed analysis. Natural link magnet — content with data gets 2x more backlinks.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Data-Driven / Research', 'rayai-content-orchestrator' ),
+				'description' => __( 'Statistics and research-backed analysis. Natural link magnet — content with data gets 2x more backlinks.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-chart-area',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -285,8 +285,8 @@ class AICC_Styles {
 			),
 
 			'storytelling' => array(
-				'name'        => __( 'Storytelling / Narrative', 'ai-content-orchestrator' ),
-				'description' => __( 'Personal or brand narrative. High engagement — stories are 22x more memorable than facts alone.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Storytelling / Narrative', 'rayai-content-orchestrator' ),
+				'description' => __( 'Personal or brand narrative. High engagement — stories are 22x more memorable than facts alone.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-format-status',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -313,8 +313,8 @@ class AICC_Styles {
 			),
 
 			'opinion' => array(
-				'name'        => __( 'Opinion / Thought Leadership', 'ai-content-orchestrator' ),
-				'description' => __( 'Expert perspective with a strong take. Builds authority, sparks discussion, and drives social shares.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Opinion / Thought Leadership', 'rayai-content-orchestrator' ),
+				'description' => __( 'Expert perspective with a strong take. Builds authority, sparks discussion, and drives social shares.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-megaphone',
 				'target_words' => '1000-1500',
 				'prompt'      => implode( "\n", array(
@@ -341,8 +341,8 @@ class AICC_Styles {
 			),
 
 			'checklist' => array(
-				'name'        => __( 'Checklist', 'ai-content-orchestrator' ),
-				'description' => __( 'Actionable to-do list. High utility format that drives saves, bookmarks, and return visits.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Checklist', 'rayai-content-orchestrator' ),
+				'description' => __( 'Actionable to-do list. High utility format that drives saves, bookmarks, and return visits.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-yes-alt',
 				'target_words' => '1000-1500',
 				'prompt'      => implode( "\n", array(
@@ -367,8 +367,8 @@ class AICC_Styles {
 				) ),
 			),
 			'recipe' => array(
-				'name'        => __( 'Recipe', 'ai-content-orchestrator' ),
-				'description' => __( 'SEO-optimized recipe format with structured data hints. Targets rich snippets, "how to make" queries, and Google Recipe carousel.', 'ai-content-orchestrator' ),
+				'name'        => __( 'Recipe', 'rayai-content-orchestrator' ),
+				'description' => __( 'SEO-optimized recipe format with structured data hints. Targets rich snippets, "how to make" queries, and Google Recipe carousel.', 'rayai-content-orchestrator' ),
 				'icon'        => 'dashicons-carrot',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -482,7 +482,7 @@ class AICC_Styles {
 		$free_keys  = array( 'standard', 'how-to', 'listicle', 'beginners-guide' );
 		$output     = array();
 		foreach ( $styles as $key => $style ) {
-			if ( ! aicc_is_pro() && ! in_array( $key, $free_keys, true ) ) {
+			if ( ! rayai_is_pro() && ! in_array( $key, $free_keys, true ) ) {
 				continue;
 			}
 			$output[] = array(

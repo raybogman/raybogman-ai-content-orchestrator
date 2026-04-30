@@ -2,7 +2,7 @@
 /**
  * LinkedIn integration — OAuth 2.0 and posting.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,11 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class AICC_LinkedIn
+ * Class RAYAI_LinkedIn
  *
  * Handles LinkedIn OAuth 2.0 authentication, token management, and posting.
  */
-class AICC_LinkedIn {
+class RAYAI_LinkedIn {
 
 	const AUTH_URL  = 'https://www.linkedin.com/oauth/v2/authorization';
 	const TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
@@ -36,7 +36,7 @@ class AICC_LinkedIn {
 	 * @return string
 	 */
 	public static function get_redirect_uri() {
-		return admin_url( 'admin.php?page=aicc-settings&aicc_linkedin_callback=1' );
+		return admin_url( 'admin.php?page=rayai-settings&rayai_linkedin_callback=1' );
 	}
 
 	/**
@@ -54,8 +54,8 @@ class AICC_LinkedIn {
 			$scopes = self::SCOPES;
 		}
 
-		$state = wp_create_nonce( 'aicc_linkedin_oauth' );
-		set_transient( 'aicc_linkedin_oauth_state', $state, 600 );
+		$state = wp_create_nonce( 'rayai_linkedin_oauth' );
+		set_transient( 'rayai_linkedin_oauth_state', $state, 600 );
 
 		// Build URL manually — LinkedIn requires %20 for scope separators
 		// and add_query_arg may encode spaces as + which LinkedIn rejects.
@@ -78,11 +78,11 @@ class AICC_LinkedIn {
 	 */
 	public static function handle_callback( $code, $state ) {
 		// Validate state.
-		$saved_state = get_transient( 'aicc_linkedin_oauth_state' );
+		$saved_state = get_transient( 'rayai_linkedin_oauth_state' );
 		if ( empty( $saved_state ) || $state !== $saved_state ) {
-			return new WP_Error( 'invalid_state', __( 'Invalid OAuth state. Please try again.', 'ai-content-orchestrator' ) );
+			return new WP_Error( 'invalid_state', __( 'Invalid OAuth state. Please try again.', 'rayai-content-orchestrator' ) );
 		}
-		delete_transient( 'aicc_linkedin_oauth_state' );
+		delete_transient( 'rayai_linkedin_oauth_state' );
 
 		// Exchange code for tokens.
 		$response = wp_remote_post( self::TOKEN_URL, array(
@@ -119,17 +119,17 @@ class AICC_LinkedIn {
 			$token_data['refresh_token_expires_at'] = time() + intval( $body['refresh_token_expires_in'] );
 		}
 
-		update_option( 'aicc_linkedin_tokens', $token_data );
+		update_option( 'rayai_linkedin_tokens', $token_data );
 
 		// Store granted scopes for diagnostics (LinkedIn returns this in the response).
 		if ( ! empty( $body['scope'] ) ) {
-			update_option( 'aicc_linkedin_scopes', $body['scope'] );
+			update_option( 'rayai_linkedin_scopes', $body['scope'] );
 		}
 
 		// Fetch and store user profile.
 		$profile = self::fetch_profile( $body['access_token'] );
 		if ( ! is_wp_error( $profile ) ) {
-			update_option( 'aicc_linkedin_profile', $profile );
+			update_option( 'rayai_linkedin_profile', $profile );
 		}
 
 		return true;
@@ -170,7 +170,7 @@ class AICC_LinkedIn {
 	 * @return string|false Access token or false if unavailable.
 	 */
 	public static function get_access_token() {
-		$tokens = get_option( 'aicc_linkedin_tokens', array() );
+		$tokens = get_option( 'rayai_linkedin_tokens', array() );
 		if ( empty( $tokens['access_token'] ) ) {
 			return false;
 		}
@@ -216,8 +216,8 @@ class AICC_LinkedIn {
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( empty( $body['access_token'] ) ) {
 			// Clear stored tokens — refresh failed, user needs to re-auth.
-			delete_option( 'aicc_linkedin_tokens' );
-			delete_option( 'aicc_linkedin_profile' );
+			delete_option( 'rayai_linkedin_tokens' );
+			delete_option( 'rayai_linkedin_profile' );
 			return new WP_Error( 'refresh_failed', 'LinkedIn token refresh failed. Please reconnect.' );
 		}
 
@@ -230,7 +230,7 @@ class AICC_LinkedIn {
 			$token_data['refresh_token_expires_at'] = time() + intval( $body['refresh_token_expires_in'] );
 		}
 
-		update_option( 'aicc_linkedin_tokens', $token_data );
+		update_option( 'rayai_linkedin_tokens', $token_data );
 
 		return $body['access_token'];
 	}
@@ -247,7 +247,7 @@ class AICC_LinkedIn {
 			return new WP_Error( 'not_connected', 'LinkedIn not connected or token expired.' );
 		}
 
-		$profile = get_option( 'aicc_linkedin_profile', array() );
+		$profile = get_option( 'rayai_linkedin_profile', array() );
 		if ( empty( $profile['person_urn'] ) ) {
 			return new WP_Error( 'no_profile', 'LinkedIn profile not found. Please reconnect.' );
 		}
@@ -259,7 +259,7 @@ class AICC_LinkedIn {
 
 		// Build commentary: use AI-generated LinkedIn summary if available,
 		// otherwise fall back to meta description, otherwise a default.
-		$ai_commentary = get_post_meta( $post_id, '_aicc_linkedin_commentary', true );
+		$ai_commentary = get_post_meta( $post_id, '_rayai_linkedin_commentary', true );
 		if ( ! empty( $ai_commentary ) ) {
 			$commentary = $ai_commentary;
 		} elseif ( ! empty( $desc ) ) {
@@ -356,7 +356,7 @@ class AICC_LinkedIn {
 		);
 
 		// Store the granted scopes for debugging.
-		$granted_scopes = get_option( 'aicc_linkedin_scopes', '' );
+		$granted_scopes = get_option( 'rayai_linkedin_scopes', '' );
 
 		$response = wp_remote_post( self::POSTS_URL, array(
 			'timeout' => 30,
@@ -386,7 +386,7 @@ class AICC_LinkedIn {
 		}
 
 		// Store that this post was shared to LinkedIn.
-		update_post_meta( $post_id, '_aicc_linkedin_shared', time() );
+		update_post_meta( $post_id, '_rayai_linkedin_shared', time() );
 
 		return true;
 	}
@@ -494,16 +494,16 @@ class AICC_LinkedIn {
 	 * @return array
 	 */
 	public static function get_profile() {
-		return get_option( 'aicc_linkedin_profile', array() );
+		return get_option( 'rayai_linkedin_profile', array() );
 	}
 
 	/**
 	 * Disconnect LinkedIn — remove tokens and profile.
 	 */
 	public static function disconnect() {
-		delete_option( 'aicc_linkedin_tokens' );
-		delete_option( 'aicc_linkedin_profile' );
-		delete_option( 'aicc_linkedin_scopes' );
+		delete_option( 'rayai_linkedin_tokens' );
+		delete_option( 'rayai_linkedin_profile' );
+		delete_option( 'rayai_linkedin_scopes' );
 	}
 
 	/**
@@ -512,7 +512,7 @@ class AICC_LinkedIn {
 	 * @return string
 	 */
 	private static function get_client_id() {
-		return get_option( 'aicc_linkedin_client_id', '' );
+		return get_option( 'rayai_linkedin_client_id', '' );
 	}
 
 	/**
@@ -521,6 +521,6 @@ class AICC_LinkedIn {
 	 * @return string
 	 */
 	private static function get_client_secret() {
-		return get_option( 'aicc_linkedin_client_secret', '' );
+		return get_option( 'rayai_linkedin_client_secret', '' );
 	}
 }

@@ -8,16 +8,16 @@
  *   - Instagram caption (with hashtags)
  *   - Pinterest pin description (SEO-optimized for Pinterest search)
  *
- * LinkedIn is handled separately by AICC_Generator::generate_linkedin_post().
+ * LinkedIn is handled separately by RAYAI_Generator::generate_linkedin_post().
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class AICC_Repurposer {
+class RAYAI_Repurposer {
 
 	/**
 	 * Generate all repurposed content formats from a blog post.
@@ -28,7 +28,7 @@ class AICC_Repurposer {
 	 * @return array Keyed array: 'email', 'twitter', 'instagram', 'pinterest'.
 	 */
 	public static function generate_all( $blog_html, $meta, $blog_url = '' ) {
-		$generator = new AICC_Generator();
+		$generator = new RAYAI_Generator();
 		$blog_text = wp_strip_all_tags( $blog_html );
 		if ( mb_strlen( $blog_text ) > 5000 ) {
 			$blog_text = mb_substr( $blog_text, 0, 5000 ) . '...';

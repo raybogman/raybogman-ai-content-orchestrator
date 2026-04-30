@@ -2,104 +2,104 @@
 /**
  * Scheduled content page — Human in the loop review queue.
  *
- * @package AI_Content_Creator
+ * @package RayAI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$aicc_items              = AICC_Publisher::get_scheduled_items();
-$aicc_linkedin_items     = AICC_LinkedIn::is_connected() ? AICC_Publisher::get_published_with_linkedin_status( 20 ) : array();
-$aicc_pending_count      = 0;
-$aicc_future_count       = 0;
-foreach ( $aicc_items as $aicc_item ) {
-	if ( 'future' === $aicc_item['status'] ) {
-		$aicc_future_count++;
-	} elseif ( $aicc_item['needs_review'] ) {
-		$aicc_pending_count++;
+$rayai_items              = RAYAI_Publisher::get_scheduled_items();
+$rayai_linkedin_items     = RAYAI_LinkedIn::is_connected() ? RAYAI_Publisher::get_published_with_linkedin_status( 20 ) : array();
+$rayai_pending_count      = 0;
+$rayai_future_count       = 0;
+foreach ( $rayai_items as $rayai_item ) {
+	if ( 'future' === $rayai_item['status'] ) {
+		$rayai_future_count++;
+	} elseif ( $rayai_item['needs_review'] ) {
+		$rayai_pending_count++;
 	}
 }
-$aicc_wp_cron_disabled = defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
-$aicc_next_cron        = wp_next_scheduled( 'aicc_catch_up_scheduled' );
-$aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
+$rayai_wp_cron_disabled = defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
+$rayai_next_cron        = wp_next_scheduled( 'rayai_catch_up_scheduled' );
+$rayai_last_catchup     = get_option( 'rayai_last_catchup_log', array() );
 ?>
-<div class="wrap aicc-wrap">
+<div class="wrap rayai-wrap">
 	<h1 class="wp-heading-inline">
-		<span class="dashicons dashicons-calendar-alt aicc-heading-icon"></span>
-		<?php esc_html_e( 'AI Content Orchestrator — Scheduled', 'ai-content-orchestrator' ); ?>
+		<span class="dashicons dashicons-calendar-alt rayai-heading-icon"></span>
+		<?php esc_html_e( 'RayAI – Content Orchestrator — Scheduled', 'rayai-content-orchestrator' ); ?>
 	</h1>
-	<p class="aicc-subtitle">
-		<?php esc_html_e( 'Review queue for AI-generated content awaiting human approval, plus content already scheduled for publication.', 'ai-content-orchestrator' ); ?>
+	<p class="rayai-subtitle">
+		<?php esc_html_e( 'Review queue for AI-generated content awaiting human approval, plus content already scheduled for publication.', 'rayai-content-orchestrator' ); ?>
 	</p>
 
-	<?php if ( $aicc_wp_cron_disabled ) : ?>
+	<?php if ( $rayai_wp_cron_disabled ) : ?>
 		<div class="notice notice-warning inline">
 			<p>
-				<strong><?php esc_html_e( 'WordPress cron is disabled.', 'ai-content-orchestrator' ); ?></strong>
-				<?php esc_html_e( 'DISABLE_WP_CRON is set on this site, so scheduled posts will not publish automatically. Either configure a real cron job, or use the "Publish now" button to publish items manually. This page also auto-publishes overdue items whenever you load it.', 'ai-content-orchestrator' ); ?>
+				<strong><?php esc_html_e( 'WordPress cron is disabled.', 'rayai-content-orchestrator' ); ?></strong>
+				<?php esc_html_e( 'DISABLE_WP_CRON is set on this site, so scheduled posts will not publish automatically. Either configure a real cron job, or use the "Publish now" button to publish items manually. This page also auto-publishes overdue items whenever you load it.', 'rayai-content-orchestrator' ); ?>
 			</p>
 		</div>
 	<?php endif; ?>
 
 	<!-- Cron debug panel -->
-	<div class="aicc-card" style="margin-bottom: 16px;">
-		<div class="aicc-card-header">
+	<div class="rayai-card" style="margin-bottom: 16px;">
+		<div class="rayai-card-header">
 			<h2>
 				<span class="dashicons dashicons-clock" style="margin-right: 6px;"></span>
-				<?php esc_html_e( 'Cron Status', 'ai-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Cron Status', 'rayai-content-orchestrator' ); ?>
 			</h2>
 		</div>
-		<div class="aicc-card-body">
+		<div class="rayai-card-body">
 			<table class="widefat" style="background: transparent; border: none;">
 				<tbody>
 					<tr>
-						<td style="width: 220px; font-weight: 600; border: none;"><?php esc_html_e( 'Cron event:', 'ai-content-orchestrator' ); ?></td>
-						<td style="border: none;"><code>aicc_catch_up_scheduled</code> &mdash; <?php esc_html_e( 'every minute', 'ai-content-orchestrator' ); ?></td>
+						<td style="width: 220px; font-weight: 600; border: none;"><?php esc_html_e( 'Cron event:', 'rayai-content-orchestrator' ); ?></td>
+						<td style="border: none;"><code>rayai_catch_up_scheduled</code> &mdash; <?php esc_html_e( 'every minute', 'rayai-content-orchestrator' ); ?></td>
 					</tr>
 					<tr>
-						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Next scheduled run:', 'ai-content-orchestrator' ); ?></td>
+						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Next scheduled run:', 'rayai-content-orchestrator' ); ?></td>
 						<td style="border: none;">
-							<?php if ( $aicc_next_cron ) : ?>
-								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $aicc_next_cron ) ); ?>
-								(<?php echo esc_html( human_time_diff( time(), $aicc_next_cron ) ); ?>)
+							<?php if ( $rayai_next_cron ) : ?>
+								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $rayai_next_cron ) ); ?>
+								(<?php echo esc_html( human_time_diff( time(), $rayai_next_cron ) ); ?>)
 							<?php else : ?>
-								<span style="color: #d63638;"><?php esc_html_e( 'Not scheduled', 'ai-content-orchestrator' ); ?></span>
+								<span style="color: #d63638;"><?php esc_html_e( 'Not scheduled', 'rayai-content-orchestrator' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
-					<?php if ( ! empty( $aicc_last_catchup ) ) : ?>
+					<?php if ( ! empty( $rayai_last_catchup ) ) : ?>
 						<tr>
-							<td style="font-weight: 600; border: none; vertical-align: top;"><?php esc_html_e( 'Last catch-up run:', 'ai-content-orchestrator' ); ?></td>
+							<td style="font-weight: 600; border: none; vertical-align: top;"><?php esc_html_e( 'Last catch-up run:', 'rayai-content-orchestrator' ); ?></td>
 							<td style="border: none;">
-								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $aicc_last_catchup['time'] ) ); ?>
-								(<?php echo esc_html( human_time_diff( $aicc_last_catchup['time'], time() ) ); ?> ago)
+								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $rayai_last_catchup['time'] ) ); ?>
+								(<?php echo esc_html( human_time_diff( $rayai_last_catchup['time'], time() ) ); ?> ago)
 								&mdash;
 								<?php
 								printf(
 									/* translators: 1: found count, 2: published count */
-									esc_html__( 'found %1$d future posts, published %2$d', 'ai-content-orchestrator' ),
-									(int) $aicc_last_catchup['found'],
-									(int) $aicc_last_catchup['published']
+									esc_html__( 'found %1$d future posts, published %2$d', 'rayai-content-orchestrator' ),
+									(int) $rayai_last_catchup['found'],
+									(int) $rayai_last_catchup['published']
 								);
 								?>
-								<?php if ( ! empty( $aicc_last_catchup['details'] ) ) : ?>
+								<?php if ( ! empty( $rayai_last_catchup['details'] ) ) : ?>
 									<details style="margin-top: 6px;">
-										<summary style="cursor: pointer; color: #2271b1;"><?php esc_html_e( 'Show details', 'ai-content-orchestrator' ); ?></summary>
-										<pre style="background: #f0f0f1; padding: 10px; border-radius: 3px; font-size: 12px; margin-top: 6px;"><?php echo esc_html( implode( "\n", $aicc_last_catchup['details'] ) ); ?></pre>
+										<summary style="cursor: pointer; color: #2271b1;"><?php esc_html_e( 'Show details', 'rayai-content-orchestrator' ); ?></summary>
+										<pre style="background: #f0f0f1; padding: 10px; border-radius: 3px; font-size: 12px; margin-top: 6px;"><?php echo esc_html( implode( "\n", $rayai_last_catchup['details'] ) ); ?></pre>
 									</details>
 								<?php endif; ?>
 							</td>
 						</tr>
 					<?php endif; ?>
 					<tr>
-						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Manual trigger:', 'ai-content-orchestrator' ); ?></td>
+						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Manual trigger:', 'rayai-content-orchestrator' ); ?></td>
 						<td style="border: none;">
-							<button type="button" class="button" id="aicc-run-catchup-now">
+							<button type="button" class="button" id="rayai-run-catchup-now">
 								<span class="dashicons dashicons-update" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
-								<?php esc_html_e( 'Run catch-up now', 'ai-content-orchestrator' ); ?>
+								<?php esc_html_e( 'Run catch-up now', 'rayai-content-orchestrator' ); ?>
 							</button>
-							<span id="aicc-catchup-result" style="margin-left: 12px;"></span>
+							<span id="rayai-catchup-result" style="margin-left: 12px;"></span>
 						</td>
 					</tr>
 				</tbody>
@@ -108,32 +108,32 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	</div>
 
 	<!-- Stats bar -->
-	<div class="aicc-status-bar">
-		<span class="aicc-status-item">
-			<strong><?php esc_html_e( 'Awaiting review:', 'ai-content-orchestrator' ); ?></strong>
-			<span class="aicc-badge <?php echo $aicc_pending_count > 0 ? 'aicc-badge-warning' : 'aicc-badge-success'; ?>">
-				<?php echo esc_html( $aicc_pending_count ); ?>
+	<div class="rayai-status-bar">
+		<span class="rayai-status-item">
+			<strong><?php esc_html_e( 'Awaiting review:', 'rayai-content-orchestrator' ); ?></strong>
+			<span class="rayai-badge <?php echo $rayai_pending_count > 0 ? 'rayai-badge-warning' : 'rayai-badge-success'; ?>">
+				<?php echo esc_html( $rayai_pending_count ); ?>
 			</span>
 		</span>
-		<span class="aicc-status-item">
-			<strong><?php esc_html_e( 'Scheduled:', 'ai-content-orchestrator' ); ?></strong>
-			<span class="aicc-badge aicc-badge-success"><?php echo esc_html( $aicc_future_count ); ?></span>
+		<span class="rayai-status-item">
+			<strong><?php esc_html_e( 'Scheduled:', 'rayai-content-orchestrator' ); ?></strong>
+			<span class="rayai-badge rayai-badge-success"><?php echo esc_html( $rayai_future_count ); ?></span>
 		</span>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=aicc-create' ) ); ?>" class="aicc-status-item aicc-status-link">
-			<?php esc_html_e( 'Create New Content', 'ai-content-orchestrator' ); ?> &rarr;
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=rayai-create' ) ); ?>" class="rayai-status-item rayai-status-link">
+			<?php esc_html_e( 'Create New Content', 'rayai-content-orchestrator' ); ?> &rarr;
 		</a>
 	</div>
 
-	<?php if ( empty( $aicc_items ) ) : ?>
-		<div class="aicc-card">
-			<div class="aicc-card-body" style="text-align: center; padding: 40px 20px;">
+	<?php if ( empty( $rayai_items ) ) : ?>
+		<div class="rayai-card">
+			<div class="rayai-card-body" style="text-align: center; padding: 40px 20px;">
 				<span class="dashicons dashicons-calendar" style="font-size: 48px; width: 48px; height: 48px; color: #c3c4c7;"></span>
-				<h2 style="margin-top: 16px;"><?php esc_html_e( 'No scheduled content yet', 'ai-content-orchestrator' ); ?></h2>
+				<h2 style="margin-top: 16px;"><?php esc_html_e( 'No scheduled content yet', 'rayai-content-orchestrator' ); ?></h2>
 				<p class="description" style="max-width: 500px; margin: 8px auto 16px;">
-					<?php esc_html_e( 'Create new content and select "Schedule for later" to see it appear here. Drafts will wait for your approval; published items schedule automatically.', 'ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Create new content and select "Schedule for later" to see it appear here. Drafts will wait for your approval; published items schedule automatically.', 'rayai-content-orchestrator' ); ?>
 				</p>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=aicc-create' ) ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Create Content', 'ai-content-orchestrator' ); ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rayai-create' ) ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Create Content', 'rayai-content-orchestrator' ); ?>
 				</a>
 			</div>
 		</div>
@@ -141,65 +141,65 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 
 		<!-- Upcoming Publications Timeline -->
 		<?php
-		$aicc_upcoming = array();
-		foreach ( $aicc_items as $aicc_item ) {
-			if ( 'future' === $aicc_item['status'] || ( $aicc_item['needs_review'] && ! empty( $aicc_item['scheduled_at'] ) ) ) {
-				$aicc_upcoming[] = $aicc_item;
+		$rayai_upcoming = array();
+		foreach ( $rayai_items as $rayai_item ) {
+			if ( 'future' === $rayai_item['status'] || ( $rayai_item['needs_review'] && ! empty( $rayai_item['scheduled_at'] ) ) ) {
+				$rayai_upcoming[] = $rayai_item;
 			}
 		}
-		usort( $aicc_upcoming, function( $a, $b ) {
+		usort( $rayai_upcoming, function( $a, $b ) {
 			return ( $a['scheduled_at'] ?? 0 ) - ( $b['scheduled_at'] ?? 0 );
 		});
 		?>
-		<?php if ( ! empty( $aicc_upcoming ) ) : ?>
-		<div class="aicc-card" style="margin-bottom:20px;">
-			<div class="aicc-card-header">
+		<?php if ( ! empty( $rayai_upcoming ) ) : ?>
+		<div class="rayai-card" style="margin-bottom:20px;">
+			<div class="rayai-card-header">
 				<h2>
 					<span class="dashicons dashicons-schedule" style="margin-right:6px; color:#2271b1;"></span>
-					<?php esc_html_e( 'Upcoming Publications', 'ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Upcoming Publications', 'rayai-content-orchestrator' ); ?>
 				</h2>
 			</div>
-			<div class="aicc-card-body">
+			<div class="rayai-card-body">
 				<div style="position:relative; padding-left:24px;">
-					<?php foreach ( $aicc_upcoming as $aicc_idx => $aicc_up ) :
-						$aicc_is_future  = ( 'future' === $aicc_up['status'] );
-						$aicc_is_pending = $aicc_up['needs_review'];
-						$aicc_dot_color  = $aicc_is_future ? '#00a32a' : '#dba617';
-						$aicc_status_label = $aicc_is_future
-							? __( 'Scheduled', 'ai-content-orchestrator' )
-							: __( 'Awaiting approval', 'ai-content-orchestrator' );
-						$aicc_date_str = ! empty( $aicc_up['scheduled_at_formatted'] ) ? $aicc_up['scheduled_at_formatted'] : __( 'Publish on approval', 'ai-content-orchestrator' );
+					<?php foreach ( $rayai_upcoming as $rayai_idx => $rayai_up ) :
+						$rayai_is_future  = ( 'future' === $rayai_up['status'] );
+						$rayai_is_pending = $rayai_up['needs_review'];
+						$rayai_dot_color  = $rayai_is_future ? '#00a32a' : '#dba617';
+						$rayai_status_label = $rayai_is_future
+							? __( 'Scheduled', 'rayai-content-orchestrator' )
+							: __( 'Awaiting approval', 'rayai-content-orchestrator' );
+						$rayai_date_str = ! empty( $rayai_up['scheduled_at_formatted'] ) ? $rayai_up['scheduled_at_formatted'] : __( 'Publish on approval', 'rayai-content-orchestrator' );
 
-						$aicc_days_until = '';
-						if ( ! empty( $aicc_up['scheduled_at'] ) && $aicc_up['scheduled_at'] > 0 ) {
-							$aicc_diff = $aicc_up['scheduled_at'] - time();
-							if ( $aicc_diff > 0 ) {
-								$aicc_days = ceil( $aicc_diff / DAY_IN_SECONDS );
-								$aicc_days_until = sprintf(
+						$rayai_days_until = '';
+						if ( ! empty( $rayai_up['scheduled_at'] ) && $rayai_up['scheduled_at'] > 0 ) {
+							$rayai_diff = $rayai_up['scheduled_at'] - time();
+							if ( $rayai_diff > 0 ) {
+								$rayai_days = ceil( $rayai_diff / DAY_IN_SECONDS );
+								$rayai_days_until = sprintf(
 									/* translators: %s: human-readable time */
-									__( 'in %s', 'ai-content-orchestrator' ),
-									human_time_diff( time(), $aicc_up['scheduled_at'] )
+									__( 'in %s', 'rayai-content-orchestrator' ),
+									human_time_diff( time(), $rayai_up['scheduled_at'] )
 								);
 							}
 						}
 					?>
-					<div style="position:relative; padding-bottom:<?php echo $aicc_idx < count( $aicc_upcoming ) - 1 ? '20px' : '0'; ?>; <?php echo $aicc_idx < count( $aicc_upcoming ) - 1 ? 'border-left:2px solid #e0e0e0; margin-left:6px; padding-left:22px;' : 'margin-left:6px; padding-left:22px;'; ?>">
-						<div style="position:absolute; left:-8px; top:2px; width:14px; height:14px; background:<?php echo esc_attr( $aicc_dot_color ); ?>; border-radius:50%; border:2px solid #fff;"></div>
+					<div style="position:relative; padding-bottom:<?php echo $rayai_idx < count( $rayai_upcoming ) - 1 ? '20px' : '0'; ?>; <?php echo $rayai_idx < count( $rayai_upcoming ) - 1 ? 'border-left:2px solid #e0e0e0; margin-left:6px; padding-left:22px;' : 'margin-left:6px; padding-left:22px;'; ?>">
+						<div style="position:absolute; left:-8px; top:2px; width:14px; height:14px; background:<?php echo esc_attr( $rayai_dot_color ); ?>; border-radius:50%; border:2px solid #fff;"></div>
 						<div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-							<strong style="font-size:13px;"><?php echo esc_html( $aicc_date_str ); ?></strong>
-							<?php if ( $aicc_days_until ) : ?>
-								<span style="color:#787c82; font-size:12px;">(<?php echo esc_html( $aicc_days_until ); ?>)</span>
+							<strong style="font-size:13px;"><?php echo esc_html( $rayai_date_str ); ?></strong>
+							<?php if ( $rayai_days_until ) : ?>
+								<span style="color:#787c82; font-size:12px;">(<?php echo esc_html( $rayai_days_until ); ?>)</span>
 							<?php endif; ?>
-							<span style="display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; background:<?php echo $aicc_is_future ? '#e7f5e7' : '#fff8e5'; ?>; color:<?php echo $aicc_is_future ? '#00a32a' : '#996800'; ?>;">
-								<?php echo esc_html( $aicc_status_label ); ?>
+							<span style="display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; background:<?php echo $rayai_is_future ? '#e7f5e7' : '#fff8e5'; ?>; color:<?php echo $rayai_is_future ? '#00a32a' : '#996800'; ?>;">
+								<?php echo esc_html( $rayai_status_label ); ?>
 							</span>
 						</div>
 						<div style="margin-top:2px;">
-							<a href="<?php echo esc_url( get_permalink( $aicc_up['id'] ) ); ?>" target="_blank" style="text-decoration:none; font-weight:500;">
-								<?php echo esc_html( $aicc_up['title'] ); ?>
+							<a href="<?php echo esc_url( get_permalink( $rayai_up['id'] ) ); ?>" target="_blank" style="text-decoration:none; font-weight:500;">
+								<?php echo esc_html( $rayai_up['title'] ); ?>
 							</a>
-							<?php if ( ! empty( $aicc_up['linkedin'] ) ) : ?>
-								<span class="dashicons dashicons-linkedin" style="color:#0a66c2; vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-left:4px;" title="<?php esc_attr_e( 'LinkedIn', 'ai-content-orchestrator' ); ?>"></span>
+							<?php if ( ! empty( $rayai_up['linkedin'] ) ) : ?>
+								<span class="dashicons dashicons-linkedin" style="color:#0a66c2; vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-left:4px;" title="<?php esc_attr_e( 'LinkedIn', 'rayai-content-orchestrator' ); ?>"></span>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -210,81 +210,81 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		<?php endif; ?>
 
 		<!-- Pending review items -->
-		<?php if ( $aicc_pending_count > 0 ) : ?>
-			<div class="aicc-card">
-				<div class="aicc-card-header">
+		<?php if ( $rayai_pending_count > 0 ) : ?>
+			<div class="rayai-card">
+				<div class="rayai-card-header">
 					<h2>
 						<span class="dashicons dashicons-clock" style="margin-right: 6px; color: #dba617;"></span>
-						<?php esc_html_e( 'Awaiting Human Review', 'ai-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Awaiting Human Review', 'rayai-content-orchestrator' ); ?>
 					</h2>
 				</div>
-				<div class="aicc-card-body" style="padding: 0;">
-					<div id="aicc-bulk-actions-bar" style="display:none; padding:8px 12px; background:#f0f6fc; border-bottom:1px solid #c3c4c7;">
-						<label style="margin-right:8px;"><input type="checkbox" id="aicc-review-check-all" /> <?php esc_html_e( 'Select all', 'ai-content-orchestrator' ); ?></label>
-						<button type="button" class="button" id="aicc-bulk-delete-btn">
+				<div class="rayai-card-body" style="padding: 0;">
+					<div id="rayai-bulk-actions-bar" style="display:none; padding:8px 12px; background:#f0f6fc; border-bottom:1px solid #c3c4c7;">
+						<label style="margin-right:8px;"><input type="checkbox" id="rayai-review-check-all" /> <?php esc_html_e( 'Select all', 'rayai-content-orchestrator' ); ?></label>
+						<button type="button" class="button" id="rayai-bulk-delete-btn">
 							<span class="dashicons dashicons-trash" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; color:#d63638; margin-right:2px;"></span>
-							<?php esc_html_e( 'Delete Selected', 'ai-content-orchestrator' ); ?>
+							<?php esc_html_e( 'Delete Selected', 'rayai-content-orchestrator' ); ?>
 						</button>
-						<button type="button" class="button" id="aicc-bulk-approve-btn" style="margin-left:4px;">
+						<button type="button" class="button" id="rayai-bulk-approve-btn" style="margin-left:4px;">
 							<span class="dashicons dashicons-yes" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; color:#00a32a; margin-right:2px;"></span>
-							<?php esc_html_e( 'Approve Selected', 'ai-content-orchestrator' ); ?>
+							<?php esc_html_e( 'Approve Selected', 'rayai-content-orchestrator' ); ?>
 						</button>
-						<span id="aicc-bulk-action-status" style="margin-left:12px;"></span>
+						<span id="rayai-bulk-action-status" style="margin-left:12px;"></span>
 					</div>
-					<table class="widefat striped aicc-scheduled-table">
+					<table class="widefat striped rayai-scheduled-table">
 						<thead>
 							<tr>
-								<th style="width:30px;"><input type="checkbox" id="aicc-review-check-all-th" /></th>
-								<th><?php esc_html_e( 'Title', 'ai-content-orchestrator' ); ?></th>
-								<th style="width: 90px;"><?php esc_html_e( 'Type', 'ai-content-orchestrator' ); ?></th>
-								<th><?php esc_html_e( 'Categories', 'ai-content-orchestrator' ); ?></th>
-								<th style="width: 180px;"><?php esc_html_e( 'Scheduled For', 'ai-content-orchestrator' ); ?></th>
-								<th class="aicc-actions-col"><?php esc_html_e( 'Actions', 'ai-content-orchestrator' ); ?></th>
+								<th style="width:30px;"><input type="checkbox" id="rayai-review-check-all-th" /></th>
+								<th><?php esc_html_e( 'Title', 'rayai-content-orchestrator' ); ?></th>
+								<th style="width: 90px;"><?php esc_html_e( 'Type', 'rayai-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Categories', 'rayai-content-orchestrator' ); ?></th>
+								<th style="width: 180px;"><?php esc_html_e( 'Scheduled For', 'rayai-content-orchestrator' ); ?></th>
+								<th class="rayai-actions-col"><?php esc_html_e( 'Actions', 'rayai-content-orchestrator' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $aicc_items as $aicc_item ) : ?>
-								<?php if ( ! $aicc_item['needs_review'] ) continue; ?>
-								<tr id="aicc-row-<?php echo esc_attr( $aicc_item['id'] ); ?>" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $aicc_item['scheduled_at'] ); ?>">
-									<td><input type="checkbox" class="aicc-review-check" value="<?php echo esc_attr( $aicc_item['id'] ); ?>" /></td>
+							<?php foreach ( $rayai_items as $rayai_item ) : ?>
+								<?php if ( ! $rayai_item['needs_review'] ) continue; ?>
+								<tr id="rayai-row-<?php echo esc_attr( $rayai_item['id'] ); ?>" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $rayai_item['scheduled_at'] ); ?>">
+									<td><input type="checkbox" class="rayai-review-check" value="<?php echo esc_attr( $rayai_item['id'] ); ?>" /></td>
 									<td>
-										<strong><?php echo esc_html( $aicc_item['title'] ); ?></strong>
-										<?php if ( ! empty( $aicc_item['linkedin'] ) ) : ?>
-											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'ai-content-orchestrator' ); ?>"></span>
+										<strong><?php echo esc_html( $rayai_item['title'] ); ?></strong>
+										<?php if ( ! empty( $rayai_item['linkedin'] ) ) : ?>
+											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'rayai-content-orchestrator' ); ?>"></span>
 										<?php endif; ?>
-										<?php if ( ! empty( $aicc_item['focus_keyphrase'] ) ) : ?>
-											<br><small class="description"><?php esc_html_e( 'Focus:', 'ai-content-orchestrator' ); ?> <?php echo esc_html( $aicc_item['focus_keyphrase'] ); ?></small>
+										<?php if ( ! empty( $rayai_item['focus_keyphrase'] ) ) : ?>
+											<br><small class="description"><?php esc_html_e( 'Focus:', 'rayai-content-orchestrator' ); ?> <?php echo esc_html( $rayai_item['focus_keyphrase'] ); ?></small>
 										<?php endif; ?>
 									</td>
 									<td>
-										<span class="aicc-tag">
-											<?php echo 'post' === $aicc_item['type'] ? esc_html__( 'Blog', 'ai-content-orchestrator' ) : esc_html__( 'Page', 'ai-content-orchestrator' ); ?>
+										<span class="rayai-tag">
+											<?php echo 'post' === $rayai_item['type'] ? esc_html__( 'Blog', 'rayai-content-orchestrator' ) : esc_html__( 'Page', 'rayai-content-orchestrator' ); ?>
 										</span>
 									</td>
 									<td>
-										<?php if ( ! empty( $aicc_item['categories'] ) ) : ?>
-											<?php foreach ( $aicc_item['categories'] as $cat ) : ?>
-												<span class="aicc-tag"><?php echo esc_html( $cat ); ?></span>
+										<?php if ( ! empty( $rayai_item['categories'] ) ) : ?>
+											<?php foreach ( $rayai_item['categories'] as $cat ) : ?>
+												<span class="rayai-tag"><?php echo esc_html( $cat ); ?></span>
 											<?php endforeach; ?>
 										<?php else : ?>
 											<span class="description">&mdash;</span>
 										<?php endif; ?>
 									</td>
-									<td class="aicc-schedule-cell">
-										<span class="aicc-schedule-display"><?php echo esc_html( $aicc_item['scheduled_at_formatted'] ); ?></span>
+									<td class="rayai-schedule-cell">
+										<span class="rayai-schedule-display"><?php echo esc_html( $rayai_item['scheduled_at_formatted'] ); ?></span>
 									</td>
-									<td class="aicc-actions-cell">
-										<button type="button" class="button button-primary aicc-approve-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>">
+									<td class="rayai-actions-cell">
+										<button type="button" class="button button-primary rayai-approve-btn" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>">
 											<span class="dashicons dashicons-yes" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
-											<?php esc_html_e( 'Approve', 'ai-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Approve', 'rayai-content-orchestrator' ); ?>
 										</button>
-										<a href="<?php echo esc_url( $aicc_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'ai-content-orchestrator' ); ?>">
+										<a href="<?php echo esc_url( $rayai_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-edit" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</a>
-										<button type="button" class="button aicc-reschedule-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button rayai-reschedule-btn" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</button>
-										<button type="button" class="button aicc-delete-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button rayai-delete-btn" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 										</button>
 									</td>
@@ -297,67 +297,67 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		<?php endif; ?>
 
 		<!-- Already scheduled items (future status) -->
-		<?php if ( $aicc_future_count > 0 ) : ?>
-			<div class="aicc-card">
-				<div class="aicc-card-header">
+		<?php if ( $rayai_future_count > 0 ) : ?>
+			<div class="rayai-card">
+				<div class="rayai-card-header">
 					<h2>
 						<span class="dashicons dashicons-calendar-alt" style="margin-right: 6px; color: #00a32a;"></span>
-						<?php esc_html_e( 'Scheduled for Publication', 'ai-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Scheduled for Publication', 'rayai-content-orchestrator' ); ?>
 					</h2>
 				</div>
-				<div class="aicc-card-body" style="padding: 0;">
-					<table class="widefat striped aicc-scheduled-table">
+				<div class="rayai-card-body" style="padding: 0;">
+					<table class="widefat striped rayai-scheduled-table">
 						<thead>
 							<tr>
-								<th><?php esc_html_e( 'Title', 'ai-content-orchestrator' ); ?></th>
-								<th style="width: 90px;"><?php esc_html_e( 'Type', 'ai-content-orchestrator' ); ?></th>
-								<th><?php esc_html_e( 'Categories', 'ai-content-orchestrator' ); ?></th>
-								<th style="width: 180px;"><?php esc_html_e( 'Publishes At', 'ai-content-orchestrator' ); ?></th>
-								<th class="aicc-actions-col"><?php esc_html_e( 'Actions', 'ai-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Title', 'rayai-content-orchestrator' ); ?></th>
+								<th style="width: 90px;"><?php esc_html_e( 'Type', 'rayai-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Categories', 'rayai-content-orchestrator' ); ?></th>
+								<th style="width: 180px;"><?php esc_html_e( 'Publishes At', 'rayai-content-orchestrator' ); ?></th>
+								<th class="rayai-actions-col"><?php esc_html_e( 'Actions', 'rayai-content-orchestrator' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $aicc_items as $aicc_item ) : ?>
-								<?php if ( 'future' !== $aicc_item['status'] ) continue; ?>
-								<tr id="aicc-row-<?php echo esc_attr( $aicc_item['id'] ); ?>" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $aicc_item['scheduled_at'] ); ?>">
+							<?php foreach ( $rayai_items as $rayai_item ) : ?>
+								<?php if ( 'future' !== $rayai_item['status'] ) continue; ?>
+								<tr id="rayai-row-<?php echo esc_attr( $rayai_item['id'] ); ?>" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $rayai_item['scheduled_at'] ); ?>">
 									<td>
-										<strong><?php echo esc_html( $aicc_item['title'] ); ?></strong>
-										<?php if ( ! empty( $aicc_item['linkedin'] ) ) : ?>
-											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'ai-content-orchestrator' ); ?>"></span>
+										<strong><?php echo esc_html( $rayai_item['title'] ); ?></strong>
+										<?php if ( ! empty( $rayai_item['linkedin'] ) ) : ?>
+											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'rayai-content-orchestrator' ); ?>"></span>
 										<?php endif; ?>
-										<?php if ( ! empty( $aicc_item['focus_keyphrase'] ) ) : ?>
-											<br><small class="description"><?php esc_html_e( 'Focus:', 'ai-content-orchestrator' ); ?> <?php echo esc_html( $aicc_item['focus_keyphrase'] ); ?></small>
+										<?php if ( ! empty( $rayai_item['focus_keyphrase'] ) ) : ?>
+											<br><small class="description"><?php esc_html_e( 'Focus:', 'rayai-content-orchestrator' ); ?> <?php echo esc_html( $rayai_item['focus_keyphrase'] ); ?></small>
 										<?php endif; ?>
 									</td>
 									<td>
-										<span class="aicc-tag">
-											<?php echo 'post' === $aicc_item['type'] ? esc_html__( 'Blog', 'ai-content-orchestrator' ) : esc_html__( 'Page', 'ai-content-orchestrator' ); ?>
+										<span class="rayai-tag">
+											<?php echo 'post' === $rayai_item['type'] ? esc_html__( 'Blog', 'rayai-content-orchestrator' ) : esc_html__( 'Page', 'rayai-content-orchestrator' ); ?>
 										</span>
 									</td>
 									<td>
-										<?php if ( ! empty( $aicc_item['categories'] ) ) : ?>
-											<?php foreach ( $aicc_item['categories'] as $cat ) : ?>
-												<span class="aicc-tag"><?php echo esc_html( $cat ); ?></span>
+										<?php if ( ! empty( $rayai_item['categories'] ) ) : ?>
+											<?php foreach ( $rayai_item['categories'] as $cat ) : ?>
+												<span class="rayai-tag"><?php echo esc_html( $cat ); ?></span>
 											<?php endforeach; ?>
 										<?php else : ?>
 											<span class="description">&mdash;</span>
 										<?php endif; ?>
 									</td>
-									<td class="aicc-schedule-cell">
-										<span class="aicc-schedule-display"><?php echo esc_html( $aicc_item['scheduled_at_formatted'] ); ?></span>
+									<td class="rayai-schedule-cell">
+										<span class="rayai-schedule-display"><?php echo esc_html( $rayai_item['scheduled_at_formatted'] ); ?></span>
 									</td>
-									<td class="aicc-actions-cell">
-										<button type="button" class="button button-primary aicc-publish-now-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Publish immediately (skip waiting for scheduled time)', 'ai-content-orchestrator' ); ?>">
+									<td class="rayai-actions-cell">
+										<button type="button" class="button button-primary rayai-publish-now-btn" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" title="<?php esc_attr_e( 'Publish immediately (skip waiting for scheduled time)', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-megaphone" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
-											<?php esc_html_e( 'Publish Now', 'ai-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Publish Now', 'rayai-content-orchestrator' ); ?>
 										</button>
-										<a href="<?php echo esc_url( $aicc_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'ai-content-orchestrator' ); ?>">
+										<a href="<?php echo esc_url( $rayai_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-edit" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</a>
-										<button type="button" class="button aicc-reschedule-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button rayai-reschedule-btn" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</button>
-										<button type="button" class="button aicc-delete-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button rayai-delete-btn" data-post-id="<?php echo esc_attr( $rayai_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'rayai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 										</button>
 									</td>
@@ -372,102 +372,102 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	<?php endif; ?>
 
 	<!-- LinkedIn sharing status -->
-	<?php if ( ! empty( $aicc_linkedin_items ) ) : ?>
-		<div class="aicc-card" style="margin-top: 20px;">
-			<div class="aicc-card-header">
+	<?php if ( ! empty( $rayai_linkedin_items ) ) : ?>
+		<div class="rayai-card" style="margin-top: 20px;">
+			<div class="rayai-card-header">
 				<h2>
 					<span class="dashicons dashicons-linkedin" style="margin-right: 6px; color: #0a66c2;"></span>
-					<?php esc_html_e( 'LinkedIn Sharing Status', 'ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'LinkedIn Sharing Status', 'rayai-content-orchestrator' ); ?>
 				</h2>
 			</div>
-			<div class="aicc-card-body" style="padding: 0;">
+			<div class="rayai-card-body" style="padding: 0;">
 				<!-- Bulk action toolbar -->
-				<div class="aicc-li-bulk-toolbar" style="padding: 10px 12px; border-bottom: 1px solid #c3c4c7; background: #f6f7f7; display: flex; align-items: center; gap: 10px;">
-					<button type="button" class="button aicc-li-bulk-delete-btn" disabled>
+				<div class="rayai-li-bulk-toolbar" style="padding: 10px 12px; border-bottom: 1px solid #c3c4c7; background: #f6f7f7; display: flex; align-items: center; gap: 10px;">
+					<button type="button" class="button rayai-li-bulk-delete-btn" disabled>
 						<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
-						<?php esc_html_e( 'Delete Selected', 'ai-content-orchestrator' ); ?>
-						(<span class="aicc-li-bulk-count">0</span>)
+						<?php esc_html_e( 'Delete Selected', 'rayai-content-orchestrator' ); ?>
+						(<span class="rayai-li-bulk-count">0</span>)
 					</button>
 					<span class="description" style="margin-left: auto; font-size: 12px;">
-						<?php esc_html_e( 'Bulk delete removes posts from this dashboard only. Does not delete WordPress posts or LinkedIn shares.', 'ai-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Bulk delete removes posts from this dashboard only. Does not delete WordPress posts or LinkedIn shares.', 'rayai-content-orchestrator' ); ?>
 					</span>
 				</div>
 				<table class="widefat striped">
 					<thead>
 						<tr>
 							<th style="width: 30px; padding-left: 12px;">
-								<input type="checkbox" class="aicc-li-select-all" title="<?php esc_attr_e( 'Select all', 'ai-content-orchestrator' ); ?>" />
+								<input type="checkbox" class="rayai-li-select-all" title="<?php esc_attr_e( 'Select all', 'rayai-content-orchestrator' ); ?>" />
 							</th>
-							<th><?php esc_html_e( 'Title', 'ai-content-orchestrator' ); ?></th>
-							<th style="width: 160px;"><?php esc_html_e( 'Published', 'ai-content-orchestrator' ); ?></th>
-							<th style="width: 200px;"><?php esc_html_e( 'LinkedIn Status', 'ai-content-orchestrator' ); ?></th>
-							<th style="width: 180px;"><?php esc_html_e( 'Actions', 'ai-content-orchestrator' ); ?></th>
+							<th><?php esc_html_e( 'Title', 'rayai-content-orchestrator' ); ?></th>
+							<th style="width: 160px;"><?php esc_html_e( 'Published', 'rayai-content-orchestrator' ); ?></th>
+							<th style="width: 200px;"><?php esc_html_e( 'LinkedIn Status', 'rayai-content-orchestrator' ); ?></th>
+							<th style="width: 180px;"><?php esc_html_e( 'Actions', 'rayai-content-orchestrator' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ( $aicc_linkedin_items as $aicc_li ) : ?>
-							<tr id="aicc-li-row-<?php echo esc_attr( $aicc_li['id'] ); ?>">
+						<?php foreach ( $rayai_linkedin_items as $rayai_li ) : ?>
+							<tr id="rayai-li-row-<?php echo esc_attr( $rayai_li['id'] ); ?>">
 								<td style="padding-left: 12px;">
-									<input type="checkbox" class="aicc-li-row-check" value="<?php echo esc_attr( $aicc_li['id'] ); ?>" />
+									<input type="checkbox" class="rayai-li-row-check" value="<?php echo esc_attr( $rayai_li['id'] ); ?>" />
 								</td>
 								<td>
-									<strong><?php echo esc_html( $aicc_li['title'] ); ?></strong>
+									<strong><?php echo esc_html( $rayai_li['title'] ); ?></strong>
 									<br>
-									<a href="<?php echo esc_url( $aicc_li['url'] ); ?>" target="_blank" class="description">
-										<?php esc_html_e( 'View on WordPress', 'ai-content-orchestrator' ); ?> &rarr;
+									<a href="<?php echo esc_url( $rayai_li['url'] ); ?>" target="_blank" class="description">
+										<?php esc_html_e( 'View on WordPress', 'rayai-content-orchestrator' ); ?> &rarr;
 									</a>
-									<?php if ( ! empty( $aicc_li['linkedin_commentary'] ) ) : ?>
+									<?php if ( ! empty( $rayai_li['linkedin_commentary'] ) ) : ?>
 										<br>
-										<a href="#" class="aicc-li-toggle-preview" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>" style="font-size: 12px;">
+										<a href="#" class="rayai-li-toggle-preview" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>" style="font-size: 12px;">
 											<span class="dashicons dashicons-visibility" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
-											<?php esc_html_e( 'Show LinkedIn post preview', 'ai-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Show LinkedIn post preview', 'rayai-content-orchestrator' ); ?>
 										</a>
-										<div class="aicc-li-preview" id="aicc-li-preview-<?php echo esc_attr( $aicc_li['id'] ); ?>" style="display: none; margin-top: 8px;" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
+										<div class="rayai-li-preview" id="rayai-li-preview-<?php echo esc_attr( $rayai_li['id'] ); ?>" style="display: none; margin-top: 8px;" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>">
 											<!-- View mode -->
-											<div class="aicc-li-preview-view">
-												<div class="aicc-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 10px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 500px; border-radius: 2px;"><?php echo esc_html( $aicc_li['linkedin_commentary'] ); ?></div>
+											<div class="rayai-li-preview-view">
+												<div class="rayai-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 10px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 500px; border-radius: 2px;"><?php echo esc_html( $rayai_li['linkedin_commentary'] ); ?></div>
 												<p style="margin: 6px 0 0; font-size: 11px; color: #646970;">
-													<span class="aicc-li-char-count">
+													<span class="rayai-li-char-count">
 														<?php
 														printf(
 															/* translators: %d: character count */
-															esc_html__( '%d characters', 'ai-content-orchestrator' ),
-															esc_html( mb_strlen( $aicc_li['linkedin_commentary'] ) )
+															esc_html__( '%d characters', 'rayai-content-orchestrator' ),
+															esc_html( mb_strlen( $rayai_li['linkedin_commentary'] ) )
 														);
 														?>
 													</span>
 												</p>
 												<p style="margin: 8px 0 0;">
-													<button type="button" class="button button-small aicc-li-edit-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
+													<button type="button" class="button button-small rayai-li-edit-btn" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>">
 														<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
-														<?php esc_html_e( 'Edit', 'ai-content-orchestrator' ); ?>
+														<?php esc_html_e( 'Edit', 'rayai-content-orchestrator' ); ?>
 													</button>
-													<button type="button" class="button button-small aicc-li-regen-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
+													<button type="button" class="button button-small rayai-li-regen-btn" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>">
 														<span class="dashicons dashicons-update" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
-														<?php esc_html_e( 'Regenerate', 'ai-content-orchestrator' ); ?>
+														<?php esc_html_e( 'Regenerate', 'rayai-content-orchestrator' ); ?>
 													</button>
 												</p>
 											</div>
 											<!-- Edit mode (hidden by default) -->
-											<div class="aicc-li-preview-edit" style="display: none;">
-												<textarea class="aicc-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 500px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;"><?php echo esc_textarea( $aicc_li['linkedin_commentary'] ); ?></textarea>
+											<div class="rayai-li-preview-edit" style="display: none;">
+												<textarea class="rayai-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 500px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;"><?php echo esc_textarea( $rayai_li['linkedin_commentary'] ); ?></textarea>
 												<p style="margin: 4px 0 0; font-size: 11px; color: #646970;">
-													<span class="aicc-li-edit-count">
+													<span class="rayai-li-edit-count">
 														<?php
 														printf(
 															/* translators: %d: character count */
-															esc_html__( '%d / 2900 characters', 'ai-content-orchestrator' ),
-															esc_html( mb_strlen( $aicc_li['linkedin_commentary'] ) )
+															esc_html__( '%d / 2900 characters', 'rayai-content-orchestrator' ),
+															esc_html( mb_strlen( $rayai_li['linkedin_commentary'] ) )
 														);
 														?>
 													</span>
 												</p>
 												<p style="margin: 8px 0 0;">
-													<button type="button" class="button button-primary button-small aicc-li-save-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
-														<?php esc_html_e( 'Save', 'ai-content-orchestrator' ); ?>
+													<button type="button" class="button button-primary button-small rayai-li-save-btn" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>">
+														<?php esc_html_e( 'Save', 'rayai-content-orchestrator' ); ?>
 													</button>
-													<button type="button" class="button button-small aicc-li-cancel-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
-														<?php esc_html_e( 'Cancel', 'ai-content-orchestrator' ); ?>
+													<button type="button" class="button button-small rayai-li-cancel-btn" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>">
+														<?php esc_html_e( 'Cancel', 'rayai-content-orchestrator' ); ?>
 													</button>
 												</p>
 											</div>
@@ -475,36 +475,36 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 									<?php endif; ?>
 								</td>
 								<td>
-									<?php echo esc_html( wp_date( 'Y-m-d H:i', $aicc_li['published_at'] ) ); ?>
+									<?php echo esc_html( wp_date( 'Y-m-d H:i', $rayai_li['published_at'] ) ); ?>
 								</td>
-								<td class="aicc-li-status-<?php echo esc_attr( $aicc_li['id'] ); ?>">
-									<?php if ( 'shared' === $aicc_li['linkedin_status'] ) : ?>
+								<td class="rayai-li-status-<?php echo esc_attr( $rayai_li['id'] ); ?>">
+									<?php if ( 'shared' === $rayai_li['linkedin_status'] ) : ?>
 										<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
-										<strong style="color: #00a32a;"><?php esc_html_e( 'Shared', 'ai-content-orchestrator' ); ?></strong>
-										<br><small class="description"><?php echo esc_html( wp_date( 'Y-m-d H:i', $aicc_li['shared_at'] ) ); ?></small>
-									<?php elseif ( 'error' === $aicc_li['linkedin_status'] ) : ?>
+										<strong style="color: #00a32a;"><?php esc_html_e( 'Shared', 'rayai-content-orchestrator' ); ?></strong>
+										<br><small class="description"><?php echo esc_html( wp_date( 'Y-m-d H:i', $rayai_li['shared_at'] ) ); ?></small>
+									<?php elseif ( 'error' === $rayai_li['linkedin_status'] ) : ?>
 										<span class="dashicons dashicons-warning" style="color: #d63638;"></span>
-										<strong style="color: #d63638;"><?php esc_html_e( 'Failed', 'ai-content-orchestrator' ); ?></strong>
-										<br><small class="description" style="color: #d63638;"><?php echo esc_html( mb_substr( $aicc_li['linkedin_error'], 0, 100 ) ); ?></small>
+										<strong style="color: #d63638;"><?php esc_html_e( 'Failed', 'rayai-content-orchestrator' ); ?></strong>
+										<br><small class="description" style="color: #d63638;"><?php echo esc_html( mb_substr( $rayai_li['linkedin_error'], 0, 100 ) ); ?></small>
 									<?php else : ?>
 										<span class="dashicons dashicons-minus" style="color: #646970;"></span>
-										<em class="description"><?php esc_html_e( 'Not shared yet', 'ai-content-orchestrator' ); ?></em>
+										<em class="description"><?php esc_html_e( 'Not shared yet', 'rayai-content-orchestrator' ); ?></em>
 									<?php endif; ?>
 								</td>
 								<td>
-									<button type="button" class="button aicc-li-share-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>">
+									<button type="button" class="button rayai-li-share-btn" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>">
 										<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										<?php
-										if ( 'shared' === $aicc_li['linkedin_status'] ) {
-											esc_html_e( 'Re-share', 'ai-content-orchestrator' );
-										} elseif ( 'error' === $aicc_li['linkedin_status'] ) {
-											esc_html_e( 'Retry', 'ai-content-orchestrator' );
+										if ( 'shared' === $rayai_li['linkedin_status'] ) {
+											esc_html_e( 'Re-share', 'rayai-content-orchestrator' );
+										} elseif ( 'error' === $rayai_li['linkedin_status'] ) {
+											esc_html_e( 'Retry', 'rayai-content-orchestrator' );
 										} else {
-											esc_html_e( 'Share Now', 'ai-content-orchestrator' );
+											esc_html_e( 'Share Now', 'rayai-content-orchestrator' );
 										}
 										?>
 									</button>
-									<button type="button" class="button aicc-li-remove-btn" data-post-id="<?php echo esc_attr( $aicc_li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'ai-content-orchestrator' ); ?>">
+									<button type="button" class="button rayai-li-remove-btn" data-post-id="<?php echo esc_attr( $rayai_li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'rayai-content-orchestrator' ); ?>">
 										<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 									</button>
 								</td>
@@ -514,9 +514,9 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 				</table>
 				<p class="description" style="padding: 12px 16px; margin: 0; background: #f6f7f7; border-top: 1px solid #c3c4c7;">
 					<span class="dashicons dashicons-info" style="color: #2271b1; vertical-align: text-bottom;"></span>
-					<?php esc_html_e( 'Check your LinkedIn profile feed at', 'ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Check your LinkedIn profile feed at', 'rayai-content-orchestrator' ); ?>
 					<a href="https://www.linkedin.com/in/me/recent-activity/all/" target="_blank">linkedin.com/in/me/recent-activity</a>
-					<?php esc_html_e( 'to see shared posts. Posts may take a few seconds to appear.', 'ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'to see shared posts. Posts may take a few seconds to appear.', 'rayai-content-orchestrator' ); ?>
 				</p>
 			</div>
 		</div>
@@ -524,15 +524,15 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 </div>
 
 <!-- Reschedule modal -->
-<div id="aicc-reschedule-modal" class="aicc-modal" style="display: none;">
-	<div class="aicc-modal-backdrop"></div>
-	<div class="aicc-modal-content">
-		<h2><?php esc_html_e( 'Reschedule', 'ai-content-orchestrator' ); ?></h2>
-		<p class="description"><?php esc_html_e( 'Select a new date and time for this item.', 'ai-content-orchestrator' ); ?></p>
-		<input type="datetime-local" id="aicc-reschedule-input" class="regular-text" />
+<div id="rayai-reschedule-modal" class="rayai-modal" style="display: none;">
+	<div class="rayai-modal-backdrop"></div>
+	<div class="rayai-modal-content">
+		<h2><?php esc_html_e( 'Reschedule', 'rayai-content-orchestrator' ); ?></h2>
+		<p class="description"><?php esc_html_e( 'Select a new date and time for this item.', 'rayai-content-orchestrator' ); ?></p>
+		<input type="datetime-local" id="rayai-reschedule-input" class="regular-text" />
 		<p style="margin-top: 16px; text-align: right;">
-			<button type="button" class="button" id="aicc-reschedule-cancel"><?php esc_html_e( 'Cancel', 'ai-content-orchestrator' ); ?></button>
-			<button type="button" class="button button-primary" id="aicc-reschedule-save"><?php esc_html_e( 'Save', 'ai-content-orchestrator' ); ?></button>
+			<button type="button" class="button" id="rayai-reschedule-cancel"><?php esc_html_e( 'Cancel', 'rayai-content-orchestrator' ); ?></button>
+			<button type="button" class="button button-primary" id="rayai-reschedule-save"><?php esc_html_e( 'Save', 'rayai-content-orchestrator' ); ?></button>
 		</p>
 	</div>
 </div>
@@ -540,19 +540,19 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 <script>
 (function($) {
 	var ajaxUrl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
-	var nonce   = '<?php echo esc_js( wp_create_nonce( 'aicc_nonce' ) ); ?>';
+	var nonce   = '<?php echo esc_js( wp_create_nonce( 'rayai_nonce' ) ); ?>';
 	var rescheduleTargetId = null;
 
 	// Approve button
-	$('.aicc-approve-btn').on('click', function() {
+	$('.rayai-approve-btn').on('click', function() {
 		var $btn    = $(this);
 		var postId  = $btn.data('post-id');
-		var $row    = $('#aicc-row-' + postId);
+		var $row    = $('#rayai-row-' + postId);
 
 		$btn.prop('disabled', true).text('Approving...');
 
 		$.post(ajaxUrl, {
-			action:  'aicc_approve_scheduled',
+			action:  'rayai_approve_scheduled',
 			nonce:   nonce,
 			post_id: postId,
 		}, function(response) {
@@ -571,15 +571,15 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Run catch-up now button (cron debug)
-	$('#aicc-run-catchup-now').on('click', function() {
+	$('#rayai-run-catchup-now').on('click', function() {
 		var $btn    = $(this);
-		var $result = $('#aicc-catchup-result');
+		var $result = $('#rayai-catchup-result');
 
 		$btn.prop('disabled', true);
 		$result.html('<span class="spinner is-active" style="float:none; margin:0;"></span>');
 
 		$.post(ajaxUrl, {
-			action: 'aicc_run_catchup',
+			action: 'rayai_run_catchup',
 			nonce:  nonce,
 		}, function(response) {
 			if (response.success) {
@@ -597,17 +597,17 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Publish now button
-	$('.aicc-publish-now-btn').on('click', function() {
-		if (!confirm('<?php echo esc_js( __( 'Publish this post immediately, ignoring the scheduled time?', 'ai-content-orchestrator' ) ); ?>')) return;
+	$('.rayai-publish-now-btn').on('click', function() {
+		if (!confirm('<?php echo esc_js( __( 'Publish this post immediately, ignoring the scheduled time?', 'rayai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn    = $(this);
 		var postId  = $btn.data('post-id');
-		var $row    = $('#aicc-row-' + postId);
+		var $row    = $('#rayai-row-' + postId);
 
 		$btn.prop('disabled', true).text('Publishing...');
 
 		$.post(ajaxUrl, {
-			action:  'aicc_publish_now',
+			action:  'rayai_publish_now',
 			nonce:   nonce,
 			post_id: postId,
 		}, function(response) {
@@ -627,17 +627,17 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Delete button
-	$('.aicc-delete-btn').on('click', function() {
-		if (!confirm('<?php echo esc_js( __( 'Move this item to the trash?', 'ai-content-orchestrator' ) ); ?>')) return;
+	$('.rayai-delete-btn').on('click', function() {
+		if (!confirm('<?php echo esc_js( __( 'Move this item to the trash?', 'rayai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn   = $(this);
 		var postId = $btn.data('post-id');
-		var $row   = $('#aicc-row-' + postId);
+		var $row   = $('#rayai-row-' + postId);
 
 		$btn.prop('disabled', true);
 
 		$.post(ajaxUrl, {
-			action:  'aicc_delete_scheduled',
+			action:  'rayai_delete_scheduled',
 			nonce:   nonce,
 			post_id: postId,
 		}, function(response) {
@@ -652,13 +652,13 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 
 	// LinkedIn bulk select — update count and toggle button.
 	function aiccUpdateLiBulkState() {
-		var count = $('.aicc-li-row-check:checked').length;
-		$('.aicc-li-bulk-count').text(count);
-		$('.aicc-li-bulk-delete-btn').prop('disabled', count === 0);
+		var count = $('.rayai-li-row-check:checked').length;
+		$('.rayai-li-bulk-count').text(count);
+		$('.rayai-li-bulk-delete-btn').prop('disabled', count === 0);
 
 		// Sync select-all checkbox state.
-		var total = $('.aicc-li-row-check').length;
-		var $all  = $('.aicc-li-select-all');
+		var total = $('.rayai-li-row-check').length;
+		var $all  = $('.rayai-li-select-all');
 		if (count === 0) {
 			$all.prop('checked', false).prop('indeterminate', false);
 		} else if (count === total) {
@@ -669,28 +669,28 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	}
 
 	// Select-all checkbox toggles all row checkboxes.
-	$(document).on('change', '.aicc-li-select-all', function() {
+	$(document).on('change', '.rayai-li-select-all', function() {
 		var checked = $(this).prop('checked');
-		$('.aicc-li-row-check').prop('checked', checked);
+		$('.rayai-li-row-check').prop('checked', checked);
 		aiccUpdateLiBulkState();
 	});
 
 	// Row checkbox change syncs bulk count + select-all state.
-	$(document).on('change', '.aicc-li-row-check', function() {
+	$(document).on('change', '.rayai-li-row-check', function() {
 		aiccUpdateLiBulkState();
 	});
 
 	// Bulk delete button.
-	$(document).on('click', '.aicc-li-bulk-delete-btn', function() {
+	$(document).on('click', '.rayai-li-bulk-delete-btn', function() {
 		var $btn    = $(this);
 		var ids     = [];
-		$('.aicc-li-row-check:checked').each(function() {
+		$('.rayai-li-row-check:checked').each(function() {
 			ids.push($(this).val());
 		});
 
 		if (ids.length === 0) return;
 
-		if (!confirm('<?php echo esc_js( __( 'Remove the selected posts from the LinkedIn Sharing Status dashboard? The WordPress posts and any LinkedIn shares will NOT be deleted.', 'ai-content-orchestrator' ) ); ?>'.replace('the selected posts', ids.length + ' selected post' + (ids.length === 1 ? '' : 's')))) {
+		if (!confirm('<?php echo esc_js( __( 'Remove the selected posts from the LinkedIn Sharing Status dashboard? The WordPress posts and any LinkedIn shares will NOT be deleted.', 'rayai-content-orchestrator' ) ); ?>'.replace('the selected posts', ids.length + ' selected post' + (ids.length === 1 ? '' : 's')))) {
 			return;
 		}
 
@@ -698,18 +698,18 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> Deleting...');
 
 		$.post(ajaxUrl, {
-			action:     'aicc_linkedin_bulk_remove',
+			action:     'rayai_linkedin_bulk_remove',
 			nonce:      nonce,
 			'post_ids[]': ids,
 		}, function(response) {
 			if (response.success) {
 				$.each(response.data.post_ids, function(i, id) {
-					$('#aicc-li-row-' + id).fadeOut(300, function() { $(this).remove(); });
+					$('#rayai-li-row-' + id).fadeOut(300, function() { $(this).remove(); });
 				});
 				setTimeout(function() {
 					aiccUpdateLiBulkState();
 					// Reload if empty to refresh the empty state.
-					if ($('.aicc-li-row-check').length === 0) {
+					if ($('.rayai-li-row-check').length === 0) {
 						location.reload();
 					}
 				}, 400);
@@ -725,19 +725,19 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Remove from LinkedIn Sharing Status dashboard
-	$(document).on('click', '.aicc-li-remove-btn', function() {
-		if (!confirm('<?php echo esc_js( __( 'Remove this post from the LinkedIn Sharing Status dashboard? The WordPress post and any existing LinkedIn share will NOT be deleted — this only hides it from this list.', 'ai-content-orchestrator' ) ); ?>')) {
+	$(document).on('click', '.rayai-li-remove-btn', function() {
+		if (!confirm('<?php echo esc_js( __( 'Remove this post from the LinkedIn Sharing Status dashboard? The WordPress post and any existing LinkedIn share will NOT be deleted — this only hides it from this list.', 'rayai-content-orchestrator' ) ); ?>')) {
 			return;
 		}
 
 		var $btn   = $(this);
 		var postId = $btn.data('post-id');
-		var $row   = $('#aicc-li-row-' + postId);
+		var $row   = $('#rayai-li-row-' + postId);
 
 		$btn.prop('disabled', true);
 
 		$.post(ajaxUrl, {
-			action:  'aicc_linkedin_remove_from_dashboard',
+			action:  'rayai_linkedin_remove_from_dashboard',
 			nonce:   nonce,
 			post_id: postId,
 		}, function(response) {
@@ -754,76 +754,76 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Toggle LinkedIn post preview
-	$(document).on('click', '.aicc-li-toggle-preview', function(e) {
+	$(document).on('click', '.rayai-li-toggle-preview', function(e) {
 		e.preventDefault();
 		var postId = $(this).data('post-id');
-		$('#aicc-li-preview-' + postId).slideToggle(150);
+		$('#rayai-li-preview-' + postId).slideToggle(150);
 	});
 
 	// Edit LinkedIn commentary — switch to edit mode
-	$(document).on('click', '.aicc-li-edit-btn', function() {
+	$(document).on('click', '.rayai-li-edit-btn', function() {
 		var postId = $(this).data('post-id');
-		var $wrap  = $('#aicc-li-preview-' + postId);
-		$wrap.find('.aicc-li-preview-view').hide();
-		$wrap.find('.aicc-li-preview-edit').show();
-		$wrap.find('.aicc-li-edit-textarea').focus();
+		var $wrap  = $('#rayai-li-preview-' + postId);
+		$wrap.find('.rayai-li-preview-view').hide();
+		$wrap.find('.rayai-li-preview-edit').show();
+		$wrap.find('.rayai-li-edit-textarea').focus();
 	});
 
 	// Cancel edit — restore view mode
-	$(document).on('click', '.aicc-li-cancel-btn', function() {
+	$(document).on('click', '.rayai-li-cancel-btn', function() {
 		var postId = $(this).data('post-id');
-		var $wrap  = $('#aicc-li-preview-' + postId);
+		var $wrap  = $('#rayai-li-preview-' + postId);
 		// Restore original text in textarea.
-		var original = $wrap.find('.aicc-li-preview-text').text();
-		$wrap.find('.aicc-li-edit-textarea').val(original);
-		$wrap.find('.aicc-li-preview-edit').hide();
-		$wrap.find('.aicc-li-preview-view').show();
+		var original = $wrap.find('.rayai-li-preview-text').text();
+		$wrap.find('.rayai-li-edit-textarea').val(original);
+		$wrap.find('.rayai-li-preview-edit').hide();
+		$wrap.find('.rayai-li-preview-view').show();
 	});
 
 	// Live char count while editing
-	$(document).on('input', '.aicc-li-edit-textarea', function() {
+	$(document).on('input', '.rayai-li-edit-textarea', function() {
 		var len = $(this).val().length;
-		$(this).closest('.aicc-li-preview-edit').find('.aicc-li-edit-count').text(len + ' / 2900 characters');
+		$(this).closest('.rayai-li-preview-edit').find('.rayai-li-edit-count').text(len + ' / 2900 characters');
 	});
 
 	// Save edited commentary
-	$(document).on('click', '.aicc-li-save-btn', function() {
+	$(document).on('click', '.rayai-li-save-btn', function() {
 		var $btn       = $(this);
 		var postId     = $btn.data('post-id');
-		var $wrap      = $('#aicc-li-preview-' + postId);
-		var commentary = $wrap.find('.aicc-li-edit-textarea').val();
+		var $wrap      = $('#rayai-li-preview-' + postId);
+		var commentary = $wrap.find('.rayai-li-edit-textarea').val();
 
 		$btn.prop('disabled', true).text('Saving...');
 
 		$.post(ajaxUrl, {
-			action:     'aicc_linkedin_save_commentary',
+			action:     'rayai_linkedin_save_commentary',
 			nonce:      nonce,
 			post_id:    postId,
 			commentary: commentary,
 		}, function(response) {
 			if (response.success) {
-				$wrap.find('.aicc-li-preview-text').text(response.data.commentary);
-				$wrap.find('.aicc-li-char-count').text(response.data.length + ' characters');
-				$wrap.find('.aicc-li-preview-edit').hide();
-				$wrap.find('.aicc-li-preview-view').show();
-				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'ai-content-orchestrator' ) ); ?>');
+				$wrap.find('.rayai-li-preview-text').text(response.data.commentary);
+				$wrap.find('.rayai-li-char-count').text(response.data.length + ' characters');
+				$wrap.find('.rayai-li-preview-edit').hide();
+				$wrap.find('.rayai-li-preview-view').show();
+				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'rayai-content-orchestrator' ) ); ?>');
 			} else {
 				alert('Error: ' + (response.data.message || 'Unknown error'));
-				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'ai-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'rayai-content-orchestrator' ) ); ?>');
 			}
 		}).fail(function(xhr) {
 			alert('Request failed: ' + xhr.status);
-			$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'ai-content-orchestrator' ) ); ?>');
+			$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'rayai-content-orchestrator' ) ); ?>');
 		});
 	});
 
 	// Regenerate commentary via AI
-	$(document).on('click', '.aicc-li-regen-btn', function() {
+	$(document).on('click', '.rayai-li-regen-btn', function() {
 		var $btn   = $(this);
 		var postId = $btn.data('post-id');
-		var $wrap  = $('#aicc-li-preview-' + postId);
+		var $wrap  = $('#rayai-li-preview-' + postId);
 
-		if (!confirm('<?php echo esc_js( __( 'Regenerate the LinkedIn post via AI? The current text will be replaced.', 'ai-content-orchestrator' ) ); ?>')) {
+		if (!confirm('<?php echo esc_js( __( 'Regenerate the LinkedIn post via AI? The current text will be replaced.', 'rayai-content-orchestrator' ) ); ?>')) {
 			return;
 		}
 
@@ -833,17 +833,17 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		$.post({
 			url:     ajaxUrl,
 			data:    {
-				action:  'aicc_linkedin_regenerate_commentary',
+				action:  'rayai_linkedin_regenerate_commentary',
 				nonce:   nonce,
 				post_id: postId,
 			},
 			timeout: 120000,
 		}).done(function(response) {
 			if (response.success) {
-				$wrap.find('.aicc-li-preview-text').text(response.data.commentary);
-				$wrap.find('.aicc-li-edit-textarea').val(response.data.commentary);
-				$wrap.find('.aicc-li-char-count').text(response.data.length + ' characters');
-				$wrap.find('.aicc-li-edit-count').text(response.data.length + ' / 2900 characters');
+				$wrap.find('.rayai-li-preview-text').text(response.data.commentary);
+				$wrap.find('.rayai-li-edit-textarea').val(response.data.commentary);
+				$wrap.find('.rayai-li-char-count').text(response.data.length + ' characters');
+				$wrap.find('.rayai-li-edit-count').text(response.data.length + ' / 2900 characters');
 				$btn.prop('disabled', false).html(originalHtml);
 			} else {
 				alert('Regeneration failed: ' + (response.data.message || 'Unknown error'));
@@ -856,34 +856,34 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Share to LinkedIn button
-	$(document).on('click', '.aicc-li-share-btn', function() {
+	$(document).on('click', '.rayai-li-share-btn', function() {
 		var $btn    = $(this);
 		var postId  = $btn.data('post-id');
-		var $status = $('.aicc-li-status-' + postId);
+		var $status = $('.rayai-li-status-' + postId);
 
 		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> Sharing...');
 
 		$.post(ajaxUrl, {
-			action:  'aicc_linkedin_share_now',
+			action:  'rayai_linkedin_share_now',
 			nonce:   nonce,
 			post_id: postId,
 		}, function(response) {
 			if (response.success) {
 				$status.html(
 					'<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>' +
-					' <strong style="color: #00a32a;"><?php echo esc_js( __( 'Shared', 'ai-content-orchestrator' ) ); ?></strong>' +
-					'<br><small class="description"><?php echo esc_js( __( 'Just now', 'ai-content-orchestrator' ) ); ?></small>'
+					' <strong style="color: #00a32a;"><?php echo esc_js( __( 'Shared', 'rayai-content-orchestrator' ) ); ?></strong>' +
+					'<br><small class="description"><?php echo esc_js( __( 'Just now', 'rayai-content-orchestrator' ) ); ?></small>'
 				);
-				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Re-share', 'ai-content-orchestrator' ) ); ?>');
-				alert('<?php echo esc_js( __( 'Successfully shared to LinkedIn! Check your profile feed.', 'ai-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Re-share', 'rayai-content-orchestrator' ) ); ?>');
+				alert('<?php echo esc_js( __( 'Successfully shared to LinkedIn! Check your profile feed.', 'rayai-content-orchestrator' ) ); ?>');
 			} else {
 				var msg = (response.data && response.data.message) ? response.data.message : 'Unknown error';
 				$status.html(
 					'<span class="dashicons dashicons-warning" style="color: #d63638;"></span>' +
-					' <strong style="color: #d63638;"><?php echo esc_js( __( 'Failed', 'ai-content-orchestrator' ) ); ?></strong>' +
+					' <strong style="color: #d63638;"><?php echo esc_js( __( 'Failed', 'rayai-content-orchestrator' ) ); ?></strong>' +
 					'<br><small class="description" style="color: #d63638;">' + $('<div>').text(msg).html() + '</small>'
 				);
-				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Retry', 'ai-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Retry', 'rayai-content-orchestrator' ) ); ?>');
 				alert('LinkedIn error: ' + msg);
 			}
 		}).fail(function(xhr) {
@@ -893,9 +893,9 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Reschedule button
-	$('.aicc-reschedule-btn').on('click', function() {
+	$('.rayai-reschedule-btn').on('click', function() {
 		var postId     = $(this).data('post-id');
-		var $row       = $('#aicc-row-' + postId);
+		var $row       = $('#rayai-row-' + postId);
 		var scheduleAt = parseInt($row.data('schedule-at'), 10);
 
 		rescheduleTargetId = postId;
@@ -906,49 +906,49 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 			var pad = function(n) { return n < 10 ? '0' + n : n; };
 			var val = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
 				+ 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
-			$('#aicc-reschedule-input').val(val);
+			$('#rayai-reschedule-input').val(val);
 		}
-		$('#aicc-reschedule-modal').show();
+		$('#rayai-reschedule-modal').show();
 	});
 
 	// Reschedule modal — cancel
-	$('#aicc-reschedule-cancel, .aicc-modal-backdrop').on('click', function() {
-		$('#aicc-reschedule-modal').hide();
+	$('#rayai-reschedule-cancel, .rayai-modal-backdrop').on('click', function() {
+		$('#rayai-reschedule-modal').hide();
 		rescheduleTargetId = null;
 	});
 
 	// Review table — bulk select.
 	function updateReviewBulkState() {
-		var count = $('.aicc-review-check:checked').length;
-		var total = $('.aicc-review-check').length;
-		$('#aicc-bulk-actions-bar').toggle(count > 0);
-		$('#aicc-review-check-all-th, #aicc-review-check-all').prop('checked', count === total && total > 0);
-		if (count > 0 && count < total) $('#aicc-review-check-all-th').prop('indeterminate', true);
+		var count = $('.rayai-review-check:checked').length;
+		var total = $('.rayai-review-check').length;
+		$('#rayai-bulk-actions-bar').toggle(count > 0);
+		$('#rayai-review-check-all-th, #rayai-review-check-all').prop('checked', count === total && total > 0);
+		if (count > 0 && count < total) $('#rayai-review-check-all-th').prop('indeterminate', true);
 	}
 
-	$('#aicc-review-check-all-th, #aicc-review-check-all').on('change', function() {
-		$('.aicc-review-check').prop('checked', $(this).prop('checked'));
-		$('#aicc-review-check-all-th, #aicc-review-check-all').prop('checked', $(this).prop('checked'));
+	$('#rayai-review-check-all-th, #rayai-review-check-all').on('change', function() {
+		$('.rayai-review-check').prop('checked', $(this).prop('checked'));
+		$('#rayai-review-check-all-th, #rayai-review-check-all').prop('checked', $(this).prop('checked'));
 		updateReviewBulkState();
 	});
 
-	$(document).on('change', '.aicc-review-check', function() {
+	$(document).on('change', '.rayai-review-check', function() {
 		updateReviewBulkState();
 	});
 
 	// Bulk delete.
-	$('#aicc-bulk-delete-btn').on('click', function() {
+	$('#rayai-bulk-delete-btn').on('click', function() {
 		var ids = [];
-		$('.aicc-review-check:checked').each(function() { ids.push($(this).val()); });
+		$('.rayai-review-check:checked').each(function() { ids.push($(this).val()); });
 		if (!ids.length) return;
-		if (!confirm('<?php echo esc_js( __( 'Move', 'ai-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items to the trash?', 'ai-content-orchestrator' ) ); ?>')) return;
+		if (!confirm('<?php echo esc_js( __( 'Move', 'rayai-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items to the trash?', 'rayai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn = $(this);
-		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Deleting...', 'ai-content-orchestrator' ) ); ?>');
+		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Deleting...', 'rayai-content-orchestrator' ) ); ?>');
 		var done = 0;
 		$.each(ids, function(_, id) {
-			$.post(ajaxUrl, { action: 'aicc_delete_scheduled', nonce: nonce, post_id: id }, function() {
-				$('#aicc-row-' + id).fadeOut(300, function() { $(this).remove(); });
+			$.post(ajaxUrl, { action: 'rayai_delete_scheduled', nonce: nonce, post_id: id }, function() {
+				$('#rayai-row-' + id).fadeOut(300, function() { $(this).remove(); });
 				done++;
 				if (done >= ids.length) { setTimeout(function() { location.reload(); }, 500); }
 			});
@@ -956,18 +956,18 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Bulk approve.
-	$('#aicc-bulk-approve-btn').on('click', function() {
+	$('#rayai-bulk-approve-btn').on('click', function() {
 		var ids = [];
-		$('.aicc-review-check:checked').each(function() { ids.push($(this).val()); });
+		$('.rayai-review-check:checked').each(function() { ids.push($(this).val()); });
 		if (!ids.length) return;
-		if (!confirm('<?php echo esc_js( __( 'Approve', 'ai-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items?', 'ai-content-orchestrator' ) ); ?>')) return;
+		if (!confirm('<?php echo esc_js( __( 'Approve', 'rayai-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items?', 'rayai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn = $(this);
-		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Approving...', 'ai-content-orchestrator' ) ); ?>');
+		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Approving...', 'rayai-content-orchestrator' ) ); ?>');
 		var done = 0;
 		$.each(ids, function(_, id) {
-			$.post(ajaxUrl, { action: 'aicc_approve_scheduled', nonce: nonce, post_id: id }, function() {
-				$('#aicc-row-' + id).fadeOut(300, function() { $(this).remove(); });
+			$.post(ajaxUrl, { action: 'rayai_approve_scheduled', nonce: nonce, post_id: id }, function() {
+				$('#rayai-row-' + id).fadeOut(300, function() { $(this).remove(); });
 				done++;
 				if (done >= ids.length) { setTimeout(function() { location.reload(); }, 500); }
 			});
@@ -975,15 +975,15 @@ $aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	});
 
 	// Reschedule modal — save
-	$('#aicc-reschedule-save').on('click', function() {
-		var newSchedule = $('#aicc-reschedule-input').val();
+	$('#rayai-reschedule-save').on('click', function() {
+		var newSchedule = $('#rayai-reschedule-input').val();
 		if (!newSchedule) { alert('Please select a date and time.'); return; }
 
 		var $btn = $(this);
 		$btn.prop('disabled', true).text('Saving...');
 
 		$.post(ajaxUrl, {
-			action:      'aicc_reschedule',
+			action:      'rayai_reschedule',
 			nonce:       nonce,
 			post_id:     rescheduleTargetId,
 			schedule_at: newSchedule,
