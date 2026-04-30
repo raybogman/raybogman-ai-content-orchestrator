@@ -9,14 +9,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$is_configured  = AICC_Settings::is_configured();
-$provider       = AICC_Settings::get_ai_provider();
-$model          = AICC_Settings::get_active_model();
-$has_yoast      = defined( 'WPSEO_VERSION' );
-$categories     = AICC_Publisher::get_categories();
-$saved_urls     = AICC_Settings::get_saved_urls();
-$pdf_library    = AICC_PDF_Library::get_for_js();
-$project_vision = AICC_Settings::get_project_vision();
+$aicc_is_configured  = AICC_Settings::is_configured();
+$aicc_provider       = AICC_Settings::get_ai_provider();
+$aicc_model          = AICC_Settings::get_active_model();
+$aicc_has_yoast      = defined( 'WPSEO_VERSION' );
+$aicc_categories     = AICC_Publisher::get_categories();
+$aicc_saved_urls     = AICC_Settings::get_saved_urls();
+$aicc_pdf_library    = AICC_PDF_Library::get_for_js();
+$aicc_project_vision = AICC_Settings::get_project_vision();
 ?>
 <div class="wrap aicc-wrap">
 	<h1 class="wp-heading-inline">
@@ -27,7 +27,7 @@ $project_vision = AICC_Settings::get_project_vision();
 		<?php esc_html_e( 'AI-powered content creation with website scanning, SEO optimization, and Yoast SEO integration.', 'ai-content-orchestrator' ); ?>
 	</p>
 
-	<?php if ( ! $is_configured ) : ?>
+	<?php if ( ! $aicc_is_configured ) : ?>
 		<div class="notice notice-error">
 			<p>
 				<strong><?php esc_html_e( 'API key not configured.', 'ai-content-orchestrator' ); ?></strong>
@@ -47,12 +47,12 @@ $project_vision = AICC_Settings::get_project_vision();
 	<div class="aicc-status-bar">
 		<span class="aicc-status-item">
 			<strong><?php esc_html_e( 'Provider:', 'ai-content-orchestrator' ); ?></strong>
-			<?php echo esc_html( 'openai' === $provider ? 'OpenAI' : 'Claude' ); ?>
-			(<?php echo esc_html( $model ); ?>)
+			<?php echo esc_html( 'openai' === $aicc_provider ? 'OpenAI' : 'Claude' ); ?>
+			(<?php echo esc_html( $aicc_model ); ?>)
 		</span>
 		<span class="aicc-status-item">
 			<strong><?php esc_html_e( 'Yoast SEO:', 'ai-content-orchestrator' ); ?></strong>
-			<?php if ( $has_yoast ) : ?>
+			<?php if ( $aicc_has_yoast ) : ?>
 				<span class="aicc-badge aicc-badge-success"><?php esc_html_e( 'Active', 'ai-content-orchestrator' ); ?></span>
 			<?php else : ?>
 				<span class="aicc-badge aicc-badge-warning"><?php esc_html_e( 'Not installed', 'ai-content-orchestrator' ); ?></span>
@@ -63,7 +63,7 @@ $project_vision = AICC_Settings::get_project_vision();
 		</a>
 	</div>
 
-	<?php if ( ! empty( $project_vision ) ) : ?>
+	<?php if ( ! empty( $aicc_project_vision ) ) : ?>
 		<div class="notice notice-info" style="margin: 16px 0;">
 			<p>
 				<span class="dashicons dashicons-lightbulb" style="color: #2271b1; vertical-align: text-bottom;"></span>
@@ -72,7 +72,7 @@ $project_vision = AICC_Settings::get_project_vision();
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=aicc-settings' ) ); ?>"><?php esc_html_e( 'Edit', 'ai-content-orchestrator' ); ?></a>
 			</p>
 			<p class="description" style="margin-top: 0;">
-				<em><?php echo esc_html( strlen( $project_vision ) > 200 ? substr( $project_vision, 0, 200 ) . '...' : $project_vision ); ?></em>
+				<em><?php echo esc_html( strlen( $aicc_project_vision ) > 200 ? substr( $aicc_project_vision, 0, 200 ) . '...' : $aicc_project_vision ); ?></em>
 			</p>
 		</div>
 	<?php endif; ?>
@@ -116,13 +116,13 @@ $project_vision = AICC_Settings::get_project_vision();
 								</p>
 							</td>
 						</tr>
-						<tr id="aicc-saved-urls-row" <?php echo empty( $saved_urls ) ? 'style="display:none;"' : ''; ?>>
+						<tr id="aicc-saved-urls-row" <?php echo empty( $aicc_saved_urls ) ? 'style="display:none;"' : ''; ?>>
 							<th scope="row">
 								<?php esc_html_e( 'Saved URLs', 'ai-content-orchestrator' ); ?>
 							</th>
 							<td>
 								<div id="aicc-saved-urls-list" class="aicc-saved-urls">
-									<?php foreach ( $saved_urls as $saved_url ) : ?>
+									<?php foreach ( $aicc_saved_urls as $saved_url ) : ?>
 										<span class="aicc-url-chip" data-url="<?php echo esc_attr( $saved_url ); ?>">
 											<span class="aicc-url-chip-text"><?php echo esc_html( $saved_url ); ?></span>
 											<button type="button" class="aicc-url-chip-remove" title="<?php esc_attr_e( 'Remove', 'ai-content-orchestrator' ); ?>">&times;</button>
@@ -160,12 +160,12 @@ $project_vision = AICC_Settings::get_project_vision();
 									?>
 								</p>
 
-								<?php if ( ! empty( $pdf_library ) ) : ?>
+								<?php if ( ! empty( $aicc_pdf_library ) ) : ?>
 								<div id="aicc-pdf-library" class="aicc-pdf-library" style="margin-top: 12px;">
 									<p class="description" style="margin-bottom: 8px;">
 										<strong><?php esc_html_e( 'Saved PDFs — check to use as source:', 'ai-content-orchestrator' ); ?></strong>
 									</p>
-									<?php foreach ( $pdf_library as $pdf ) : ?>
+									<?php foreach ( $aicc_pdf_library as $pdf ) : ?>
 										<div class="aicc-pdf-item" data-pdf-id="<?php echo esc_attr( $pdf['id'] ); ?>">
 											<label class="aicc-pdf-label">
 												<input type="checkbox" name="aicc-pdf-ids[]" value="<?php echo esc_attr( $pdf['id'] ); ?>" class="aicc-pdf-checkbox" />
@@ -325,7 +325,7 @@ $project_vision = AICC_Settings::get_project_vision();
 
 						<!-- LinkedIn (Enterprise) -->
 						<?php if ( aicc_is_pro() && AICC_LinkedIn::is_connected() ) : ?>
-							<?php $li_profile = AICC_LinkedIn::get_profile(); ?>
+							<?php $aicc_li_profile = AICC_LinkedIn::get_profile(); ?>
 							<tr>
 								<th scope="row"><?php esc_html_e( 'LinkedIn', 'ai-content-orchestrator' ); ?></th>
 								<td>
@@ -339,7 +339,7 @@ $project_vision = AICC_Settings::get_project_vision();
 											printf(
 												/* translators: %s: LinkedIn account name */
 												esc_html__( 'Will share to LinkedIn as %s when the content is published (immediately or after approval).', 'ai-content-orchestrator' ),
-												'<strong>' . esc_html( $li_profile['name'] ) . '</strong>'
+												'<strong>' . esc_html( $aicc_li_profile['name'] ) . '</strong>'
 											);
 											?>
 										</p>
@@ -350,7 +350,7 @@ $project_vision = AICC_Settings::get_project_vision();
 
 						<!-- Instagram (Enterprise) -->
 						<?php if ( aicc_is_pro() && AICC_Instagram::is_connected() ) : ?>
-							<?php $ig_profile = AICC_Instagram::get_profile(); ?>
+							<?php $aicc_ig_profile = AICC_Instagram::get_profile(); ?>
 							<tr>
 								<th scope="row"><?php esc_html_e( 'Instagram', 'ai-content-orchestrator' ); ?></th>
 								<td>
@@ -363,7 +363,7 @@ $project_vision = AICC_Settings::get_project_vision();
 											<?php
 											printf(
 												esc_html__( 'Will share to Instagram as @%s with the featured image and an AI-generated caption.', 'ai-content-orchestrator' ),
-												esc_html( $ig_profile['username'] ?? '' )
+												esc_html( $aicc_ig_profile['username'] ?? '' )
 											);
 											?>
 										</p>
@@ -374,26 +374,26 @@ $project_vision = AICC_Settings::get_project_vision();
 
 						<!-- Featured Image -->
 						<?php
-						$image_configured = AICC_Settings::is_image_configured();
-						$image_provider   = AICC_Settings::get_image_provider();
-						$image_labels     = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
-						$image_label      = isset( $image_labels[ $image_provider ] ) ? $image_labels[ $image_provider ] : $image_provider;
+						$aicc_image_configured = AICC_Settings::is_image_configured();
+						$aicc_image_provider   = AICC_Settings::get_image_provider();
+						$aicc_image_labels     = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
+						$aicc_image_label      = isset( $aicc_image_labels[ $aicc_image_provider ] ) ? $aicc_image_labels[ $aicc_image_provider ] : $aicc_image_provider;
 						?>
 						<tr>
 							<th scope="row"><?php esc_html_e( 'Featured Image', 'ai-content-orchestrator' ); ?></th>
 							<td>
 								<fieldset>
 									<label>
-										<input type="checkbox" id="aicc-generate-image" <?php echo $image_configured ? '' : 'disabled'; ?> />
+										<input type="checkbox" id="aicc-generate-image" <?php echo $aicc_image_configured ? '' : 'disabled'; ?> />
 										<strong><?php esc_html_e( 'Generate AI featured image', 'ai-content-orchestrator' ); ?></strong>
 									</label>
 									<p class="description">
-										<?php if ( $image_configured ) : ?>
+										<?php if ( $aicc_image_configured ) : ?>
 											<?php
 											printf(
 												/* translators: %s: image provider name (e.g. "OpenAI (DALL-E 3)" or "Ideogram") */
 												esc_html__( 'Uses %s to generate a landscape image based on the blog topic. Set as the featured image — LinkedIn will automatically show this image when sharing.', 'ai-content-orchestrator' ),
-												'<strong>' . esc_html( $image_label ) . '</strong>'
+												'<strong>' . esc_html( $aicc_image_label ) . '</strong>'
 											);
 											?>
 										<?php else : ?>
@@ -402,7 +402,7 @@ $project_vision = AICC_Settings::get_project_vision();
 											printf(
 												/* translators: %s: image provider name */
 												'<em>' . esc_html__( 'Requires an API key for %s. Configure it in Settings → Featured Image Provider section.', 'ai-content-orchestrator' ) . '</em>',
-												esc_html( $image_label )
+												esc_html( $aicc_image_label )
 											);
 											?>
 										<?php endif; ?>
@@ -443,11 +443,11 @@ $project_vision = AICC_Settings::get_project_vision();
 							<th scope="row"><?php esc_html_e( 'Output Format', 'ai-content-orchestrator' ); ?></th>
 							<td>
 								<fieldset>
-									<?php $default_format = AICC_Settings::get_default_output_format(); ?>
+									<?php $aicc_default_format = AICC_Settings::get_default_output_format(); ?>
 									<select id="aicc-output-format" style="min-width:260px;">
-										<option value="wordpress" <?php selected( $default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'ai-content-orchestrator' ); ?></option>
+										<option value="wordpress" <?php selected( $aicc_default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'ai-content-orchestrator' ); ?></option>
 										<?php if ( aicc_is_pro() ) : ?>
-										<option value="thrive" <?php selected( $default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'ai-content-orchestrator' ); ?></option>
+										<option value="thrive" <?php selected( $aicc_default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'ai-content-orchestrator' ); ?></option>
 									<?php else : ?>
 										<option value="thrive" disabled><?php esc_html_e( 'Thrive Architect (Enterprise)', 'ai-content-orchestrator' ); ?></option>
 									<?php endif; ?>
@@ -471,8 +471,8 @@ $project_vision = AICC_Settings::get_project_vision();
 							</th>
 							<td>
 								<div id="aicc-categories-list" class="aicc-checkbox-list">
-									<?php if ( ! empty( $categories ) ) : ?>
-										<?php foreach ( $categories as $cat ) : ?>
+									<?php if ( ! empty( $aicc_categories ) ) : ?>
+										<?php foreach ( $aicc_categories as $cat ) : ?>
 											<label class="aicc-checkbox-item">
 												<input type="checkbox" name="aicc-categories[]" value="<?php echo esc_attr( $cat['id'] ); ?>" />
 												<?php echo esc_html( $cat['name'] ); ?>
@@ -491,7 +491,7 @@ $project_vision = AICC_Settings::get_project_vision();
 				</table>
 
 				<p class="submit">
-					<button type="button" id="aicc-submit" class="button button-primary button-hero" <?php echo $is_configured ? '' : 'disabled'; ?>>
+					<button type="button" id="aicc-submit" class="button button-primary button-hero" <?php echo $aicc_is_configured ? '' : 'disabled'; ?>>
 						<span class="dashicons dashicons-admin-post aicc-btn-icon"></span>
 						<?php esc_html_e( 'Create Content', 'ai-content-orchestrator' ); ?>
 					</button>

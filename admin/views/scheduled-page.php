@@ -9,20 +9,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$items              = AICC_Publisher::get_scheduled_items();
-$linkedin_items     = AICC_LinkedIn::is_connected() ? AICC_Publisher::get_published_with_linkedin_status( 20 ) : array();
-$pending_count      = 0;
-$future_count       = 0;
-foreach ( $items as $item ) {
-	if ( 'future' === $item['status'] ) {
-		$future_count++;
-	} elseif ( $item['needs_review'] ) {
-		$pending_count++;
+$aicc_items              = AICC_Publisher::get_scheduled_items();
+$aicc_linkedin_items     = AICC_LinkedIn::is_connected() ? AICC_Publisher::get_published_with_linkedin_status( 20 ) : array();
+$aicc_pending_count      = 0;
+$aicc_future_count       = 0;
+foreach ( $aicc_items as $aicc_item ) {
+	if ( 'future' === $aicc_item['status'] ) {
+		$aicc_future_count++;
+	} elseif ( $aicc_item['needs_review'] ) {
+		$aicc_pending_count++;
 	}
 }
-$wp_cron_disabled = defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
-$next_cron        = wp_next_scheduled( 'aicc_catch_up_scheduled' );
-$last_catchup     = get_option( 'aicc_last_catchup_log', array() );
+$aicc_wp_cron_disabled = defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
+$aicc_next_cron        = wp_next_scheduled( 'aicc_catch_up_scheduled' );
+$aicc_last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 ?>
 <div class="wrap aicc-wrap">
 	<h1 class="wp-heading-inline">
@@ -33,7 +33,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		<?php esc_html_e( 'Review queue for AI-generated content awaiting human approval, plus content already scheduled for publication.', 'ai-content-orchestrator' ); ?>
 	</p>
 
-	<?php if ( $wp_cron_disabled ) : ?>
+	<?php if ( $aicc_wp_cron_disabled ) : ?>
 		<div class="notice notice-warning inline">
 			<p>
 				<strong><?php esc_html_e( 'WordPress cron is disabled.', 'ai-content-orchestrator' ); ?></strong>
@@ -60,33 +60,33 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 					<tr>
 						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Next scheduled run:', 'ai-content-orchestrator' ); ?></td>
 						<td style="border: none;">
-							<?php if ( $next_cron ) : ?>
-								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $next_cron ) ); ?>
-								(<?php echo esc_html( human_time_diff( time(), $next_cron ) ); ?>)
+							<?php if ( $aicc_next_cron ) : ?>
+								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $aicc_next_cron ) ); ?>
+								(<?php echo esc_html( human_time_diff( time(), $aicc_next_cron ) ); ?>)
 							<?php else : ?>
 								<span style="color: #d63638;"><?php esc_html_e( 'Not scheduled', 'ai-content-orchestrator' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
-					<?php if ( ! empty( $last_catchup ) ) : ?>
+					<?php if ( ! empty( $aicc_last_catchup ) ) : ?>
 						<tr>
 							<td style="font-weight: 600; border: none; vertical-align: top;"><?php esc_html_e( 'Last catch-up run:', 'ai-content-orchestrator' ); ?></td>
 							<td style="border: none;">
-								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $last_catchup['time'] ) ); ?>
-								(<?php echo esc_html( human_time_diff( $last_catchup['time'], time() ) ); ?> ago)
+								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $aicc_last_catchup['time'] ) ); ?>
+								(<?php echo esc_html( human_time_diff( $aicc_last_catchup['time'], time() ) ); ?> ago)
 								&mdash;
 								<?php
 								printf(
 									/* translators: 1: found count, 2: published count */
 									esc_html__( 'found %1$d future posts, published %2$d', 'ai-content-orchestrator' ),
-									(int) $last_catchup['found'],
-									(int) $last_catchup['published']
+									(int) $aicc_last_catchup['found'],
+									(int) $aicc_last_catchup['published']
 								);
 								?>
-								<?php if ( ! empty( $last_catchup['details'] ) ) : ?>
+								<?php if ( ! empty( $aicc_last_catchup['details'] ) ) : ?>
 									<details style="margin-top: 6px;">
 										<summary style="cursor: pointer; color: #2271b1;"><?php esc_html_e( 'Show details', 'ai-content-orchestrator' ); ?></summary>
-										<pre style="background: #f0f0f1; padding: 10px; border-radius: 3px; font-size: 12px; margin-top: 6px;"><?php echo esc_html( implode( "\n", $last_catchup['details'] ) ); ?></pre>
+										<pre style="background: #f0f0f1; padding: 10px; border-radius: 3px; font-size: 12px; margin-top: 6px;"><?php echo esc_html( implode( "\n", $aicc_last_catchup['details'] ) ); ?></pre>
 									</details>
 								<?php endif; ?>
 							</td>
@@ -111,20 +111,20 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	<div class="aicc-status-bar">
 		<span class="aicc-status-item">
 			<strong><?php esc_html_e( 'Awaiting review:', 'ai-content-orchestrator' ); ?></strong>
-			<span class="aicc-badge <?php echo $pending_count > 0 ? 'aicc-badge-warning' : 'aicc-badge-success'; ?>">
-				<?php echo esc_html( $pending_count ); ?>
+			<span class="aicc-badge <?php echo $aicc_pending_count > 0 ? 'aicc-badge-warning' : 'aicc-badge-success'; ?>">
+				<?php echo esc_html( $aicc_pending_count ); ?>
 			</span>
 		</span>
 		<span class="aicc-status-item">
 			<strong><?php esc_html_e( 'Scheduled:', 'ai-content-orchestrator' ); ?></strong>
-			<span class="aicc-badge aicc-badge-success"><?php echo esc_html( $future_count ); ?></span>
+			<span class="aicc-badge aicc-badge-success"><?php echo esc_html( $aicc_future_count ); ?></span>
 		</span>
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=aicc-create' ) ); ?>" class="aicc-status-item aicc-status-link">
 			<?php esc_html_e( 'Create New Content', 'ai-content-orchestrator' ); ?> &rarr;
 		</a>
 	</div>
 
-	<?php if ( empty( $items ) ) : ?>
+	<?php if ( empty( $aicc_items ) ) : ?>
 		<div class="aicc-card">
 			<div class="aicc-card-body" style="text-align: center; padding: 40px 20px;">
 				<span class="dashicons dashicons-calendar" style="font-size: 48px; width: 48px; height: 48px; color: #c3c4c7;"></span>
@@ -141,17 +141,17 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 
 		<!-- Upcoming Publications Timeline -->
 		<?php
-		$upcoming = array();
-		foreach ( $items as $item ) {
-			if ( 'future' === $item['status'] || ( $item['needs_review'] && ! empty( $item['scheduled_at'] ) ) ) {
-				$upcoming[] = $item;
+		$aicc_upcoming = array();
+		foreach ( $aicc_items as $aicc_item ) {
+			if ( 'future' === $aicc_item['status'] || ( $aicc_item['needs_review'] && ! empty( $aicc_item['scheduled_at'] ) ) ) {
+				$aicc_upcoming[] = $aicc_item;
 			}
 		}
-		usort( $upcoming, function( $a, $b ) {
+		usort( $aicc_upcoming, function( $a, $b ) {
 			return ( $a['scheduled_at'] ?? 0 ) - ( $b['scheduled_at'] ?? 0 );
 		});
 		?>
-		<?php if ( ! empty( $upcoming ) ) : ?>
+		<?php if ( ! empty( $aicc_upcoming ) ) : ?>
 		<div class="aicc-card" style="margin-bottom:20px;">
 			<div class="aicc-card-header">
 				<h2>
@@ -161,7 +161,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 			</div>
 			<div class="aicc-card-body">
 				<div style="position:relative; padding-left:24px;">
-					<?php foreach ( $upcoming as $idx => $up ) :
+					<?php foreach ( $aicc_upcoming as $idx => $up ) :
 						$is_future  = ( 'future' === $up['status'] );
 						$is_pending = $up['needs_review'];
 						$dot_color  = $is_future ? '#00a32a' : '#dba617';
@@ -183,7 +183,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 							}
 						}
 					?>
-					<div style="position:relative; padding-bottom:<?php echo $idx < count( $upcoming ) - 1 ? '20px' : '0'; ?>; <?php echo $idx < count( $upcoming ) - 1 ? 'border-left:2px solid #e0e0e0; margin-left:6px; padding-left:22px;' : 'margin-left:6px; padding-left:22px;'; ?>">
+					<div style="position:relative; padding-bottom:<?php echo $idx < count( $aicc_upcoming ) - 1 ? '20px' : '0'; ?>; <?php echo $idx < count( $aicc_upcoming ) - 1 ? 'border-left:2px solid #e0e0e0; margin-left:6px; padding-left:22px;' : 'margin-left:6px; padding-left:22px;'; ?>">
 						<div style="position:absolute; left:-8px; top:2px; width:14px; height:14px; background:<?php echo esc_attr( $dot_color ); ?>; border-radius:50%; border:2px solid #fff;"></div>
 						<div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
 							<strong style="font-size:13px;"><?php echo esc_html( $date_str ); ?></strong>
@@ -210,7 +210,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		<?php endif; ?>
 
 		<!-- Pending review items -->
-		<?php if ( $pending_count > 0 ) : ?>
+		<?php if ( $aicc_pending_count > 0 ) : ?>
 			<div class="aicc-card">
 				<div class="aicc-card-header">
 					<h2>
@@ -243,27 +243,27 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $items as $item ) : ?>
-								<?php if ( ! $item['needs_review'] ) continue; ?>
-								<tr id="aicc-row-<?php echo esc_attr( $item['id'] ); ?>" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $item['scheduled_at'] ); ?>">
-									<td><input type="checkbox" class="aicc-review-check" value="<?php echo esc_attr( $item['id'] ); ?>" /></td>
+							<?php foreach ( $aicc_items as $aicc_item ) : ?>
+								<?php if ( ! $aicc_item['needs_review'] ) continue; ?>
+								<tr id="aicc-row-<?php echo esc_attr( $aicc_item['id'] ); ?>" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $aicc_item['scheduled_at'] ); ?>">
+									<td><input type="checkbox" class="aicc-review-check" value="<?php echo esc_attr( $aicc_item['id'] ); ?>" /></td>
 									<td>
-										<strong><?php echo esc_html( $item['title'] ); ?></strong>
-										<?php if ( ! empty( $item['linkedin'] ) ) : ?>
+										<strong><?php echo esc_html( $aicc_item['title'] ); ?></strong>
+										<?php if ( ! empty( $aicc_item['linkedin'] ) ) : ?>
 											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'ai-content-orchestrator' ); ?>"></span>
 										<?php endif; ?>
-										<?php if ( ! empty( $item['focus_keyphrase'] ) ) : ?>
-											<br><small class="description"><?php esc_html_e( 'Focus:', 'ai-content-orchestrator' ); ?> <?php echo esc_html( $item['focus_keyphrase'] ); ?></small>
+										<?php if ( ! empty( $aicc_item['focus_keyphrase'] ) ) : ?>
+											<br><small class="description"><?php esc_html_e( 'Focus:', 'ai-content-orchestrator' ); ?> <?php echo esc_html( $aicc_item['focus_keyphrase'] ); ?></small>
 										<?php endif; ?>
 									</td>
 									<td>
 										<span class="aicc-tag">
-											<?php echo 'post' === $item['type'] ? esc_html__( 'Blog', 'ai-content-orchestrator' ) : esc_html__( 'Page', 'ai-content-orchestrator' ); ?>
+											<?php echo 'post' === $aicc_item['type'] ? esc_html__( 'Blog', 'ai-content-orchestrator' ) : esc_html__( 'Page', 'ai-content-orchestrator' ); ?>
 										</span>
 									</td>
 									<td>
-										<?php if ( ! empty( $item['categories'] ) ) : ?>
-											<?php foreach ( $item['categories'] as $cat ) : ?>
+										<?php if ( ! empty( $aicc_item['categories'] ) ) : ?>
+											<?php foreach ( $aicc_item['categories'] as $cat ) : ?>
 												<span class="aicc-tag"><?php echo esc_html( $cat ); ?></span>
 											<?php endforeach; ?>
 										<?php else : ?>
@@ -271,20 +271,20 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 										<?php endif; ?>
 									</td>
 									<td class="aicc-schedule-cell">
-										<span class="aicc-schedule-display"><?php echo esc_html( $item['scheduled_at_formatted'] ); ?></span>
+										<span class="aicc-schedule-display"><?php echo esc_html( $aicc_item['scheduled_at_formatted'] ); ?></span>
 									</td>
 									<td class="aicc-actions-cell">
-										<button type="button" class="button button-primary aicc-approve-btn" data-post-id="<?php echo esc_attr( $item['id'] ); ?>">
+										<button type="button" class="button button-primary aicc-approve-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>">
 											<span class="dashicons dashicons-yes" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 											<?php esc_html_e( 'Approve', 'ai-content-orchestrator' ); ?>
 										</button>
-										<a href="<?php echo esc_url( $item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'ai-content-orchestrator' ); ?>">
+										<a href="<?php echo esc_url( $aicc_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-edit" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</a>
-										<button type="button" class="button aicc-reschedule-btn" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button aicc-reschedule-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</button>
-										<button type="button" class="button aicc-delete-btn" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button aicc-delete-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 										</button>
 									</td>
@@ -297,7 +297,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 		<?php endif; ?>
 
 		<!-- Already scheduled items (future status) -->
-		<?php if ( $future_count > 0 ) : ?>
+		<?php if ( $aicc_future_count > 0 ) : ?>
 			<div class="aicc-card">
 				<div class="aicc-card-header">
 					<h2>
@@ -317,26 +317,26 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $items as $item ) : ?>
-								<?php if ( 'future' !== $item['status'] ) continue; ?>
-								<tr id="aicc-row-<?php echo esc_attr( $item['id'] ); ?>" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $item['scheduled_at'] ); ?>">
+							<?php foreach ( $aicc_items as $aicc_item ) : ?>
+								<?php if ( 'future' !== $aicc_item['status'] ) continue; ?>
+								<tr id="aicc-row-<?php echo esc_attr( $aicc_item['id'] ); ?>" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" data-schedule-at="<?php echo esc_attr( $aicc_item['scheduled_at'] ); ?>">
 									<td>
-										<strong><?php echo esc_html( $item['title'] ); ?></strong>
-										<?php if ( ! empty( $item['linkedin'] ) ) : ?>
+										<strong><?php echo esc_html( $aicc_item['title'] ); ?></strong>
+										<?php if ( ! empty( $aicc_item['linkedin'] ) ) : ?>
 											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'ai-content-orchestrator' ); ?>"></span>
 										<?php endif; ?>
-										<?php if ( ! empty( $item['focus_keyphrase'] ) ) : ?>
-											<br><small class="description"><?php esc_html_e( 'Focus:', 'ai-content-orchestrator' ); ?> <?php echo esc_html( $item['focus_keyphrase'] ); ?></small>
+										<?php if ( ! empty( $aicc_item['focus_keyphrase'] ) ) : ?>
+											<br><small class="description"><?php esc_html_e( 'Focus:', 'ai-content-orchestrator' ); ?> <?php echo esc_html( $aicc_item['focus_keyphrase'] ); ?></small>
 										<?php endif; ?>
 									</td>
 									<td>
 										<span class="aicc-tag">
-											<?php echo 'post' === $item['type'] ? esc_html__( 'Blog', 'ai-content-orchestrator' ) : esc_html__( 'Page', 'ai-content-orchestrator' ); ?>
+											<?php echo 'post' === $aicc_item['type'] ? esc_html__( 'Blog', 'ai-content-orchestrator' ) : esc_html__( 'Page', 'ai-content-orchestrator' ); ?>
 										</span>
 									</td>
 									<td>
-										<?php if ( ! empty( $item['categories'] ) ) : ?>
-											<?php foreach ( $item['categories'] as $cat ) : ?>
+										<?php if ( ! empty( $aicc_item['categories'] ) ) : ?>
+											<?php foreach ( $aicc_item['categories'] as $cat ) : ?>
 												<span class="aicc-tag"><?php echo esc_html( $cat ); ?></span>
 											<?php endforeach; ?>
 										<?php else : ?>
@@ -344,20 +344,20 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 										<?php endif; ?>
 									</td>
 									<td class="aicc-schedule-cell">
-										<span class="aicc-schedule-display"><?php echo esc_html( $item['scheduled_at_formatted'] ); ?></span>
+										<span class="aicc-schedule-display"><?php echo esc_html( $aicc_item['scheduled_at_formatted'] ); ?></span>
 									</td>
 									<td class="aicc-actions-cell">
-										<button type="button" class="button button-primary aicc-publish-now-btn" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" title="<?php esc_attr_e( 'Publish immediately (skip waiting for scheduled time)', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button button-primary aicc-publish-now-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Publish immediately (skip waiting for scheduled time)', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-megaphone" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 											<?php esc_html_e( 'Publish Now', 'ai-content-orchestrator' ); ?>
 										</button>
-										<a href="<?php echo esc_url( $item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'ai-content-orchestrator' ); ?>">
+										<a href="<?php echo esc_url( $aicc_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-edit" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</a>
-										<button type="button" class="button aicc-reschedule-btn" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button aicc-reschedule-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</button>
-										<button type="button" class="button aicc-delete-btn" data-post-id="<?php echo esc_attr( $item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
+										<button type="button" class="button aicc-delete-btn" data-post-id="<?php echo esc_attr( $aicc_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 										</button>
 									</td>
@@ -372,7 +372,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 	<?php endif; ?>
 
 	<!-- LinkedIn sharing status -->
-	<?php if ( ! empty( $linkedin_items ) ) : ?>
+	<?php if ( ! empty( $aicc_linkedin_items ) ) : ?>
 		<div class="aicc-card" style="margin-top: 20px;">
 			<div class="aicc-card-header">
 				<h2>
@@ -405,7 +405,7 @@ $last_catchup     = get_option( 'aicc_last_catchup_log', array() );
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ( $linkedin_items as $li ) : ?>
+						<?php foreach ( $aicc_linkedin_items as $li ) : ?>
 							<tr id="aicc-li-row-<?php echo esc_attr( $li['id'] ); ?>">
 								<td style="padding-left: 12px;">
 									<input type="checkbox" class="aicc-li-row-check" value="<?php echo esc_attr( $li['id'] ); ?>" />

@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$styles          = AICC_Styles::get_styles_for_js();
-$li_connected    = AICC_LinkedIn::is_connected();
-$img_configured  = AICC_Settings::is_image_configured();
-$saved_urls      = AICC_Settings::get_saved_urls();
-$categories      = AICC_Publisher::get_categories();
-$default_format  = AICC_Settings::get_default_output_format();
+$aicc_styles          = AICC_Styles::get_styles_for_js();
+$aicc_li_connected    = AICC_LinkedIn::is_connected();
+$aicc_img_configured  = AICC_Settings::is_image_configured();
+$aicc_saved_urls      = AICC_Settings::get_saved_urls();
+$aicc_categories      = AICC_Publisher::get_categories();
+$aicc_default_format  = AICC_Settings::get_default_output_format();
 ?>
 <div class="wrap aicc-wrap">
 	<h1 class="wp-heading-inline">
@@ -61,9 +61,9 @@ $default_format  = AICC_Settings::get_default_output_format();
 		</div>
 		<div class="aicc-card-body">
 			<?php
-			$sched_freq = AICC_Settings::get_schedule_frequency();
-			$sched_time = AICC_Settings::get_schedule_time();
-			$sched_skip = AICC_Settings::get_schedule_skip_weekends();
+			$aicc_sched_freq = AICC_Settings::get_schedule_frequency();
+			$aicc_sched_time = AICC_Settings::get_schedule_time();
+			$aicc_sched_skip = AICC_Settings::get_schedule_skip_weekends();
 			?>
 			<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; padding:10px 14px; background:#f6f7f7; border:1px solid #e0e0e0; border-radius:4px;">
 				<label style="font-weight:600; margin-right:4px;">
@@ -71,18 +71,18 @@ $default_format  = AICC_Settings::get_default_output_format();
 					<?php esc_html_e( 'Auto-fill Dates:', 'ai-content-orchestrator' ); ?>
 				</label>
 				<select id="aicc-schedule-freq" style="min-width:140px;">
-					<option value="none" <?php selected( $sched_freq, 'none' ); ?>><?php esc_html_e( 'Manual', 'ai-content-orchestrator' ); ?></option>
-					<option value="daily" <?php selected( $sched_freq, 'daily' ); ?>><?php esc_html_e( 'Daily', 'ai-content-orchestrator' ); ?></option>
-					<option value="every2" <?php selected( $sched_freq, 'every2' ); ?>><?php esc_html_e( 'Every 2 days', 'ai-content-orchestrator' ); ?></option>
-					<option value="every3" <?php selected( $sched_freq, 'every3' ); ?>><?php esc_html_e( 'Every 3 days', 'ai-content-orchestrator' ); ?></option>
-					<option value="weekly" <?php selected( $sched_freq, 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'ai-content-orchestrator' ); ?></option>
-					<option value="biweekly" <?php selected( $sched_freq, 'biweekly' ); ?>><?php esc_html_e( 'Bi-weekly', 'ai-content-orchestrator' ); ?></option>
-					<option value="monthly" <?php selected( $sched_freq, 'monthly' ); ?>><?php esc_html_e( 'Monthly', 'ai-content-orchestrator' ); ?></option>
+					<option value="none" <?php selected( $aicc_sched_freq, 'none' ); ?>><?php esc_html_e( 'Manual', 'ai-content-orchestrator' ); ?></option>
+					<option value="daily" <?php selected( $aicc_sched_freq, 'daily' ); ?>><?php esc_html_e( 'Daily', 'ai-content-orchestrator' ); ?></option>
+					<option value="every2" <?php selected( $aicc_sched_freq, 'every2' ); ?>><?php esc_html_e( 'Every 2 days', 'ai-content-orchestrator' ); ?></option>
+					<option value="every3" <?php selected( $aicc_sched_freq, 'every3' ); ?>><?php esc_html_e( 'Every 3 days', 'ai-content-orchestrator' ); ?></option>
+					<option value="weekly" <?php selected( $aicc_sched_freq, 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'ai-content-orchestrator' ); ?></option>
+					<option value="biweekly" <?php selected( $aicc_sched_freq, 'biweekly' ); ?>><?php esc_html_e( 'Bi-weekly', 'ai-content-orchestrator' ); ?></option>
+					<option value="monthly" <?php selected( $aicc_sched_freq, 'monthly' ); ?>><?php esc_html_e( 'Monthly', 'ai-content-orchestrator' ); ?></option>
 				</select>
 				<label><?php esc_html_e( 'at', 'ai-content-orchestrator' ); ?></label>
-				<input type="time" id="aicc-schedule-time" value="<?php echo esc_attr( $sched_time ); ?>" style="width:100px;" />
+				<input type="time" id="aicc-schedule-time" value="<?php echo esc_attr( $aicc_sched_time ); ?>" style="width:100px;" />
 				<label style="margin-left:8px;">
-					<input type="checkbox" id="aicc-schedule-skip-weekends" <?php checked( $sched_skip ); ?> />
+					<input type="checkbox" id="aicc-schedule-skip-weekends" <?php checked( $aicc_sched_skip ); ?> />
 					<?php esc_html_e( 'Skip weekends', 'ai-content-orchestrator' ); ?>
 				</label>
 				<button type="button" id="aicc-autofill-dates" class="button" style="margin-left:auto;">
@@ -109,7 +109,7 @@ $default_format  = AICC_Settings::get_default_output_format();
 							<td><input type="text" class="large-text aicc-bulk-topic" placeholder="<?php esc_attr_e( 'Enter topic...', 'ai-content-orchestrator' ); ?>" /></td>
 							<td>
 								<select class="aicc-bulk-style">
-									<?php foreach ( $styles as $style ) : ?>
+									<?php foreach ( $aicc_styles as $aicc_style ) : ?>
 										<option value="<?php echo esc_attr( $style['key'] ); ?>">
 											<?php echo esc_html( $style['name'] ); ?> &mdash; <?php echo esc_html( $style['target_words'] ); ?> words
 										</option>
@@ -160,14 +160,14 @@ $default_format  = AICC_Settings::get_default_output_format();
 							</p>
 						</td>
 					</tr>
-					<?php if ( ! empty( $saved_urls ) ) : ?>
+					<?php if ( ! empty( $aicc_saved_urls ) ) : ?>
 					<tr id="aicc-bulk-saved-urls-row">
 						<th scope="row">
 							<?php esc_html_e( 'Saved URLs', 'ai-content-orchestrator' ); ?>
 						</th>
 						<td>
 							<div id="aicc-bulk-saved-urls-list" class="aicc-saved-urls">
-								<?php foreach ( $saved_urls as $saved_url ) : ?>
+								<?php foreach ( $aicc_saved_urls as $saved_url ) : ?>
 									<span class="aicc-url-chip" data-url="<?php echo esc_attr( $saved_url ); ?>">
 										<span class="aicc-url-chip-text"><?php echo esc_html( $saved_url ); ?></span>
 										<button type="button" class="aicc-url-chip-remove" title="<?php esc_attr_e( 'Remove', 'ai-content-orchestrator' ); ?>">&times;</button>
@@ -199,10 +199,10 @@ $default_format  = AICC_Settings::get_default_output_format();
 						<th scope="row"><?php esc_html_e( 'Featured Image', 'ai-content-orchestrator' ); ?></th>
 						<td>
 							<label>
-								<input type="checkbox" id="aicc-bulk-image" <?php echo $img_configured ? '' : 'disabled'; ?> />
+								<input type="checkbox" id="aicc-bulk-image" <?php echo $aicc_img_configured ? '' : 'disabled'; ?> />
 								<strong><?php esc_html_e( 'Generate AI featured image for each post', 'ai-content-orchestrator' ); ?></strong>
 							</label>
-							<?php if ( ! $img_configured ) : ?>
+							<?php if ( ! $aicc_img_configured ) : ?>
 								<p class="description">
 									<span class="dashicons dashicons-warning" style="color: #dba617; vertical-align: text-bottom;"></span>
 									<em><?php esc_html_e( 'Requires an image provider API key. Configure it in Settings.', 'ai-content-orchestrator' ); ?></em>
@@ -211,7 +211,7 @@ $default_format  = AICC_Settings::get_default_output_format();
 						</td>
 					</tr>
 
-					<?php if ( $li_connected ) : ?>
+					<?php if ( $aicc_li_connected ) : ?>
 					<!-- LinkedIn -->
 					<tr>
 						<th scope="row"><?php esc_html_e( 'LinkedIn', 'ai-content-orchestrator' ); ?></th>
@@ -261,8 +261,8 @@ $default_format  = AICC_Settings::get_default_output_format();
 						<th scope="row"><?php esc_html_e( 'Output Format', 'ai-content-orchestrator' ); ?></th>
 						<td>
 							<select id="aicc-bulk-output-format" style="min-width:260px;">
-								<option value="wordpress" <?php selected( $default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'ai-content-orchestrator' ); ?></option>
-								<option value="thrive" <?php selected( $default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'ai-content-orchestrator' ); ?></option>
+								<option value="wordpress" <?php selected( $aicc_default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'ai-content-orchestrator' ); ?></option>
+								<option value="thrive" <?php selected( $aicc_default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'ai-content-orchestrator' ); ?></option>
 							</select>
 						</td>
 					</tr>
@@ -272,8 +272,8 @@ $default_format  = AICC_Settings::get_default_output_format();
 						<th scope="row"><?php esc_html_e( 'Categories', 'ai-content-orchestrator' ); ?></th>
 						<td>
 							<div class="aicc-checkbox-list">
-								<?php if ( ! empty( $categories ) ) : ?>
-									<?php foreach ( $categories as $cat ) : ?>
+								<?php if ( ! empty( $aicc_categories ) ) : ?>
+									<?php foreach ( $aicc_categories as $cat ) : ?>
 										<label class="aicc-checkbox-item">
 											<input type="checkbox" name="aicc-bulk-categories[]" value="<?php echo esc_attr( $cat['id'] ); ?>" />
 											<?php echo esc_html( $cat['name'] ); ?>

@@ -12,22 +12,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wpdb;
 
 // Count AI-generated posts.
-$total_posts = (int) $wpdb->get_var(
+$aicc_total_posts = (int) $wpdb->get_var(
 	"SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key = '_aicc_generated' AND meta_value = '1'"
 );
 
 // Count posts this month.
-$month_start = gmdate( 'Y-m-01 00:00:00' );
-$month_posts = (int) $wpdb->get_var( $wpdb->prepare(
+$aicc_month_start = gmdate( 'Y-m-01 00:00:00' );
+$aicc_month_posts = (int) $wpdb->get_var( $wpdb->prepare(
 	"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
 	 WHERE pm.meta_key = '_aicc_generated' AND pm.meta_value = '1'
 	   AND p.post_date >= %s",
-	$month_start
+	$aicc_month_start
 ) );
 
 // Scheduled / pending review.
-$scheduled_count = (int) $wpdb->get_var(
+$aicc_scheduled_count = (int) $wpdb->get_var(
 	"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
 	 WHERE pm.meta_key = '_aicc_generated' AND pm.meta_value = '1'
@@ -35,7 +35,7 @@ $scheduled_count = (int) $wpdb->get_var(
 );
 
 // Top performing posts (by comment count as a proxy; pageviews need analytics).
-$top_posts = $wpdb->get_results(
+$aicc_top_posts = $wpdb->get_results(
 	"SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_status
 	 FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
@@ -46,8 +46,8 @@ $top_posts = $wpdb->get_results(
 );
 
 // Posts needing refresh (published more than 6 months ago).
-$six_months_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-6 months' ) );
-$stale_posts = $wpdb->get_results( $wpdb->prepare(
+$aicc_six_months_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-6 months' ) );
+$aicc_stale_posts = $wpdb->get_results( $wpdb->prepare(
 	"SELECT p.ID, p.post_title, p.post_date, p.post_modified,
 	        CHAR_LENGTH(p.post_content) AS content_length
 	 FROM {$wpdb->posts} p
@@ -57,7 +57,7 @@ $stale_posts = $wpdb->get_results( $wpdb->prepare(
 	   AND p.post_modified < %s
 	 ORDER BY p.post_modified ASC
 	 LIMIT 10",
-	$six_months_ago
+	$aicc_six_months_ago
 ) );
 ?>
 <div class="wrap">
@@ -69,15 +69,15 @@ $stale_posts = $wpdb->get_results( $wpdb->prepare(
 	<!-- Stats cards -->
 	<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 900px; margin-top: 20px;">
 		<div class="aicc-card" style="text-align: center; padding: 20px;">
-			<div style="font-size: 36px; font-weight: 700; color: #2271b1;"><?php echo esc_html( $total_posts ); ?></div>
+			<div style="font-size: 36px; font-weight: 700; color: #2271b1;"><?php echo esc_html( $aicc_total_posts ); ?></div>
 			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Total AI Posts', 'ai-content-orchestrator' ); ?></div>
 		</div>
 		<div class="aicc-card" style="text-align: center; padding: 20px;">
-			<div style="font-size: 36px; font-weight: 700; color: #00a32a;"><?php echo esc_html( $month_posts ); ?></div>
+			<div style="font-size: 36px; font-weight: 700; color: #00a32a;"><?php echo esc_html( $aicc_month_posts ); ?></div>
 			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'This Month', 'ai-content-orchestrator' ); ?></div>
 		</div>
 		<div class="aicc-card" style="text-align: center; padding: 20px;">
-			<div style="font-size: 36px; font-weight: 700; color: #dba617;"><?php echo esc_html( $scheduled_count ); ?></div>
+			<div style="font-size: 36px; font-weight: 700; color: #dba617;"><?php echo esc_html( $aicc_scheduled_count ); ?></div>
 			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Scheduled / Pending', 'ai-content-orchestrator' ); ?></div>
 		</div>
 	</div>
@@ -89,7 +89,7 @@ $stale_posts = $wpdb->get_results( $wpdb->prepare(
 				<h2><?php esc_html_e( 'Recent AI-Generated Posts', 'ai-content-orchestrator' ); ?></h2>
 			</div>
 			<div class="aicc-card-body">
-				<?php if ( ! empty( $top_posts ) ) : ?>
+				<?php if ( ! empty( $aicc_top_posts ) ) : ?>
 					<table class="widefat striped" style="margin: 0;">
 						<thead>
 							<tr>
@@ -98,7 +98,7 @@ $stale_posts = $wpdb->get_results( $wpdb->prepare(
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $top_posts as $post ) : ?>
+							<?php foreach ( $aicc_top_posts as $post ) : ?>
 								<tr>
 									<td>
 										<a href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>" target="_blank">
@@ -125,7 +125,7 @@ $stale_posts = $wpdb->get_results( $wpdb->prepare(
 				<p class="description" style="margin-top: 0;">
 					<?php esc_html_e( 'These posts haven\'t been updated in over 6 months. Refreshing old content can boost your search rankings.', 'ai-content-orchestrator' ); ?>
 				</p>
-				<?php if ( ! empty( $stale_posts ) ) : ?>
+				<?php if ( ! empty( $aicc_stale_posts ) ) : ?>
 					<table class="widefat striped" style="margin: 0;">
 						<thead>
 							<tr>
@@ -135,7 +135,7 @@ $stale_posts = $wpdb->get_results( $wpdb->prepare(
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $stale_posts as $post ) : ?>
+							<?php foreach ( $aicc_stale_posts as $post ) : ?>
 								<tr>
 									<td>
 										<a href="<?php echo esc_url( get_edit_post_link( $post->ID ) ); ?>">

@@ -9,11 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$styles = AICC_Styles::get_styles();
+$aicc_styles = AICC_Styles::get_styles();
 
 // Static example HTML for each style. These demonstrate the structure
 // and format the AI will generate when that style is selected.
-$examples = array(
+$aicc_examples = array(
 
 	'standard' => '
 <p>In today\'s competitive digital landscape, understanding <strong>content marketing fundamentals</strong> is essential for any business looking to grow online. This guide explores the core strategies that drive real results.</p>
@@ -499,7 +499,7 @@ $examples = array(
 		<?php esc_html_e( 'Preview what each blog style produces. Click any style to expand its example. Select your preferred style on the Create Content page.', 'ai-content-orchestrator' ); ?>
 	</p>
 
-	<?php foreach ( $styles as $key => $style ) : ?>
+	<?php foreach ( $aicc_styles as $key => $style ) : ?>
 		<div class="aicc-card" style="margin-bottom: 12px;">
 			<div class="aicc-card-header aicc-example-toggle" data-target="aicc-example-<?php echo esc_attr( $key ); ?>" style="cursor: pointer;">
 				<h2 style="justify-content: space-between; width: 100%;">
@@ -517,8 +517,8 @@ $examples = array(
 			<div id="aicc-example-<?php echo esc_attr( $key ); ?>" class="aicc-card-body aicc-example-body" style="display: none;">
 				<div class="aicc-preview" style="display: block; max-height: none;">
 					<?php
-					if ( isset( $examples[ $key ] ) ) {
-						echo wp_kses_post( $examples[ $key ] );
+					if ( isset( $aicc_examples[ $key ] ) ) {
+						echo wp_kses_post( $aicc_examples[ $key ] );
 					} else {
 						echo '<p class="description"><em>' . esc_html__( 'Example coming soon.', 'ai-content-orchestrator' ) . '</em></p>';
 					}

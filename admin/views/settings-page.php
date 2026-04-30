@@ -9,16 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$has_yoast          = defined( 'WPSEO_VERSION' );
-$provider           = AICC_Settings::get_ai_provider();
-$image_provider     = AICC_Settings::get_image_provider();
-$claude_set         = ! empty( AICC_Settings::get_anthropic_api_key() );
-$openai_set         = ! empty( AICC_Settings::get_openai_api_key() );
-$ideogram_set       = ! empty( AICC_Settings::get_ideogram_api_key() );
-$linkedin_connected = AICC_LinkedIn::is_connected();
-$linkedin_profile   = AICC_LinkedIn::get_profile();
-$linkedin_client_id = get_option( 'aicc_linkedin_client_id', '' );
-$active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
+$aicc_has_yoast          = defined( 'WPSEO_VERSION' );
+$aicc_provider           = AICC_Settings::get_ai_provider();
+$aicc_image_provider     = AICC_Settings::get_image_provider();
+$aicc_claude_set         = ! empty( AICC_Settings::get_anthropic_api_key() );
+$aicc_openai_set         = ! empty( AICC_Settings::get_openai_api_key() );
+$aicc_ideogram_set       = ! empty( AICC_Settings::get_ideogram_api_key() );
+$aicc_linkedin_connected = AICC_LinkedIn::is_connected();
+$aicc_linkedin_profile   = AICC_LinkedIn::get_profile();
+$aicc_linkedin_client_id = get_option( 'aicc_linkedin_client_id', '' );
+$aicc_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
 ?>
 <div class="wrap">
 	<h1>
@@ -29,46 +29,46 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 	<nav class="nav-tab-wrapper" style="margin-bottom: 20px;">
 		<?php foreach ( AICC_Settings::get_tabs() as $slug => $label ) : ?>
 			<a href="<?php echo esc_url( add_query_arg( 'tab', $slug, admin_url( 'admin.php?page=aicc-settings' ) ) ); ?>"
-			   class="nav-tab <?php echo $active_tab === $slug ? 'nav-tab-active' : ''; ?>">
+			   class="nav-tab <?php echo $aicc_active_tab === $slug ? 'nav-tab-active' : ''; ?>">
 				<?php echo esc_html( $label ); ?>
 			</a>
 		<?php endforeach; ?>
 	</nav>
 
-	<?php if ( ! in_array( $active_tab, array( 'faq', 'about' ), true ) ) : ?>
+	<?php if ( ! in_array( $aicc_active_tab, array( 'faq', 'about' ), true ) ) : ?>
 	<?php if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'ai-content-orchestrator' ); ?></p></div>
 	<?php endif; ?>
 	<form method="post" action="">
-		<?php wp_nonce_field( 'aicc_save_settings_' . $active_tab, 'aicc_settings_nonce' ); ?>
-		<input type="hidden" name="aicc_save_tab" value="<?php echo esc_attr( $active_tab ); ?>" />
+		<?php wp_nonce_field( 'aicc_save_settings_' . $aicc_active_tab, 'aicc_settings_nonce' ); ?>
+		<input type="hidden" name="aicc_save_tab" value="<?php echo esc_attr( $aicc_active_tab ); ?>" />
 		<?php
-		do_settings_sections( 'aicc-tab-' . $active_tab );
+		do_settings_sections( 'aicc-tab-' . $aicc_active_tab );
 		submit_button();
 		?>
 	</form>
 	<?php endif; ?>
 
-	<?php if ( 'instagram' === $active_tab ) : ?>
+	<?php if ( 'instagram' === $aicc_active_tab ) : ?>
 	<!-- Instagram Tab -->
 	<div style="max-width: 900px;">
 		<?php
-		$ig_connected = AICC_Instagram::is_connected();
-		$ig_profile   = AICC_Instagram::get_profile();
-		$ig_app_id    = AICC_Instagram::get_client_id();
+		$aicc_ig_connected = AICC_Instagram::is_connected();
+		$aicc_ig_profile   = AICC_Instagram::get_profile();
+		$aicc_ig_app_id    = AICC_Instagram::get_client_id();
 		?>
 
-		<?php if ( $ig_connected && ! empty( $ig_profile ) ) : ?>
+		<?php if ( $aicc_ig_connected && ! empty( $aicc_ig_profile ) ) : ?>
 		<div class="aicc-card" style="margin-bottom:16px;">
 			<div class="aicc-card-header"><h2><span class="dashicons dashicons-camera" style="margin-right:6px; color:#E4405F;"></span><?php esc_html_e( 'Connected Account', 'ai-content-orchestrator' ); ?></h2></div>
 			<div class="aicc-card-body">
 				<table class="widefat striped"><tbody>
 					<tr><td style="width:180px;"><strong><?php esc_html_e( 'Status', 'ai-content-orchestrator' ); ?></strong></td><td><span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span> <strong style="color:#00a32a;"><?php esc_html_e( 'Connected', 'ai-content-orchestrator' ); ?></strong></td></tr>
-					<tr><td><strong><?php esc_html_e( 'Username', 'ai-content-orchestrator' ); ?></strong></td><td>@<?php echo esc_html( $ig_profile['username'] ?? '' ); ?></td></tr>
-					<?php if ( ! empty( $ig_profile['name'] ) ) : ?>
-					<tr><td><strong><?php esc_html_e( 'Name', 'ai-content-orchestrator' ); ?></strong></td><td><?php echo esc_html( $ig_profile['name'] ); ?></td></tr>
+					<tr><td><strong><?php esc_html_e( 'Username', 'ai-content-orchestrator' ); ?></strong></td><td>@<?php echo esc_html( $aicc_ig_profile['username'] ?? '' ); ?></td></tr>
+					<?php if ( ! empty( $aicc_ig_profile['name'] ) ) : ?>
+					<tr><td><strong><?php esc_html_e( 'Name', 'ai-content-orchestrator' ); ?></strong></td><td><?php echo esc_html( $aicc_ig_profile['name'] ); ?></td></tr>
 					<?php endif; ?>
-					<tr><td><strong><?php esc_html_e( 'Meta App ID', 'ai-content-orchestrator' ); ?></strong></td><td><?php echo esc_html( $ig_app_id ); ?></td></tr>
+					<tr><td><strong><?php esc_html_e( 'Meta App ID', 'ai-content-orchestrator' ); ?></strong></td><td><?php echo esc_html( $aicc_ig_app_id ); ?></td></tr>
 					<tr id="aicc-ig-test-row" style="display:none;"><td><strong><?php esc_html_e( 'Test Results', 'ai-content-orchestrator' ); ?></strong></td><td id="aicc-ig-test-results"></td></tr>
 				</tbody></table>
 				<p style="margin-top:12px;">
@@ -167,26 +167,26 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 			</div>
 		</div>
 
-		<?php if ( ! $ig_connected && ! empty( $ig_app_id ) ) : ?>
+		<?php if ( ! $aicc_ig_connected && ! empty( $aicc_ig_app_id ) ) : ?>
 		<p style="margin-bottom:16px;">
 			<a href="<?php echo esc_url( AICC_Instagram::get_auth_url() ); ?>" class="button button-primary button-hero">
 				<span class="dashicons dashicons-camera" style="vertical-align:text-bottom; font-size:20px; width:20px; height:20px; margin-right:6px;"></span>
 				<?php esc_html_e( 'Connect Instagram', 'ai-content-orchestrator' ); ?>
 			</a>
 		</p>
-		<?php elseif ( ! $ig_connected ) : ?>
+		<?php elseif ( ! $aicc_ig_connected ) : ?>
 		<div class="notice notice-warning inline"><p><?php esc_html_e( 'Enter your Meta App ID and App Secret above, then Save Changes to enable the Connect button.', 'ai-content-orchestrator' ); ?></p></div>
 		<?php endif; ?>
 	</div>
 	<?php endif; ?>
 
-	<?php if ( 'faq' === $active_tab ) : ?>
+	<?php if ( 'faq' === $aicc_active_tab ) : ?>
 	<!-- FAQ Tab -->
 	<div style="max-width: 900px;">
 		<h2><?php esc_html_e( 'Frequently Asked Questions', 'ai-content-orchestrator' ); ?></h2>
 
 		<?php
-		$faq_items = array(
+		$aicc_faq_items = array(
 			'what-does-it-do'      => __( 'What does this plugin do?', 'ai-content-orchestrator' ),
 			'ai-providers'         => __( 'Do I need both a Claude and OpenAI account?', 'ai-content-orchestrator' ),
 			'cost'                 => __( 'How much does it cost to generate a blog post?', 'ai-content-orchestrator' ),
@@ -216,7 +216,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 			<div class="aicc-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'Table of Contents', 'ai-content-orchestrator' ); ?></h3>
 				<ol style="column-count:2; column-gap:24px; line-height:2;">
-					<?php foreach ( $faq_items as $id => $label ) : ?>
+					<?php foreach ( $aicc_faq_items as $id => $label ) : ?>
 						<li><a href="#faq-<?php echo esc_attr( $id ); ?>" style="text-decoration:none;"><?php echo esc_html( $label ); ?></a></li>
 					<?php endforeach; ?>
 				</ol>
@@ -426,7 +426,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 	</div>
 	<?php endif; ?>
 
-	<?php if ( 'about' === $active_tab ) : ?>
+	<?php if ( 'about' === $aicc_active_tab ) : ?>
 	<!-- About Tab -->
 	<div style="max-width: 900px;">
 		<div class="aicc-card" style="margin-bottom: 20px;">
@@ -450,9 +450,9 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 
 				<h3><?php esc_html_e( 'Free vs Enterprise', 'ai-content-orchestrator' ); ?></h3>
 				<?php
-				$check = '<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span>';
-				$cross = '<span class="dashicons dashicons-minus" style="color:#c3c4c7; vertical-align:text-bottom;"></span>';
-				$ent   = '<span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;">ENT</span>';
+				$aicc_check = '<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span>';
+				$aicc_cross = '<span class="dashicons dashicons-minus" style="color:#c3c4c7; vertical-align:text-bottom;"></span>';
+				$aicc_ent   = '<span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;">ENT</span>';
 				?>
 				<table class="widefat striped" style="max-width:700px;">
 					<thead>
@@ -463,26 +463,26 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 						</tr>
 					</thead>
 					<tbody>
-						<tr><td><?php esc_html_e( 'AI Content Creation', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'AI Content Creation', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
 						<tr><td><?php esc_html_e( 'Blog Styles', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;">4</td><td style="text-align:center;"><?php esc_html_e( 'All 13', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'SEO Metadata + Yoast', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'SEO Metadata + Yoast', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
 						<tr><td><?php esc_html_e( 'Website Scanning', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( '1 URL', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Unlimited', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Featured Images (DALL-E 3)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Featured Images (Ideogram)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Image Title Overlay', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Featured Images (DALL-E 3)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Featured Images (Ideogram)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Image Title Overlay', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
 						<tr><td><?php esc_html_e( 'Internal Linking', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Inline, max 3', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Inline + Footer, max 15', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Competitor Gap Analysis', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Content Repurposing', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Bulk Create', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Refresh Content (Analyze + Fix)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'PDF Sources', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'LinkedIn Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Instagram Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Thrive Architect Output', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php esc_html_e( 'Beta', 'ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Publishing Schedule (Auto-fill)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Publish Notifications (Email)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $cross; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Scheduling + Review Queue', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
-						<tr><td><?php esc_html_e( 'Dashboard + Progress Log', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $check; ?></td><td style="text-align:center;"><?php echo $check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Competitor Gap Analysis', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Content Repurposing', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Bulk Create', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Refresh Content (Analyze + Fix)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'PDF Sources', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'LinkedIn Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Instagram Auto-Share', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Thrive Architect Output', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php esc_html_e( 'Beta', 'ai-content-orchestrator' ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'Publishing Schedule (Auto-fill)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Publish Notifications (Email)', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_cross; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Scheduling + Review Queue', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
+						<tr><td><?php esc_html_e( 'Dashboard + Progress Log', 'ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td><td style="text-align:center;"><?php echo $aicc_check; ?></td></tr>
 					</tbody>
 				</table>
 				<?php if ( ! aicc_is_pro() ) : ?>
@@ -555,7 +555,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 	</div>
 	<?php endif; ?>
 
-	<?php if ( 'general' === $active_tab ) : ?>
+	<?php if ( 'general' === $aicc_active_tab ) : ?>
 	<!-- API Key Validation -->
 	<div class="aicc-card" style="max-width: 700px; margin-top: 20px;">
 		<div class="aicc-card-header">
@@ -570,10 +570,10 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="width: 200px; font-weight: 600;"><?php esc_html_e( 'Claude (Anthropic)', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<button type="button" class="button aicc-validate-btn" data-provider="claude" <?php echo $claude_set ? '' : 'disabled'; ?>>
+							<button type="button" class="button aicc-validate-btn" data-provider="claude" <?php echo $aicc_claude_set ? '' : 'disabled'; ?>>
 								<?php esc_html_e( 'Test Claude Connection', 'ai-content-orchestrator' ); ?>
 							</button>
-							<?php if ( ! $claude_set ) : ?>
+							<?php if ( ! $aicc_claude_set ) : ?>
 								<span class="description" style="margin-left: 8px;"><?php esc_html_e( 'No key saved yet.', 'ai-content-orchestrator' ); ?></span>
 							<?php endif; ?>
 							<span class="aicc-validate-result" data-provider="claude" style="margin-left: 12px;"></span>
@@ -582,10 +582,10 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'OpenAI (GPT)', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<button type="button" class="button aicc-validate-btn" data-provider="openai" <?php echo $openai_set ? '' : 'disabled'; ?>>
+							<button type="button" class="button aicc-validate-btn" data-provider="openai" <?php echo $aicc_openai_set ? '' : 'disabled'; ?>>
 								<?php esc_html_e( 'Test OpenAI Connection', 'ai-content-orchestrator' ); ?>
 							</button>
-							<?php if ( ! $openai_set ) : ?>
+							<?php if ( ! $aicc_openai_set ) : ?>
 								<span class="description" style="margin-left: 8px;"><?php esc_html_e( 'No key saved yet.', 'ai-content-orchestrator' ); ?></span>
 							<?php endif; ?>
 							<span class="aicc-validate-result" data-provider="openai" style="margin-left: 12px;"></span>
@@ -594,10 +594,10 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'Ideogram', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<button type="button" class="button aicc-validate-btn" data-provider="ideogram" <?php echo $ideogram_set ? '' : 'disabled'; ?>>
+							<button type="button" class="button aicc-validate-btn" data-provider="ideogram" <?php echo $aicc_ideogram_set ? '' : 'disabled'; ?>>
 								<?php esc_html_e( 'Test Ideogram Connection', 'ai-content-orchestrator' ); ?>
 							</button>
-							<?php if ( ! $ideogram_set ) : ?>
+							<?php if ( ! $aicc_ideogram_set ) : ?>
 								<span class="description" style="margin-left: 8px;"><?php esc_html_e( 'No key saved yet.', 'ai-content-orchestrator' ); ?></span>
 							<?php endif; ?>
 							<span class="aicc-validate-result" data-provider="ideogram" style="margin-left: 12px;"></span>
@@ -609,14 +609,14 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 	</div>
 	<?php endif; ?>
 
-	<?php if ( 'linkedin' === $active_tab ) : ?>
+	<?php if ( 'linkedin' === $aicc_active_tab ) : ?>
 	<!-- LinkedIn Connection -->
 	<div class="aicc-card" style="max-width: 700px; margin-top: 20px;">
 		<div class="aicc-card-header">
 			<h2><?php esc_html_e( 'LinkedIn Connection', 'ai-content-orchestrator' ); ?></h2>
 		</div>
 		<div class="aicc-card-body">
-			<?php if ( $linkedin_connected && ! empty( $linkedin_profile['name'] ) ) : ?>
+			<?php if ( $aicc_linkedin_connected && ! empty( $aicc_linkedin_profile['name'] ) ) : ?>
 				<table class="widefat striped">
 					<tbody>
 						<tr>
@@ -629,12 +629,12 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 						<tr>
 							<td style="font-weight: 600;"><?php esc_html_e( 'Account', 'ai-content-orchestrator' ); ?></td>
 							<td>
-								<?php if ( ! empty( $linkedin_profile['picture'] ) ) : ?>
-									<img src="<?php echo esc_url( $linkedin_profile['picture'] ); ?>" alt="" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 6px;" />
+								<?php if ( ! empty( $aicc_linkedin_profile['picture'] ) ) : ?>
+									<img src="<?php echo esc_url( $aicc_linkedin_profile['picture'] ); ?>" alt="" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 6px;" />
 								<?php endif; ?>
-								<strong><?php echo esc_html( $linkedin_profile['name'] ); ?></strong>
-								<?php if ( ! empty( $linkedin_profile['email'] ) ) : ?>
-									<span class="description">(<?php echo esc_html( $linkedin_profile['email'] ); ?>)</span>
+								<strong><?php echo esc_html( $aicc_linkedin_profile['name'] ); ?></strong>
+								<?php if ( ! empty( $aicc_linkedin_profile['email'] ) ) : ?>
+									<span class="description">(<?php echo esc_html( $aicc_linkedin_profile['email'] ); ?>)</span>
 								<?php endif; ?>
 							</td>
 						</tr>
@@ -742,7 +742,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					</li>
 				</ol>
 
-				<?php if ( ! empty( $linkedin_client_id ) ) : ?>
+				<?php if ( ! empty( $aicc_linkedin_client_id ) ) : ?>
 					<hr style="margin: 20px 0;">
 					<p style="margin-bottom: 8px;">
 						<strong><?php esc_html_e( 'Ready to connect!', 'ai-content-orchestrator' ); ?></strong>
@@ -802,7 +802,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 	</div>
 	<?php endif; ?>
 
-	<?php if ( 'general' === $active_tab ) : ?>
+	<?php if ( 'general' === $aicc_active_tab ) : ?>
 	<!-- Status overview -->
 	<div class="aicc-card" style="max-width: 700px; margin-top: 20px;">
 		<div class="aicc-card-header">
@@ -814,7 +814,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="width: 200px; font-weight: 600;"><?php esc_html_e( 'Active Provider', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php echo esc_html( 'openai' === $provider ? 'OpenAI (GPT)' : 'Claude (Anthropic)' ); ?>
+							<?php echo esc_html( 'openai' === $aicc_provider ? 'OpenAI (GPT)' : 'Claude (Anthropic)' ); ?>
 							<?php if ( AICC_Settings::is_configured() ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
 							<?php else : ?>
@@ -826,7 +826,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'Claude API Key', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php if ( $claude_set ) : ?>
+							<?php if ( $aicc_claude_set ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span> <?php esc_html_e( 'Configured', 'ai-content-orchestrator' ); ?>
 							<?php else : ?>
 								<span class="dashicons dashicons-minus" style="color: #646970;"></span> <?php esc_html_e( 'Not set', 'ai-content-orchestrator' ); ?>
@@ -836,7 +836,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'OpenAI API Key', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php if ( $openai_set ) : ?>
+							<?php if ( $aicc_openai_set ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span> <?php esc_html_e( 'Configured', 'ai-content-orchestrator' ); ?>
 							<?php else : ?>
 								<span class="dashicons dashicons-minus" style="color: #646970;"></span> <?php esc_html_e( 'Not set', 'ai-content-orchestrator' ); ?>
@@ -848,7 +848,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 						<td>
 							<?php
 							$image_labels = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
-							echo esc_html( isset( $image_labels[ $image_provider ] ) ? $image_labels[ $image_provider ] : $image_provider );
+							echo esc_html( isset( $image_labels[ $aicc_image_provider ] ) ? $image_labels[ $aicc_image_provider ] : $aicc_image_provider );
 							?>
 							<?php if ( AICC_Settings::is_image_configured() ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
@@ -861,7 +861,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'Ideogram API Key', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php if ( $ideogram_set ) : ?>
+							<?php if ( $aicc_ideogram_set ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span> <?php esc_html_e( 'Configured', 'ai-content-orchestrator' ); ?>
 							<?php else : ?>
 								<span class="dashicons dashicons-minus" style="color: #646970;"></span> <?php esc_html_e( 'Not set', 'ai-content-orchestrator' ); ?>
@@ -871,7 +871,7 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'Yoast SEO', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php if ( $has_yoast ) : ?>
+							<?php if ( $aicc_has_yoast ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
 								<?php
 								printf(
@@ -889,13 +889,13 @@ $active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'LinkedIn', 'ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php if ( $linkedin_connected && ! empty( $linkedin_profile['name'] ) ) : ?>
+							<?php if ( $aicc_linkedin_connected && ! empty( $aicc_linkedin_profile['name'] ) ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
 								<?php
 								printf(
 									/* translators: %s: LinkedIn account name */
 									esc_html__( 'Connected (%s)', 'ai-content-orchestrator' ),
-									esc_html( $linkedin_profile['name'] )
+									esc_html( $aicc_linkedin_profile['name'] )
 								);
 								?>
 							<?php else : ?>

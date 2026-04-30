@@ -9,15 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$is_configured = AICC_Settings::is_configured();
-$published_posts = get_posts( array(
+$aicc_is_configured = AICC_Settings::is_configured();
+$aicc_published_posts = get_posts( array(
 	'post_type'   => 'post',
 	'post_status' => 'publish',
 	'numberposts' => 100,
 	'orderby'     => 'date',
 	'order'       => 'DESC',
 ) );
-$active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'overview';
+$aicc_active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'overview';
 ?>
 <div class="wrap aicc-wrap">
 	<h1 class="wp-heading-inline">
@@ -28,7 +28,7 @@ $active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['v
 		<?php esc_html_e( 'Scan all posts for issues or refresh a specific post with AI improvements — while keeping your existing URL and SEO value.', 'ai-content-orchestrator' ); ?>
 	</p>
 
-	<?php if ( ! $is_configured ) : ?>
+	<?php if ( ! $aicc_is_configured ) : ?>
 		<div class="notice notice-error">
 			<p>
 				<strong><?php esc_html_e( 'API key not configured.', 'ai-content-orchestrator' ); ?></strong>
@@ -39,11 +39,11 @@ $active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['v
 
 	<!-- Tabs -->
 	<nav class="nav-tab-wrapper" style="margin-bottom:20px;">
-		<a href="<?php echo esc_url( add_query_arg( 'view', 'overview', admin_url( 'admin.php?page=aicc-refresh' ) ) ); ?>" class="nav-tab <?php echo 'overview' === $active_tab ? 'nav-tab-active' : ''; ?>">
+		<a href="<?php echo esc_url( add_query_arg( 'view', 'overview', admin_url( 'admin.php?page=aicc-refresh' ) ) ); ?>" class="nav-tab <?php echo 'overview' === $aicc_active_tab ? 'nav-tab-active' : ''; ?>">
 			<span class="dashicons dashicons-chart-bar" style="vertical-align:text-bottom; margin-right:4px;"></span>
 			<?php esc_html_e( 'Content Health Overview', 'ai-content-orchestrator' ); ?>
 		</a>
-		<a href="<?php echo esc_url( add_query_arg( 'view', 'individual', admin_url( 'admin.php?page=aicc-refresh' ) ) ); ?>" class="nav-tab <?php echo 'individual' === $active_tab ? 'nav-tab-active' : ''; ?>">
+		<a href="<?php echo esc_url( add_query_arg( 'view', 'individual', admin_url( 'admin.php?page=aicc-refresh' ) ) ); ?>" class="nav-tab <?php echo 'individual' === $aicc_active_tab ? 'nav-tab-active' : ''; ?>">
 			<span class="dashicons dashicons-edit" style="vertical-align:text-bottom; margin-right:4px;"></span>
 			<?php esc_html_e( 'Refresh Individual Post', 'ai-content-orchestrator' ); ?>
 		</a>
@@ -51,7 +51,7 @@ $active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['v
 
 	<div id="aicc-refresh-app">
 
-	<?php if ( 'overview' === $active_tab ) : ?>
+	<?php if ( 'overview' === $aicc_active_tab ) : ?>
 		<!-- ═══ OVERVIEW TAB ═══ -->
 		<div class="aicc-card">
 			<div class="aicc-card-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -120,14 +120,14 @@ $active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['v
 						<tr>
 							<th scope="row"><label for="aicc-refresh-post"><?php esc_html_e( 'Published Post', 'ai-content-orchestrator' ); ?></label></th>
 							<td>
-								<?php if ( ! empty( $published_posts ) ) : ?>
+								<?php if ( ! empty( $aicc_published_posts ) ) : ?>
 									<select id="aicc-refresh-post" class="large-text">
 										<option value=""><?php esc_html_e( '— Select a post —', 'ai-content-orchestrator' ); ?></option>
-										<?php foreach ( $published_posts as $p ) : ?>
+										<?php foreach ( $aicc_published_posts as $p ) : ?>
 											<option value="<?php echo esc_attr( $p->ID ); ?>"><?php echo esc_html( $p->post_title ); ?> (<?php echo esc_html( get_the_date( 'Y-m-d', $p ) ); ?>)</option>
 										<?php endforeach; ?>
 									</select>
-									<p class="description"><?php printf( esc_html__( 'Showing the %d most recent published posts.', 'ai-content-orchestrator' ), count( $published_posts ) ); ?></p>
+									<p class="description"><?php printf( esc_html__( 'Showing the %d most recent published posts.', 'ai-content-orchestrator' ), count( $aicc_published_posts ) ); ?></p>
 								<?php else : ?>
 									<p class="description"><?php esc_html_e( 'No published posts found.', 'ai-content-orchestrator' ); ?></p>
 								<?php endif; ?>
@@ -136,7 +136,7 @@ $active_tab = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['v
 					</tbody>
 				</table>
 				<p class="submit">
-					<button type="button" id="aicc-analyze-btn" class="button button-primary button-hero" <?php echo ( $is_configured && ! empty( $published_posts ) ) ? '' : 'disabled'; ?>>
+					<button type="button" id="aicc-analyze-btn" class="button button-primary button-hero" <?php echo ( $aicc_is_configured && ! empty( $aicc_published_posts ) ) ? '' : 'disabled'; ?>>
 						<span class="dashicons dashicons-visibility aicc-btn-icon"></span>
 						<?php esc_html_e( 'Analyze', 'ai-content-orchestrator' ); ?>
 					</button>
