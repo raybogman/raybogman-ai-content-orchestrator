@@ -1,6 +1,6 @@
 === AI Content Orchestrator ===
 Contributors: raybogman
-Tags: ai, content, seo, claude, openai, gpt, anthropic, yoast, content-generator, linkedin
+Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -72,6 +72,58 @@ Yes. Existing WordPress categories are listed as checkboxes on the creation form
 = Can I scan any website? =
 
 Yes, the scanner can crawl any publicly accessible website via sitemaps and internal links.
+
+== Third-Party Services ==
+
+This plugin connects to external services to provide its functionality. No data is sent until the user explicitly configures API keys and initiates an action (e.g., clicking "Create Content").
+
+= Anthropic (Claude AI) =
+Used for content generation and SEO metadata when Claude is selected as the AI provider.
+* Service: [anthropic.com](https://www.anthropic.com)
+* Terms: [anthropic.com/policies/terms](https://www.anthropic.com/policies/terms)
+* Privacy: [anthropic.com/policies/privacy](https://www.anthropic.com/policies/privacy)
+* Data sent: User prompt, website scan context, content type
+* When: Only when the user clicks "Create Content" or "Refresh Post"
+
+= OpenAI (GPT & DALL-E) =
+Used for content generation, SEO metadata, and AI image generation when OpenAI is selected.
+* Service: [openai.com](https://openai.com)
+* Terms: [openai.com/policies/terms-of-use](https://openai.com/policies/terms-of-use)
+* Privacy: [openai.com/policies/privacy-policy](https://openai.com/policies/privacy-policy)
+* Data sent: User prompt, website scan context, image generation prompts
+* When: Only when the user clicks "Create Content" or generates images
+
+= Ideogram (Image Generation) =
+Used for AI featured image generation when Ideogram is selected as the image provider (Enterprise only).
+* Service: [ideogram.ai](https://ideogram.ai)
+* Terms: [ideogram.ai/tos](https://ideogram.ai/tos)
+* Privacy: [ideogram.ai/privacy](https://ideogram.ai/privacy)
+* Data sent: Image prompts, brand colors
+* When: Only when the user enables "Generate AI featured image"
+
+= LinkedIn API =
+Used for auto-sharing blog posts to LinkedIn (Enterprise only).
+* Service: [linkedin.com](https://www.linkedin.com)
+* Terms: [linkedin.com/legal/user-agreement](https://www.linkedin.com/legal/user-agreement)
+* Privacy: [linkedin.com/legal/privacy-policy](https://www.linkedin.com/legal/privacy-policy)
+* Data sent: Post title, excerpt, featured image URL, generated commentary
+* When: Only when the user enables "Post to LinkedIn" and the post is published
+
+= Instagram Graph API (via Meta) =
+Used for auto-sharing blog posts to Instagram (Enterprise only).
+* Service: [developers.facebook.com](https://developers.facebook.com)
+* Terms: [facebook.com/terms](https://www.facebook.com/terms)
+* Privacy: [facebook.com/privacy](https://www.facebook.com/privacy/policy)
+* Data sent: Featured image URL, generated caption
+* When: Only when the user enables "Post to Instagram" and the post is published
+
+= Freemius =
+Used for license management, usage analytics (opt-in), and plugin updates.
+* Service: [freemius.com](https://freemius.com)
+* Terms: [freemius.com/terms](https://freemius.com/terms/)
+* Privacy: [freemius.com/privacy](https://freemius.com/privacy/)
+* Data sent: Site URL, plugin version, license key (if Enterprise)
+* When: On plugin activation (opt-in consent screen shown first)
 
 == Changelog ==
 
