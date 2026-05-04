@@ -3,7 +3,7 @@
  * Plugin Name:       RayAI – Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/rayai-content-orchestrator
  * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
- * Version:           3.0.0
+ * Version:           3.0.1
  * Requires at least: 5.8
  * Tested up to:      6.9
  * Requires PHP:      7.4
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RAYAI_VERSION', '3.0.0' );
+define( 'RAYAI_VERSION', '3.0.1' );
 define( 'RAYAI_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RAYAI_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RAYAI_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );

@@ -229,7 +229,7 @@ class RAYAI_Admin {
 	 * Render a Pro upgrade prompt page for gated features.
 	 */
 	private function render_pro_upgrade_page( $feature_name, $description ) {
-		$upgrade_url = aco_fs()->get_upgrade_url();
+		$upgrade_url = rayai_fs()->get_upgrade_url();
 		?>
 		<div class="wrap rayai-wrap">
 			<h1 class="wp-heading-inline">

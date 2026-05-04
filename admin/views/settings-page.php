@@ -493,7 +493,7 @@ $rayai_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsl
 				<?php // phpcs:enable ?>
 				<?php if ( ! rayai_is_pro() ) : ?>
 				<p style="margin-top:16px; text-align:center;">
-					<a href="<?php echo esc_url( aco_fs()->get_upgrade_url() ); ?>" class="button button-primary button-hero" style="background:#E4405F; border-color:#E4405F;">
+					<a href="<?php echo esc_url( rayai_fs()->get_upgrade_url() ); ?>" class="button button-primary button-hero" style="background:#E4405F; border-color:#E4405F;">
 						<span class="dashicons dashicons-star-filled" style="vertical-align:text-bottom; font-size:20px; width:20px; height:20px; margin-right:6px;"></span>
 						<?php esc_html_e( 'Upgrade to Enterprise', 'rayai-content-orchestrator' ); ?>
 					</a>

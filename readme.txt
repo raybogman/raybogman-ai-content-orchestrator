@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,12 +138,12 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 
 == Upgrade Notice ==
 
-= 3.0.0 =
+= 3.0.1 =
 Major rebrand to RayAI – Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
 
-= 3.0.0 =
+= 3.0.1 =
 * Major: Full rebrand to RayAI – Content Orchestrator. All internal prefixes changed from aicc_ to rayai_. New text domain rayai-content-orchestrator. All class names, option names, meta keys, CSS classes, and JS variables updated. This is a breaking change from previous versions.
 
 = 2.5.7 =
