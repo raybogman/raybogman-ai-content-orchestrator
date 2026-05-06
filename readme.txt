@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -139,12 +139,12 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 
 == Upgrade Notice ==
 
-= 3.1.0 =
+= 3.1.1 =
 Major rebrand to Ray Bogman Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
 
-= 3.1.0 =
+= 3.1.1 =
 * Renamed: Plugin rebranded to Ray Bogman Content Orchestrator (slug: raybogman-content-orchestrator) to comply with WordPress.org naming guidelines.
 * Fixed: All inline scripts wrapped with admin_footer hook for wp_enqueue compliance.
 * Fixed: Removed global ini_set/set_time_limit calls — now scoped to specific AJAX handlers only.
