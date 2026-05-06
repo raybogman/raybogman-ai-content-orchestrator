@@ -12,14 +12,14 @@
  *   - Position: center-center
  *   - Color: configurable dark teal hex
  *
- * @package RayAI_Content_Orchestrator
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class RAYAI_Image_Overlay {
+class RBCO_Image_Overlay {
 
 	/**
 	 * Create a featured image with title overlay.
@@ -39,7 +39,7 @@ class RAYAI_Image_Overlay {
 	 */
 	public static function create( $base_attachment_id, $title, $options = array() ) {
 		if ( ! function_exists( 'imagecreatefromjpeg' ) ) {
-			return new \WP_Error( 'no_gd', __( 'PHP GD extension is required for image overlay. Contact your hosting provider.', 'rayai-content-orchestrator' ) );
+			return new \WP_Error( 'no_gd', __( 'PHP GD extension is required for image overlay. Contact your hosting provider.', 'raybogman-content-orchestrator' ) );
 		}
 
 		$defaults = array(
@@ -59,12 +59,12 @@ class RAYAI_Image_Overlay {
 		// Load the base image.
 		$base_path = get_attached_file( $base_attachment_id );
 		if ( ! $base_path || ! file_exists( $base_path ) ) {
-			return new \WP_Error( 'no_base', __( 'Default featured image not found in media library.', 'rayai-content-orchestrator' ) );
+			return new \WP_Error( 'no_base', __( 'Default featured image not found in media library.', 'raybogman-content-orchestrator' ) );
 		}
 
 		$info = getimagesize( $base_path );
 		if ( ! $info ) {
-			return new \WP_Error( 'invalid_image', __( 'Could not read the base image dimensions.', 'rayai-content-orchestrator' ) );
+			return new \WP_Error( 'invalid_image', __( 'Could not read the base image dimensions.', 'raybogman-content-orchestrator' ) );
 		}
 
 		$mime = $info['mime'];
@@ -79,22 +79,22 @@ class RAYAI_Image_Overlay {
 				if ( function_exists( 'imagecreatefromwebp' ) ) {
 					$img = imagecreatefromwebp( $base_path );
 				} else {
-					return new \WP_Error( 'unsupported', __( 'WebP support requires PHP 7.1+ with GD compiled with WebP.', 'rayai-content-orchestrator' ) );
+					return new \WP_Error( 'unsupported', __( 'WebP support requires PHP 7.1+ with GD compiled with WebP.', 'raybogman-content-orchestrator' ) );
 				}
 				break;
 			case 'image/avif':
 				if ( function_exists( 'imagecreatefromavif' ) ) {
 					$img = imagecreatefromavif( $base_path );
 				} else {
-					return new \WP_Error( 'unsupported', __( 'AVIF support requires PHP 8.1+ with GD compiled with AVIF. Please use a JPEG or PNG base image instead.', 'rayai-content-orchestrator' ) );
+					return new \WP_Error( 'unsupported', __( 'AVIF support requires PHP 8.1+ with GD compiled with AVIF. Please use a JPEG or PNG base image instead.', 'raybogman-content-orchestrator' ) );
 				}
 				break;
 			default:
-				return new \WP_Error( 'unsupported', __( 'Only JPEG, PNG, WebP, and AVIF base images are supported.', 'rayai-content-orchestrator' ) );
+				return new \WP_Error( 'unsupported', __( 'Only JPEG, PNG, WebP, and AVIF base images are supported.', 'raybogman-content-orchestrator' ) );
 		}
 
 		if ( ! $img ) {
-			return new \WP_Error( 'load_failed', __( 'Failed to load the base image with GD.', 'rayai-content-orchestrator' ) );
+			return new \WP_Error( 'load_failed', __( 'Failed to load the base image with GD.', 'raybogman-content-orchestrator' ) );
 		}
 
 		$width  = imagesx( $img );
@@ -104,7 +104,7 @@ class RAYAI_Image_Overlay {
 		$font_bold = $opts['font_bold'];
 		if ( empty( $font_bold ) || ! file_exists( $font_bold ) ) {
 			imagedestroy( $img );
-			return new \WP_Error( 'no_font', __( 'Bold font file (.ttf) not found. Upload a TTF font and configure it in Settings → Featured Image Provider.', 'rayai-content-orchestrator' ) );
+			return new \WP_Error( 'no_font', __( 'Bold font file (.ttf) not found. Upload a TTF font and configure it in Settings → Featured Image Provider.', 'raybogman-content-orchestrator' ) );
 		}
 		$font_italic = ( ! empty( $opts['font_italic'] ) && file_exists( $opts['font_italic'] ) )
 			? $opts['font_italic']
@@ -174,7 +174,7 @@ class RAYAI_Image_Overlay {
 		if ( mb_strlen( $slug ) > 60 ) {
 			$slug = mb_substr( $slug, 0, 60 );
 		}
-		$filename = 'rayai-featured-' . $slug . '-' . time() . '.jpg';
+		$filename = 'rbco-featured-' . $slug . '-' . time() . '.jpg';
 		$filepath = trailingslashit( $upload_dir['path'] ) . $filename;
 
 		imagejpeg( $img, $filepath, 92 );
@@ -224,8 +224,8 @@ class RAYAI_Image_Overlay {
 
 		// Set as featured image and mark as AICC-generated.
 		set_post_thumbnail( $post_id, $attach_id );
-		update_post_meta( $attach_id, '_rayai_generated_image', '1' );
-		update_post_meta( $attach_id, '_rayai_overlay_image', '1' );
+		update_post_meta( $attach_id, '_rbco_generated_image', '1' );
+		update_post_meta( $attach_id, '_rbco_overlay_image', '1' );
 
 		// Set alt text.
 		update_post_meta( $attach_id, '_wp_attachment_image_alt', $title );

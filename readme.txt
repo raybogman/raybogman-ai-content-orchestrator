@@ -1,11 +1,11 @@
-=== RayAI – Content Orchestrator ===
+=== RayBogman Content Orchestrator ===
 Contributors: raybogman
-Donate link: https://buymeacoffee.com/raybogman
+Donate link: https://raybogman.com
 Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.1
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,12 +13,12 @@ AI-powered content creation for WordPress. Generates SEO-optimized blog posts us
 
 == Description ==
 
-RayAI – Content Orchestrator generates SEO-optimized blog posts and pages for your WordPress site using Claude AI (Anthropic) or OpenAI GPT models.
+RayBogman Content Orchestrator generates SEO-optimized blog posts and pages for your WordPress site using Claude AI (Anthropic) or OpenAI GPT models.
 
 **Key Features:**
 
 * **Dual AI Provider Support** — Choose between Claude (Anthropic) and OpenAI (GPT) for content generation. Switch between providers at any time.
-* **Website Scanning** — Crawls any website to extract content, headings, and metadata.
+* **Website Context Scanning** — Reads pages from a URL you provide to give the AI background context for writing on-brand content. Only scans URLs you explicitly enter — no automated or third-party crawling.
 * **PDF Sources** — Upload PDFs as context for content generation. Saved in a library for future reuse. Text is extracted automatically. Uses sitemaps and internal link discovery for comprehensive context gathering.
 * **AI Featured Images** — Generate a custom hero image for each post using OpenAI DALL-E 3 or Ideogram. Choose your preferred image provider in Settings. Automatically set as the featured image; LinkedIn picks it up via Open Graph tags.
 * **LinkedIn Integration** — Automatically share published content to your LinkedIn profile. Connect via OAuth 2.0, toggle per post, and content is shared when published (immediately or after approval).
@@ -42,7 +42,7 @@ RayAI – Content Orchestrator generates SEO-optimized blog posts and pages for 
 
 **How it works:**
 
-1. (Optional) Enter a website URL to scan for context — the scanner crawls sitemaps and pages.
+1. (Optional) Enter your own website URL to scan for context — the scanner reads your pages for background information.
 2. Write a prompt describing the content you want.
 3. Choose blog post or page, draft or publish, and select categories.
 4. Click "Create Content" — the AI generates SEO metadata then full HTML content.
@@ -72,7 +72,7 @@ Yes. Existing WordPress categories are listed as checkboxes on the creation form
 
 = Can I scan any website? =
 
-Yes, the scanner can crawl any publicly accessible website via sitemaps and internal links.
+The scanner reads publicly accessible pages from URLs you provide. It is intended for scanning your own website or websites you have permission to scan, to give the AI relevant context. It does not perform automated mass crawling or scraping of third-party sites.
 
 == Third-Party Services ==
 
@@ -81,8 +81,8 @@ This plugin connects to external services to provide its functionality. No data 
 = Anthropic (Claude AI) =
 Used for content generation and SEO metadata when Claude is selected as the AI provider.
 * Service: [anthropic.com](https://www.anthropic.com)
-* Terms: [anthropic.com/policies/terms](https://www.anthropic.com/policies/terms)
-* Privacy: [anthropic.com/policies/privacy](https://www.anthropic.com/policies/privacy)
+* Terms: [anthropic.com/legal/consumer-terms](https://www.anthropic.com/legal/consumer-terms)
+* Privacy: [anthropic.com/privacy](https://www.anthropic.com/privacy)
 * Data sent: User prompt, website scan context, content type
 * When: Only when the user clicks "Create Content" or "Refresh Post"
 
@@ -111,11 +111,12 @@ Used for auto-sharing blog posts to LinkedIn (Enterprise only).
 * When: Only when the user enables "Post to LinkedIn" and the post is published
 
 = Instagram Graph API (via Meta) =
-Used for auto-sharing blog posts to Instagram (Enterprise only).
+Used for auto-sharing blog posts to Instagram and checking publishing quota (Enterprise only).
 * Service: [developers.facebook.com](https://developers.facebook.com)
-* Terms: [facebook.com/terms](https://www.facebook.com/terms)
-* Privacy: [facebook.com/privacy](https://www.facebook.com/privacy/policy)
-* Data sent: Featured image URL, generated caption
+* Terms: [facebook.com/legal/terms](https://www.facebook.com/legal/terms)
+* Privacy: [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy)
+* Data sent: Featured image URL, generated caption, access token for publishing and quota checks
+* Endpoints used: media (create post), media_publish (publish post), content_publishing_limit (check daily quota)
 * When: Only when the user enables "Post to Instagram" and the post is published
 
 = Freemius =
@@ -138,13 +139,21 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 
 == Upgrade Notice ==
 
-= 3.0.1 =
-Major rebrand to RayAI – Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
+= 3.1.0 =
+Major rebrand to RayBogman Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
 
-= 3.0.1 =
-* Major: Full rebrand to RayAI – Content Orchestrator. All internal prefixes changed from aicc_ to rayai_. New text domain rayai-content-orchestrator. All class names, option names, meta keys, CSS classes, and JS variables updated. This is a breaking change from previous versions.
+= 3.1.0 =
+* Renamed: Plugin rebranded to RayBogman Content Orchestrator (slug: raybogman-content-orchestrator) to comply with WordPress.org naming guidelines.
+* Fixed: All inline scripts wrapped with admin_footer hook for wp_enqueue compliance.
+* Fixed: Removed global ini_set/set_time_limit calls — now scoped to specific AJAX handlers only.
+* Fixed: Replaced move_uploaded_file() with wp_handle_upload() for WordPress file handling compliance.
+* Fixed: Website scanning description clarified — no third-party scraping, user-provided URLs only.
+* Fixed: Instagram Graph API endpoints documented in Third-Party Services section.
+* Fixed: All external URLs verified and updated (Anthropic, Facebook terms/privacy).
+* Fixed: Donate link updated to raybogman.com.
+
 
 = 2.5.7 =
 * Fixed: WordPress.org Plugin Check — all errors and warnings resolved. Passes all categories: General, Plugin Repo, Security, Performance, and Accessibility.
@@ -152,8 +161,8 @@ Major rebrand to RayAI – Content Orchestrator. All internal prefixes updated. 
 * Fixed: Input sanitization and wp_unslash on all $_GET/$_POST/$_FILES usage.
 * Fixed: All translators comments for i18n strings with placeholders.
 * Fixed: Ordered placeholders in email notification (%1$s, %2$s, %3$s, %4$s).
-* Fixed: All global variables prefixed with rayai_ in view templates.
-* Fixed: Freemius function renamed from aco_fs to rayai_fs for prefix compliance.
+* Fixed: All global variables prefixed with rbco_ in view templates.
+* Fixed: Freemius function renamed from aco_fs to rbco_fs for prefix compliance.
 * Fixed: Third-party service disclosures added to readme.txt (Anthropic, OpenAI, Ideogram, LinkedIn, Instagram, Freemius).
 * Fixed: Tags reduced to 5 (WordPress.org maximum).
 * Fixed: Short description trimmed to under 150 characters.

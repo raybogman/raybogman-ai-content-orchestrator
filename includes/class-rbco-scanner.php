@@ -2,7 +2,7 @@
 /**
  * Website scanner.
  *
- * @package RayAI_Content_Orchestrator
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,11 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class RAYAI_Scanner
+ * Class RBCO_Scanner
  *
  * Crawls and extracts content from websites for use as AI context.
  */
-class RAYAI_Scanner {
+class RBCO_Scanner {
 
 	/**
 	 * User agent string for HTTP requests.
@@ -182,7 +182,7 @@ class RAYAI_Scanner {
 
 		// Prioritize and limit.
 		$prioritized = $this->prioritize_urls( $all_urls );
-		$max_pages   = RAYAI_Settings::get_max_pages();
+		$max_pages   = RBCO_Settings::get_max_pages();
 		$to_scan     = array_slice( $prioritized, 0, $max_pages );
 		$this->log( sprintf( 'Selected top %d most relevant pages', count( $to_scan ) ) );
 
@@ -213,7 +213,7 @@ class RAYAI_Scanner {
 	 */
 	private function fetch_page( $url ) {
 		$response = wp_remote_get( $url, array(
-			'timeout'    => RAYAI_Settings::get_request_timeout(),
+			'timeout'    => RBCO_Settings::get_request_timeout(),
 			'user-agent' => self::USER_AGENT,
 			'sslverify'  => false,
 		) );
@@ -366,7 +366,7 @@ class RAYAI_Scanner {
 			$checked[] = $sitemap_url;
 
 			$response = wp_remote_get( $sitemap_url, array(
-				'timeout'    => RAYAI_Settings::get_request_timeout(),
+				'timeout'    => RBCO_Settings::get_request_timeout(),
 				'user-agent' => self::USER_AGENT,
 				'sslverify'  => false,
 			) );
@@ -480,7 +480,7 @@ class RAYAI_Scanner {
 	public static function build_site_context( $site_data ) {
 		$parts      = array();
 		$char_count = 0;
-		$max_chars  = RAYAI_Settings::get_max_context_chars();
+		$max_chars  = RBCO_Settings::get_max_context_chars();
 		$total      = count( $site_data );
 
 		foreach ( $site_data as $index => $page ) {

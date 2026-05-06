@@ -5,14 +5,14 @@
  * Handles OAuth, token management, and publishing posts to Instagram
  * Business/Creator accounts via the Instagram Graph API.
  *
- * @package RayAI_Content_Orchestrator
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class RAYAI_Instagram {
+class RBCO_Instagram {
 
 	const AUTH_URL    = 'https://www.facebook.com/v21.0/dialog/oauth';
 	const TOKEN_URL   = 'https://graph.facebook.com/v21.0/oauth/access_token';
@@ -25,10 +25,10 @@ class RAYAI_Instagram {
 	 */
 	public static function get_auth_url() {
 		$client_id    = self::get_client_id();
-		$redirect_uri = admin_url( 'admin.php?page=rayai-settings&tab=instagram' );
+		$redirect_uri = admin_url( 'admin.php?page=rbco-settings&tab=instagram' );
 
-		$state = wp_create_nonce( 'rayai_instagram_oauth' );
-		set_transient( 'rayai_instagram_oauth_state', $state, 600 );
+		$state = wp_create_nonce( 'rbco_instagram_oauth' );
+		set_transient( 'rbco_instagram_oauth_state', $state, 600 );
 
 		$params = array(
 			'client_id'     => $client_id,
@@ -49,15 +49,15 @@ class RAYAI_Instagram {
 	 * @return true|WP_Error
 	 */
 	public static function handle_callback( $code, $state ) {
-		$stored_state = get_transient( 'rayai_instagram_oauth_state' );
+		$stored_state = get_transient( 'rbco_instagram_oauth_state' );
 		if ( ! $stored_state || $state !== $stored_state ) {
 			return new \WP_Error( 'invalid_state', 'OAuth state mismatch. Please try again.' );
 		}
-		delete_transient( 'rayai_instagram_oauth_state' );
+		delete_transient( 'rbco_instagram_oauth_state' );
 
 		$client_id     = self::get_client_id();
 		$client_secret = self::get_client_secret();
-		$redirect_uri  = admin_url( 'admin.php?page=rayai-settings&tab=instagram' );
+		$redirect_uri  = admin_url( 'admin.php?page=rbco-settings&tab=instagram' );
 
 		// Exchange code for access token.
 		$response = wp_remote_get( add_query_arg( array(
@@ -105,12 +105,12 @@ class RAYAI_Instagram {
 		}
 
 		// Store tokens and profile.
-		update_option( 'rayai_instagram_tokens', array(
+		update_option( 'rbco_instagram_tokens', array(
 			'access_token' => $short_token,
 			'expires_at'   => $expires_at,
 		) );
 
-		update_option( 'rayai_instagram_profile', array(
+		update_option( 'rbco_instagram_profile', array(
 			'ig_user_id' => $ig_account['id'],
 			'username'   => $ig_account['username'],
 			'name'       => isset( $ig_account['name'] ) ? $ig_account['name'] : $ig_account['username'],
@@ -203,7 +203,7 @@ class RAYAI_Instagram {
 		}
 
 		// Get caption — use stored Instagram caption or generate from excerpt.
-		$caption = get_post_meta( $post_id, '_rayai_instagram_caption', true );
+		$caption = get_post_meta( $post_id, '_rbco_instagram_caption', true );
 		if ( empty( $caption ) ) {
 			$caption = wp_strip_all_tags( $post->post_excerpt );
 			if ( empty( $caption ) ) {
@@ -252,9 +252,9 @@ class RAYAI_Instagram {
 		}
 
 		// Mark as shared.
-		update_post_meta( $post_id, '_rayai_instagram_shared', time() );
-		update_post_meta( $post_id, '_rayai_instagram_media_id', $publish['id'] );
-		delete_post_meta( $post_id, '_rayai_instagram_error' );
+		update_post_meta( $post_id, '_rbco_instagram_shared', time() );
+		update_post_meta( $post_id, '_rbco_instagram_media_id', $publish['id'] );
+		delete_post_meta( $post_id, '_rbco_instagram_error' );
 
 		return true;
 	}
@@ -265,7 +265,7 @@ class RAYAI_Instagram {
 	 * @return string|false Access token or false if not available/expired.
 	 */
 	public static function get_access_token() {
-		$tokens = get_option( 'rayai_instagram_tokens', array() );
+		$tokens = get_option( 'rbco_instagram_tokens', array() );
 		if ( empty( $tokens['access_token'] ) ) {
 			return false;
 		}
@@ -293,15 +293,15 @@ class RAYAI_Instagram {
 	 * @return array Profile data.
 	 */
 	public static function get_profile() {
-		return get_option( 'rayai_instagram_profile', array() );
+		return get_option( 'rbco_instagram_profile', array() );
 	}
 
 	/**
 	 * Disconnect Instagram.
 	 */
 	public static function disconnect() {
-		delete_option( 'rayai_instagram_tokens' );
-		delete_option( 'rayai_instagram_profile' );
+		delete_option( 'rbco_instagram_tokens' );
+		delete_option( 'rbco_instagram_profile' );
 	}
 
 	/**
@@ -310,7 +310,7 @@ class RAYAI_Instagram {
 	 * @return string
 	 */
 	public static function get_client_id() {
-		return get_option( 'rayai_instagram_app_id', '' );
+		return get_option( 'rbco_instagram_app_id', '' );
 	}
 
 	/**
@@ -319,6 +319,6 @@ class RAYAI_Instagram {
 	 * @return string
 	 */
 	public static function get_client_secret() {
-		return get_option( 'rayai_instagram_app_secret', '' );
+		return get_option( 'rbco_instagram_app_secret', '' );
 	}
 }

@@ -2,18 +2,18 @@
 /**
  * Blog style examples page — shows sample output for each style.
  *
- * @package RayAI_Content_Orchestrator
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$rayai_styles = RAYAI_Styles::get_styles();
+$rbco_styles = RBCO_Styles::get_styles();
 
 // Static example HTML for each style. These demonstrate the structure
 // and format the AI will generate when that style is selected.
-$rayai_examples = array(
+$rbco_examples = array(
 
 	'standard' => '
 <p>In today\'s competitive digital landscape, understanding <strong>content marketing fundamentals</strong> is essential for any business looking to grow online. This guide explores the core strategies that drive real results.</p>
@@ -490,37 +490,37 @@ $rayai_examples = array(
 <p>If you enjoyed this, try our <strong>Chocolate Chip Banana Muffins</strong> for a grab-and-go variation!</p>',
 );
 ?>
-<div class="wrap rayai-wrap" style="max-width: 1000px;">
+<div class="wrap rbco-wrap" style="max-width: 1000px;">
 	<h1 class="wp-heading-inline">
-		<span class="dashicons dashicons-layout rayai-heading-icon"></span>
-		<?php esc_html_e( 'Blog Style Examples', 'rayai-content-orchestrator' ); ?>
+		<span class="dashicons dashicons-layout rbco-heading-icon"></span>
+		<?php esc_html_e( 'Blog Style Examples', 'raybogman-content-orchestrator' ); ?>
 	</h1>
-	<p class="rayai-subtitle">
-		<?php esc_html_e( 'Preview what each blog style produces. Click any style to expand its example. Select your preferred style on the Create Content page.', 'rayai-content-orchestrator' ); ?>
+	<p class="rbco-subtitle">
+		<?php esc_html_e( 'Preview what each blog style produces. Click any style to expand its example. Select your preferred style on the Create Content page.', 'raybogman-content-orchestrator' ); ?>
 	</p>
 
-	<?php foreach ( $rayai_styles as $rayai_key => $rayai_style ) : ?>
-		<div class="rayai-card" style="margin-bottom: 12px;">
-			<div class="rayai-card-header rayai-example-toggle" data-target="rayai-example-<?php echo esc_attr( $rayai_key ); ?>" style="cursor: pointer;">
+	<?php foreach ( $rbco_styles as $rbco_key => $rbco_style ) : ?>
+		<div class="rbco-card" style="margin-bottom: 12px;">
+			<div class="rbco-card-header rbco-example-toggle" data-target="rbco-example-<?php echo esc_attr( $rbco_key ); ?>" style="cursor: pointer;">
 				<h2 style="justify-content: space-between; width: 100%;">
 					<span>
-						<span class="dashicons <?php echo esc_attr( $rayai_style['icon'] ); ?>" style="margin-right: 6px;"></span>
-						<?php echo esc_html( $rayai_style['name'] ); ?>
+						<span class="dashicons <?php echo esc_attr( $rbco_style['icon'] ); ?>" style="margin-right: 6px;"></span>
+						<?php echo esc_html( $rbco_style['name'] ); ?>
 						<span class="description" style="font-weight: normal; margin-left: 8px;">
-							<?php echo esc_html( $rayai_style['target_words'] ); ?> words &mdash;
-							<?php echo esc_html( $rayai_style['description'] ); ?>
+							<?php echo esc_html( $rbco_style['target_words'] ); ?> words &mdash;
+							<?php echo esc_html( $rbco_style['description'] ); ?>
 						</span>
 					</span>
 					<span class="dashicons dashicons-arrow-down-alt2" style="color: #646970;"></span>
 				</h2>
 			</div>
-			<div id="rayai-example-<?php echo esc_attr( $rayai_key ); ?>" class="rayai-card-body rayai-example-body" style="display: none;">
-				<div class="rayai-preview" style="display: block; max-height: none;">
+			<div id="rbco-example-<?php echo esc_attr( $rbco_key ); ?>" class="rbco-card-body rbco-example-body" style="display: none;">
+				<div class="rbco-preview" style="display: block; max-height: none;">
 					<?php
-					if ( isset( $rayai_examples[ $rayai_key ] ) ) {
-						echo wp_kses_post( $rayai_examples[ $rayai_key ] );
+					if ( isset( $rbco_examples[ $rbco_key ] ) ) {
+						echo wp_kses_post( $rbco_examples[ $rbco_key ] );
 					} else {
-						echo '<p class="description"><em>' . esc_html__( 'Example coming soon.', 'rayai-content-orchestrator' ) . '</em></p>';
+						echo '<p class="description"><em>' . esc_html__( 'Example coming soon.', 'raybogman-content-orchestrator' ) . '</em></p>';
 					}
 					?>
 				</div>
@@ -529,9 +529,10 @@ $rayai_examples = array(
 	<?php endforeach; ?>
 </div>
 
-<script>
+<?php add_action( 'admin_footer', function() { ?>
+<script type="text/javascript">
 jQuery(document).ready(function($) {
-	$('.rayai-example-toggle').on('click', function() {
+	$('.rbco-example-toggle').on('click', function() {
 		var target = $(this).data('target');
 		var $body  = $('#' + target);
 		var $arrow = $(this).find('.dashicons-arrow-down-alt2, .dashicons-arrow-up-alt2');
@@ -546,3 +547,4 @@ jQuery(document).ready(function($) {
 	});
 });
 </script>
+<?php } ); ?>

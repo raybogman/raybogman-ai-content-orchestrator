@@ -1,28 +1,28 @@
 /**
- * RayAI – Content Orchestrator - Admin Styles
+ * RayBogman Content Orchestrator - Admin Styles
  *
- * @package RayAI_Content_Orchestrator
+ * @package RayBogman_Content_Orchestrator
  */
 
 /* ── Layout ────────────────────���────────────────────────────────── */
 
-.rayai-wrap {
+.rbco-wrap {
 	max-width: 960px;
 }
 
-.rayai-wrap .wp-heading-inline {
+.rbco-wrap .wp-heading-inline {
 	display: flex;
 	align-items: center;
 }
 
-.rayai-heading-icon {
+.rbco-heading-icon {
 	font-size: 28px;
 	width: 28px;
 	height: 28px;
 	margin-right: 8px;
 }
 
-.rayai-subtitle {
+.rbco-subtitle {
 	color: #646970;
 	font-size: 14px;
 	margin: 4px 0 20px;
@@ -30,7 +30,7 @@
 
 /* ── Status bar ─────────────────────────────────────────────────── */
 
-.rayai-status-bar {
+.rbco-status-bar {
 	display: flex;
 	align-items: center;
 	gap: 20px;
@@ -42,23 +42,23 @@
 	font-size: 13px;
 }
 
-.rayai-status-item {
+.rbco-status-item {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
 }
 
-.rayai-status-link {
+.rbco-status-link {
 	margin-left: auto;
 	text-decoration: none;
 	color: #2271b1;
 }
 
-.rayai-status-link:hover {
+.rbco-status-link:hover {
 	color: #135e96;
 }
 
-.rayai-badge {
+.rbco-badge {
 	display: inline-block;
 	padding: 1px 8px;
 	border-radius: 3px;
@@ -66,13 +66,13 @@
 	font-weight: 600;
 }
 
-.rayai-badge-success {
+.rbco-badge-success {
 	background: #edfaef;
 	color: #00a32a;
 	border: 1px solid #00a32a;
 }
 
-.rayai-badge-warning {
+.rbco-badge-warning {
 	background: #fcf9e8;
 	color: #996800;
 	border: 1px solid #dba617;
@@ -80,7 +80,7 @@
 
 /* ── Cards ────────��─────────────────────────────────────────────── */
 
-.rayai-card {
+.rbco-card {
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	border-radius: 4px;
@@ -88,13 +88,13 @@
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
 
-.rayai-card-header {
+.rbco-card-header {
 	padding: 12px 20px;
 	border-bottom: 1px solid #c3c4c7;
 	background: #f6f7f7;
 }
 
-.rayai-card-header h2 {
+.rbco-card-header h2 {
 	margin: 0;
 	padding: 0;
 	font-size: 14px;
@@ -104,42 +104,42 @@
 	align-items: center;
 }
 
-.rayai-card-header-success {
+.rbco-card-header-success {
 	background: #edfaef;
 	border-bottom-color: #00a32a;
 }
 
-.rayai-card-header-success h2 {
+.rbco-card-header-success h2 {
 	color: #00a32a;
 }
 
-.rayai-card-body {
+.rbco-card-body {
 	padding: 16px 20px;
 }
 
 /* ── Form overrides ───��────────────────────────���────────────────── */
 
-.rayai-card .form-table th {
+.rbco-card .form-table th {
 	width: 180px;
 	padding: 16px 10px 16px 0;
 	vertical-align: top;
 }
 
-.rayai-card .form-table td {
+.rbco-card .form-table td {
 	padding: 12px 10px;
 }
 
-.rayai-card .form-table textarea {
+.rbco-card .form-table textarea {
 	width: 100%;
 	min-height: 120px;
 }
 
-.rayai-card .form-table fieldset label {
+.rbco-card .form-table fieldset label {
 	display: block;
 	margin-bottom: 6px;
 }
 
-.rayai-btn-icon {
+.rbco-btn-icon {
 	font-size: 18px;
 	width: 18px;
 	height: 18px;
@@ -147,7 +147,7 @@
 	margin-right: 4px;
 }
 
-.button-hero .rayai-btn-icon {
+.button-hero .rbco-btn-icon {
 	font-size: 20px;
 	width: 20px;
 	height: 20px;
@@ -155,7 +155,7 @@
 
 /* ── Category checkbox list ��────────────────────────────────────── */
 
-.rayai-checkbox-list {
+.rbco-checkbox-list {
 	max-height: 200px;
 	overflow-y: auto;
 	border: 1px solid #c3c4c7;
@@ -164,19 +164,19 @@
 	background: #f6f7f7;
 }
 
-.rayai-checkbox-item {
+.rbco-checkbox-item {
 	display: block !important;
 	margin-bottom: 4px !important;
 	font-weight: normal !important;
 }
 
-.rayai-checkbox-item input[type="checkbox"] {
+.rbco-checkbox-item input[type="checkbox"] {
 	margin-right: 6px;
 }
 
 /* ── Log box ─────────────���──────────────────────────────────────── */
 
-.rayai-log-box {
+.rbco-log-box {
 	background: #1d2327;
 	color: #c3c4c7;
 	padding: 16px;
@@ -188,37 +188,37 @@
 	line-height: 1.8;
 }
 
-.rayai-log-line {
+.rbco-log-line {
 	margin: 0;
 	padding: 0;
 }
 
-.rayai-log-line.step {
+.rbco-log-line.step {
 	color: #72aee6;
 	font-weight: 600;
 }
 
-.rayai-log-line.success {
+.rbco-log-line.success {
 	color: #00a32a;
 }
 
-.rayai-log-line.error {
+.rbco-log-line.error {
 	color: #d63638;
 }
 
 /* ── Result table ──────��────────────────────────────────────────── */
 
-.rayai-result-card .widefat td {
+.rbco-result-card .widefat td {
 	vertical-align: top;
 }
 
-.rayai-result-card .widefat td:first-child {
+.rbco-result-card .widefat td:first-child {
 	font-weight: 600;
 	width: 160px;
 	color: #1d2327;
 }
 
-.rayai-tag {
+.rbco-tag {
 	display: inline-block;
 	background: #f0f0f1;
 	border: 1px solid #c3c4c7;
@@ -231,7 +231,7 @@
 
 /* ── Preview ────────────────────────────────────────────────────── */
 
-.rayai-preview {
+.rbco-preview {
 	margin-top: 16px;
 	background: #fff;
 	border: 1px solid #c3c4c7;
@@ -244,50 +244,50 @@
 	color: #1d2327;
 }
 
-.rayai-preview h2 {
+.rbco-preview h2 {
 	font-size: 22px;
 	margin: 20px 0 10px;
 	color: #1d2327;
 }
 
-.rayai-preview h3 {
+.rbco-preview h3 {
 	font-size: 18px;
 	margin: 16px 0 8px;
 	color: #50575e;
 }
 
-.rayai-preview p {
+.rbco-preview p {
 	margin-bottom: 12px;
 }
 
-.rayai-preview ul,
-.rayai-preview ol {
+.rbco-preview ul,
+.rbco-preview ol {
 	margin: 0 0 12px 24px;
 }
 
-.rayai-preview li {
+.rbco-preview li {
 	margin-bottom: 4px;
 }
 
-.rayai-preview strong {
+.rbco-preview strong {
 	font-weight: 700;
 }
 
 /* ── Spinner in button ─────────��───────────────────────────��────── */
 
-.rayai-btn-spinner {
+.rbco-btn-spinner {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
 	border: 2px solid rgba(255, 255, 255, 0.3);
 	border-top-color: #fff;
 	border-radius: 50%;
-	animation: rayai-spin 0.7s linear infinite;
+	animation: rbco-spin 0.7s linear infinite;
 	vertical-align: middle;
 	margin-right: 6px;
 }
 
-@keyframes rayai-spin {
+@keyframes rbco-spin {
 	to {
 		transform: rotate(360deg);
 	}
@@ -295,7 +295,7 @@
 
 /* ── Style hover preview panel ──────────────────────────────────── */
 
-.rayai-style-preview-panel {
+.rbco-style-preview-panel {
 	position: absolute;
 	top: 100%;
 	left: 0;
@@ -308,7 +308,7 @@
 	margin-top: 8px;
 }
 
-.rayai-style-preview-header {
+.rbco-style-preview-header {
 	display: flex;
 	align-items: center;
 	padding: 10px 16px;
@@ -318,7 +318,7 @@
 	font-size: 13px;
 }
 
-.rayai-style-preview-panel .rayai-preview {
+.rbco-style-preview-panel .rbco-preview {
 	margin: 0;
 	border: none;
 	border-radius: 0 0 6px 6px;
@@ -328,49 +328,49 @@
 	overflow-y: auto;
 }
 
-.rayai-style-preview-panel .rayai-preview h2 {
+.rbco-style-preview-panel .rbco-preview h2 {
 	font-size: 16px;
 	margin: 14px 0 6px;
 }
 
-.rayai-style-preview-panel .rayai-preview h3 {
+.rbco-style-preview-panel .rbco-preview h3 {
 	font-size: 14px;
 	margin: 10px 0 4px;
 }
 
-.rayai-style-preview-panel .rayai-preview p {
+.rbco-style-preview-panel .rbco-preview p {
 	margin-bottom: 8px;
 }
 
-.rayai-style-preview-panel .rayai-preview table {
+.rbco-style-preview-panel .rbco-preview table {
 	border-collapse: collapse;
 	width: 100%;
 	font-size: 12px;
 	margin: 8px 0;
 }
 
-.rayai-style-preview-panel .rayai-preview table th,
-.rayai-style-preview-panel .rayai-preview table td {
+.rbco-style-preview-panel .rbco-preview table th,
+.rbco-style-preview-panel .rbco-preview table td {
 	border: 1px solid #dcdcde;
 	padding: 4px 8px;
 	text-align: left;
 }
 
-.rayai-style-preview-panel .rayai-preview table th {
+.rbco-style-preview-panel .rbco-preview table th {
 	background: #f6f7f7;
 }
 
-#rayai-style-preview-trigger {
+#rbco-style-preview-trigger {
 	transition: color 0.15s;
 }
 
-#rayai-style-preview-trigger:hover {
+#rbco-style-preview-trigger:hover {
 	color: #135e96;
 }
 
 /* ── Saved URL chips ────────────────────────────────────────────── */
 
-.rayai-saved-urls {
+.rbco-saved-urls {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
@@ -381,7 +381,7 @@
 	min-height: 40px;
 }
 
-.rayai-url-chip {
+.rbco-url-chip {
 	display: inline-flex;
 	align-items: center;
 	background: #fff;
@@ -393,12 +393,12 @@
 	transition: all 0.15s;
 }
 
-.rayai-url-chip:hover {
+.rbco-url-chip:hover {
 	background: #2271b1;
 	color: #fff;
 }
 
-.rayai-url-chip-text {
+.rbco-url-chip-text {
 	cursor: pointer;
 	font-family: Menlo, Consolas, Monaco, monospace;
 	max-width: 350px;
@@ -407,7 +407,7 @@
 	white-space: nowrap;
 }
 
-.rayai-url-chip-remove {
+.rbco-url-chip-remove {
 	background: transparent;
 	border: none;
 	color: inherit;
@@ -421,24 +421,24 @@
 	transition: opacity 0.15s;
 }
 
-.rayai-url-chip-remove:hover {
+.rbco-url-chip-remove:hover {
 	opacity: 1;
 }
 
-.rayai-url-chip:hover .rayai-url-chip-remove {
+.rbco-url-chip:hover .rbco-url-chip-remove {
 	border-left-color: rgba(255, 255, 255, 0.4);
 }
 
 /* ── PDF Library ────────────────────────────────────────────────── */
 
-.rayai-pdf-library {
+.rbco-pdf-library {
 	border: 1px solid #c3c4c7;
 	border-radius: 4px;
 	padding: 12px;
 	background: #f6f7f7;
 }
 
-.rayai-pdf-item {
+.rbco-pdf-item {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -450,11 +450,11 @@
 	border-radius: 3px;
 }
 
-.rayai-pdf-item:last-child {
+.rbco-pdf-item:last-child {
 	margin-bottom: 0;
 }
 
-.rayai-pdf-label {
+.rbco-pdf-label {
 	flex: 1;
 	display: flex !important;
 	align-items: center;
@@ -463,7 +463,7 @@
 	margin: 0 !important;
 }
 
-.rayai-pdf-delete-btn {
+.rbco-pdf-delete-btn {
 	background: none;
 	border: none;
 	cursor: pointer;
@@ -472,11 +472,11 @@
 	transition: opacity 0.15s;
 }
 
-.rayai-pdf-delete-btn:hover {
+.rbco-pdf-delete-btn:hover {
 	opacity: 1;
 }
 
-.rayai-pdf-preview {
+.rbco-pdf-preview {
 	width: 100%;
 	font-size: 12px;
 	color: #646970;
@@ -486,44 +486,44 @@
 	font-style: italic;
 }
 
-.rayai-pdf-upload-area {
+.rbco-pdf-upload-area {
 	display: flex;
 	align-items: center;
 }
 
 /* ── Scheduled table ────────────────────────────────────────────── */
 
-.rayai-scheduled-table th {
+.rbco-scheduled-table th {
 	font-weight: 600;
 	padding: 10px 12px;
 }
 
-.rayai-scheduled-table td {
+.rbco-scheduled-table td {
 	padding: 12px;
 	vertical-align: middle;
 }
 
-.rayai-scheduled-table .button .dashicons {
+.rbco-scheduled-table .button .dashicons {
 	margin-right: 2px;
 }
 
 /* Actions column — keep all buttons on a single row, no wrapping. */
-.rayai-scheduled-table th.rayai-actions-col,
-.rayai-scheduled-table td.rayai-actions-cell {
+.rbco-scheduled-table th.rbco-actions-col,
+.rbco-scheduled-table td.rbco-actions-cell {
 	width: 1%;
 	white-space: nowrap;
 }
 
-.rayai-scheduled-table td.rayai-actions-cell .button {
+.rbco-scheduled-table td.rbco-actions-cell .button {
 	margin-right: 4px;
 	vertical-align: middle;
 }
 
-.rayai-scheduled-table td.rayai-actions-cell .button:last-child {
+.rbco-scheduled-table td.rbco-actions-cell .button:last-child {
 	margin-right: 0;
 }
 
-.rayai-schedule-cell {
+.rbco-schedule-cell {
 	font-family: Menlo, Consolas, Monaco, monospace;
 	font-size: 13px;
 	color: #1d2327;
@@ -531,7 +531,7 @@
 
 /* ── Modal ──────────────────────────────────────────────────────── */
 
-.rayai-modal {
+.rbco-modal {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -540,7 +540,7 @@
 	z-index: 100000;
 }
 
-.rayai-modal-backdrop {
+.rbco-modal-backdrop {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -549,7 +549,7 @@
 	background: rgba(0, 0, 0, 0.5);
 }
 
-.rayai-modal-content {
+.rbco-modal-content {
 	position: relative;
 	background: #fff;
 	max-width: 440px;
@@ -559,12 +559,12 @@
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.rayai-modal-content h2 {
+.rbco-modal-content h2 {
 	margin-top: 0;
 	font-size: 18px;
 }
 
-.rayai-modal-content input[type="datetime-local"] {
+.rbco-modal-content input[type="datetime-local"] {
 	width: 100%;
 	margin-top: 12px;
 	padding: 8px 10px;
@@ -573,17 +573,17 @@
 /* ── Responsive ─────────────────────────────────────────────────── */
 
 @media screen and (max-width: 782px) {
-	.rayai-status-bar {
+	.rbco-status-bar {
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 8px;
 	}
 
-	.rayai-status-link {
+	.rbco-status-link {
 		margin-left: 0;
 	}
 
-	.rayai-card .form-table th {
+	.rbco-card .form-table th {
 		width: auto;
 		padding-bottom: 4px;
 	}

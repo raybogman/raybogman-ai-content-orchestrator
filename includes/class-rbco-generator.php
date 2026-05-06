@@ -2,7 +2,7 @@
 /**
  * AI content generator — supports Claude (Anthropic) and OpenAI.
  *
- * @package RayAI_Content_Orchestrator
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,12 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class RAYAI_Generator
+ * Class RBCO_Generator
  *
  * Generates SEO-optimized content using Claude or OpenAI APIs.
  * Two-step process: metadata first, then content.
  */
-class RAYAI_Generator {
+class RBCO_Generator {
 
 	/**
 	 * API endpoints.
@@ -73,9 +73,9 @@ class RAYAI_Generator {
 	 * @return string Context block string.
 	 */
 	public function build_context_block( $prompt, $content_type, $site_data = array() ) {
-		$site_context = ! empty( $site_data ) ? RAYAI_Scanner::build_site_context( $site_data ) : 'No website data provided.';
+		$site_context = ! empty( $site_data ) ? RBCO_Scanner::build_site_context( $site_data ) : 'No website data provided.';
 
-		$vision = RAYAI_Settings::get_project_vision();
+		$vision = RBCO_Settings::get_project_vision();
 		$vision_block = '';
 		if ( ! empty( $vision ) ) {
 			$this->log( 'Project Vision active — baseline instructions prepended to prompt.' );
@@ -92,8 +92,8 @@ class RAYAI_Generator {
 	}
 
 	public function generate( $prompt, $content_type, $site_data = array(), $categories = array() ) {
-		$provider = RAYAI_Settings::get_ai_provider();
-		$this->log( sprintf( 'Using AI provider: %s (%s)', ucfirst( $provider ), RAYAI_Settings::get_active_model() ) );
+		$provider = RBCO_Settings::get_ai_provider();
+		$this->log( sprintf( 'Using AI provider: %s (%s)', ucfirst( $provider ), RBCO_Settings::get_active_model() ) );
 
 		$context_block = $this->build_context_block( $prompt, $content_type, $site_data );
 
@@ -197,8 +197,8 @@ class RAYAI_Generator {
 				'Output ONLY the HTML. No wrapping. No preamble.',
 			) );
 		} else {
-			$system_prompt = RAYAI_Styles::get_prompt( $style_key );
-			$style         = RAYAI_Styles::get_style( $style_key );
+			$system_prompt = RBCO_Styles::get_prompt( $style_key );
+			$style         = RBCO_Styles::get_style( $style_key );
 			if ( $style ) {
 				$this->log( sprintf( 'Blog style: %s (%s words)', $style['name'], $style['target_words'] ) );
 			}
@@ -265,7 +265,7 @@ class RAYAI_Generator {
 		}
 
 		$style_hint = '';
-		$style      = RAYAI_Styles::get_style( $style_key );
+		$style      = RBCO_Styles::get_style( $style_key );
 		if ( $style ) {
 			$style_hint = sprintf( 'The original blog is a %s. Match that tone and angle.', $style['name'] );
 		}
@@ -383,7 +383,7 @@ class RAYAI_Generator {
 		}
 
 		// Brand colors hint.
-		$brand_colors = RAYAI_Settings::get_brand_colors();
+		$brand_colors = RBCO_Settings::get_brand_colors();
 		$color_hint   = '';
 		if ( ! empty( $brand_colors ) ) {
 			$color_hint = sprintf(
@@ -393,14 +393,14 @@ class RAYAI_Generator {
 		}
 
 		// Negative prompt hint.
-		$negative      = RAYAI_Settings::get_image_negative_prompt();
+		$negative      = RBCO_Settings::get_image_negative_prompt();
 		$negative_hint = '';
 		if ( ! empty( $negative ) ) {
 			$negative_hint = sprintf( "\n- MUST AVOID: %s", $negative );
 		}
 
 		// Image style override or auto.
-		$style_setting = RAYAI_Settings::get_image_style();
+		$style_setting = RBCO_Settings::get_image_style();
 		if ( 'auto' !== $style_setting ) {
 			$style_type_label = $style_setting;
 		} else {
@@ -504,7 +504,7 @@ class RAYAI_Generator {
 	 * @throws Exception If the API call fails.
 	 */
 	public function generate_image( $prompt, $style_key = 'standard' ) {
-		$provider = RAYAI_Settings::get_image_provider();
+		$provider = RBCO_Settings::get_image_provider();
 
 		switch ( $provider ) {
 			case 'ideogram':
@@ -525,19 +525,19 @@ class RAYAI_Generator {
 	 * @throws Exception If the API call fails.
 	 */
 	private function generate_image_openai( $prompt ) {
-		$api_key = RAYAI_Settings::get_openai_api_key();
+		$api_key = RBCO_Settings::get_openai_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'OpenAI API key is required for image generation. Configure it in Settings.', 'rayai-content-orchestrator' ) );
+			throw new Exception( __( 'OpenAI API key is required for image generation. Configure it in Settings.', 'raybogman-content-orchestrator' ) );
 		}
 
 		// Append negative prompt and brand colors to the prompt text for DALL-E.
-		$negative = RAYAI_Settings::get_image_negative_prompt();
+		$negative = RBCO_Settings::get_image_negative_prompt();
 		if ( ! empty( $negative ) ) {
 			$prompt .= sprintf( "\n\nIMPORTANT — do NOT include: %s", $negative );
 		}
 
-		$brand_colors = RAYAI_Settings::get_brand_colors();
+		$brand_colors = RBCO_Settings::get_brand_colors();
 		if ( ! empty( $brand_colors ) ) {
 			$prompt .= sprintf( "\n\nUse these brand colors where appropriate: %s", implode( ', ', $brand_colors ) );
 		}
@@ -601,14 +601,14 @@ class RAYAI_Generator {
 	 * @throws Exception If the API call fails.
 	 */
 	private function generate_image_ideogram( $prompt, $style_key = 'standard' ) {
-		$api_key = RAYAI_Settings::get_ideogram_api_key();
+		$api_key = RBCO_Settings::get_ideogram_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'Ideogram API key is required for image generation. Configure it in Settings.', 'rayai-content-orchestrator' ) );
+			throw new Exception( __( 'Ideogram API key is required for image generation. Configure it in Settings.', 'raybogman-content-orchestrator' ) );
 		}
 
 		// Determine style_type: user override or auto-mapped from blog style.
-		$style_setting = RAYAI_Settings::get_image_style();
+		$style_setting = RBCO_Settings::get_image_style();
 		if ( 'auto' !== $style_setting ) {
 			$style_type = $style_setting;
 		} else {
@@ -630,7 +630,7 @@ class RAYAI_Generator {
 		);
 
 		// Add negative prompt if configured.
-		$negative = RAYAI_Settings::get_image_negative_prompt();
+		$negative = RBCO_Settings::get_image_negative_prompt();
 		if ( ! empty( $negative ) ) {
 			$fields['negative_prompt'] = $negative;
 		}
@@ -642,7 +642,7 @@ class RAYAI_Generator {
 		}
 
 		// Add brand color palette if configured (Ideogram allows max 4 colors).
-		$brand_colors = RAYAI_Settings::get_brand_colors();
+		$brand_colors = RBCO_Settings::get_brand_colors();
 		if ( ! empty( $brand_colors ) ) {
 			$brand_colors  = array_slice( $brand_colors, 0, 4 );
 			$color_members = array();
@@ -783,7 +783,7 @@ class RAYAI_Generator {
 
 		for ( $attempt = 0; $attempt <= $max_retries; $attempt++ ) {
 			try {
-				$provider = RAYAI_Settings::get_ai_provider();
+				$provider = RBCO_Settings::get_ai_provider();
 
 				if ( 'openai' === $provider ) {
 					return $this->call_openai( $system_prompt, $user_message, $max_tokens );
@@ -888,14 +888,14 @@ class RAYAI_Generator {
 	 * @throws Exception If all retries fail.
 	 */
 	private function call_claude( $system_prompt, $user_message, $max_tokens ) {
-		$api_key = RAYAI_Settings::get_anthropic_api_key();
+		$api_key = RBCO_Settings::get_anthropic_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'Anthropic API key is not configured. Go to AI Content > Settings.', 'rayai-content-orchestrator' ) );
+			throw new Exception( __( 'Anthropic API key is not configured. Go to AI Content > Settings.', 'raybogman-content-orchestrator' ) );
 		}
 
 		$body = array(
-			'model'      => RAYAI_Settings::get_claude_model(),
+			'model'      => RBCO_Settings::get_claude_model(),
 			'max_tokens' => $max_tokens,
 			'system'     => $system_prompt,
 			'messages'   => array(
@@ -965,13 +965,13 @@ class RAYAI_Generator {
 	 * @throws Exception If all retries fail.
 	 */
 	private function call_openai( $system_prompt, $user_message, $max_tokens ) {
-		$api_key = RAYAI_Settings::get_openai_api_key();
+		$api_key = RBCO_Settings::get_openai_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'OpenAI API key is not configured. Go to AI Content > Settings.', 'rayai-content-orchestrator' ) );
+			throw new Exception( __( 'OpenAI API key is not configured. Go to AI Content > Settings.', 'raybogman-content-orchestrator' ) );
 		}
 
-		$model = RAYAI_Settings::get_openai_model();
+		$model = RBCO_Settings::get_openai_model();
 		$this->log( sprintf( 'Calling OpenAI API: model=%s, max_tokens=%d', $model, $max_tokens ) );
 
 		$body = array(

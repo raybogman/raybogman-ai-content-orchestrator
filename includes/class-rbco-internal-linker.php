@@ -2,14 +2,14 @@
 /**
  * Automatic internal linking for AI-generated content.
  *
- * @package RayAI_Content_Orchestrator
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class RAYAI_Internal_Linker {
+class RBCO_Internal_Linker {
 
 	/**
 	 * Find relevant published posts and insert internal links into the content.
@@ -63,7 +63,7 @@ class RAYAI_Internal_Linker {
 			);
 		}
 
-		$placement = RAYAI_Settings::get_link_placement();
+		$placement = RBCO_Settings::get_link_placement();
 		$log( sprintf( 'Link placement mode: %s', $placement ) );
 
 		$paragraphs = self::index_paragraphs( $html );
@@ -173,7 +173,7 @@ class RAYAI_Internal_Linker {
 
 			if ( ! empty( $related_links ) ) {
 				$log( sprintf( 'Adding %d links via "Related Articles" section.', count( $related_links ) ) );
-				$html .= "\n" . '<div class="rayai-related-box" style="margin-top:2em; padding:20px 24px; background:#f8f9fa; border-left:4px solid #2271b1; border-radius:4px;">'
+				$html .= "\n" . '<div class="rbco-related-box" style="margin-top:2em; padding:20px 24px; background:#f8f9fa; border-left:4px solid #2271b1; border-radius:4px;">'
 					. "\n" . '<h3 style="margin:0 0 12px 0; font-size:1.1em;">Related Articles</h3>'
 					. "\n" . '<ul style="list-style:none; margin:0; padding:0;">' . "\n" . implode( "\n", $related_links ) . "\n</ul>\n</div>";
 			}
