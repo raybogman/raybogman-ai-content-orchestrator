@@ -2,7 +2,7 @@
 /**
  * Bulk Create page template.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +19,7 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 <div class="wrap rbco-wrap">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-admin-page rbco-heading-icon"></span>
-		<?php esc_html_e( 'RayBogman Content Orchestrator — Bulk Create', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Bulk Create', 'raybogman-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
 		<?php esc_html_e( 'Create multiple blog posts at once. Enter your topics, pick a style and schedule, and generate them all in one go.', 'raybogman-content-orchestrator' ); ?>

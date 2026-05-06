@@ -2,7 +2,7 @@
 /**
  * Dashboard page — overview of AI-generated content, stats, and quick actions.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -68,7 +68,7 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 <div class="wrap">
 	<h1>
 		<span class="dashicons dashicons-chart-area" style="font-size: 28px; width: 28px; height: 28px; margin-right: 8px; vertical-align: text-bottom;"></span>
-		<?php esc_html_e( 'RayBogman Content Orchestrator — Dashboard', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Dashboard', 'raybogman-content-orchestrator' ); ?>
 	</h1>
 
 	<!-- Stats cards -->

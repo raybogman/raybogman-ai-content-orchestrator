@@ -2,7 +2,7 @@
 /**
  * Settings page template.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,7 +24,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 <div class="wrap">
 	<h1>
 		<span class="dashicons dashicons-edit-large" style="font-size: 28px; width: 28px; height: 28px; margin-right: 8px; vertical-align: text-bottom;"></span>
-		<?php esc_html_e( 'RayBogman Content Orchestrator — Settings', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Settings', 'raybogman-content-orchestrator' ); ?>
 	</h1>
 
 	<nav class="nav-tab-wrapper" style="margin-bottom: 20px;">
@@ -147,7 +147,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				<h3><?php esc_html_e( 'Step 1: Create a Meta App', 'raybogman-content-orchestrator' ); ?></h3>
 			<ol style="line-height:2.2;">
 				<li><?php esc_html_e( 'Go to', 'raybogman-content-orchestrator' ); ?> <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a></li>
-				<li><?php esc_html_e( 'Click "Create App" > "Other" > "Business" type > name it (e.g., "RayBogman Content Orchestrator")', 'raybogman-content-orchestrator' ); ?></li>
+				<li><?php esc_html_e( 'Click "Create App" > "Other" > "Business" type > name it (e.g., "Ray Bogman Content Orchestrator")', 'raybogman-content-orchestrator' ); ?></li>
 			</ol>
 			<h3><?php esc_html_e( 'Step 2: Add products', 'raybogman-content-orchestrator' ); ?></h3>
 			<ol style="line-height:2.2;">
@@ -231,7 +231,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-what-does-it-do">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'What does this plugin do?', 'raybogman-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'RayBogman Content Orchestrator writes full blog posts for your WordPress website using AI (Claude or OpenAI). You give it a topic, it scans a website for background information, then writes an SEO-optimized article with headings, paragraphs, lists, and a FAQ section. It also generates a featured image, shares to LinkedIn, and integrates with Thrive Architect.', 'raybogman-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'Ray Bogman Content Orchestrator writes full blog posts for your WordPress website using AI (Claude or OpenAI). You give it a topic, it scans a website for background information, then writes an SEO-optimized article with headings, paragraphs, lists, and a FAQ section. It also generates a featured image, shares to LinkedIn, and integrates with Thrive Architect.', 'raybogman-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -438,10 +438,10 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			<div class="rbco-card-body">
 				<h2 style="margin-top:0;">
 					<span class="dashicons dashicons-edit-large" style="font-size:24px;width:24px;height:24px;margin-right:8px;vertical-align:text-bottom;color:#2271b1;"></span>
-					<?php esc_html_e( 'About RayBogman Content Orchestrator', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'About Ray Bogman Content Orchestrator', 'raybogman-content-orchestrator' ); ?>
 				</h2>
 				<p style="font-size:14px;line-height:1.6;">
-					<?php esc_html_e( 'RayBogman Content Orchestrator is a complete content pipeline for WordPress. It\'s not just another "AI writer" — it orchestrates the entire journey from research to publication.', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Ray Bogman Content Orchestrator is a complete content pipeline for WordPress. It\'s not just another "AI writer" — it orchestrates the entire journey from research to publication.', 'raybogman-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
 					<?php esc_html_e( 'Here\'s what it does: you give it a topic and optionally a website to scan for background information. The AI then writes a full, SEO-optimized blog post with proper headings, paragraphs, lists, and a FAQ section. It generates a custom featured image, adds internal links to your existing posts, creates a LinkedIn summary, and publishes everything to WordPress with Yoast SEO fields filled in — all in about 2 minutes.', 'raybogman-content-orchestrator' ); ?>
@@ -555,7 +555,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		<div class="rbco-card" style="margin-top:20px;">
 			<div class="rbco-card-body" style="text-align:center;padding:20px;">
 				<p style="color:#50575e;font-size:13px;margin:0;">
-					RayBogman Content Orchestrator v<?php echo esc_html( RBCO_VERSION ); ?> &middot;
+					Ray Bogman Content Orchestrator v<?php echo esc_html( RBCO_VERSION ); ?> &middot;
 					<a href="https://raybogman.com" target="_blank" rel="noopener">&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Ray Bogman</a>
 				</p>
 			</div>

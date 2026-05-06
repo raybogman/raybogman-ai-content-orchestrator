@@ -2,7 +2,7 @@
 /**
  * Admin functionality.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -99,7 +99,7 @@ class RBCO_Admin {
 	public function add_menu_pages() {
 		// Main menu — Dashboard is the landing page.
 		add_menu_page(
-			__( 'RayBogman Content Orchestrator', 'raybogman-content-orchestrator' ),
+			__( 'Ray Bogman Content Orchestrator', 'raybogman-content-orchestrator' ),
 			__( 'AI Content', 'raybogman-content-orchestrator' ),
 			'edit_posts',
 			'raybogman-content-orchestrator',
@@ -236,7 +236,7 @@ class RBCO_Admin {
 				<span class="dashicons dashicons-lock rbco-heading-icon"></span>
 				<?php
 				/* translators: %s: feature name */
-				echo esc_html( sprintf( __( 'RayBogman Content Orchestrator — %s', 'raybogman-content-orchestrator' ), $feature_name ) );
+				echo esc_html( sprintf( __( 'Ray Bogman Content Orchestrator — %s', 'raybogman-content-orchestrator' ), $feature_name ) );
 				?>
 			</h1>
 			<div class="rbco-card" style="max-width:700px; margin-top:20px;">
@@ -2703,7 +2703,7 @@ class RBCO_Admin {
 
 		/* translators: 1: site name, 2: post title, 3: post URL, 4: edit URL */
 		$body = sprintf(
-			__( "A scheduled post has been published on %1\$s.\n\nTitle: %2\$s\nURL: %3\$s\nEdit: %4\$s\n\nThis notification was sent by RayBogman Content Orchestrator.", 'raybogman-content-orchestrator' ),
+			__( "A scheduled post has been published on %1\$s.\n\nTitle: %2\$s\nURL: %3\$s\nEdit: %4\$s\n\nThis notification was sent by Ray Bogman Content Orchestrator.", 'raybogman-content-orchestrator' ),
 			$site_name,
 			$post->post_title,
 			$post_url,

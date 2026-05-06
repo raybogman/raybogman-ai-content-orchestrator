@@ -1,7 +1,7 @@
 /**
- * RayBogman Content Orchestrator - Admin JavaScript
+ * Ray Bogman Content Orchestrator - Admin JavaScript
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 /* global jQuery, aicc */
@@ -48,7 +48,7 @@
 			$log.find('.rbco-log-line').each(function () {
 				lines.push($(this).text());
 			});
-			var text = 'RayBogman Content Orchestrator — Progress Log\n'
+			var text = 'Ray Bogman Content Orchestrator — Progress Log\n'
 				+ 'Date: ' + new Date().toLocaleString() + '\n'
 				+ 'URL: ' + window.location.href + '\n'
 				+ '─'.repeat(60) + '\n\n'

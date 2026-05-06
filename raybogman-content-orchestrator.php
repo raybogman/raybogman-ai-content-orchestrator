@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       RayBogman Content Orchestrator
+ * Plugin Name:       Ray Bogman Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-content-orchestrator
  * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
  * Version:           3.1.0
@@ -73,19 +73,19 @@ function rbco_is_pro() {
 /**
  * Main plugin class.
  */
-final class RayBogman_Content_Orchestrator {
+final class Ray_Bogman_Content_Orchestrator {
 
 	/**
 	 * Singleton instance.
 	 *
-	 * @var RayBogman_Content_Orchestrator|null
+	 * @var Ray_Bogman_Content_Orchestrator|null
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get singleton instance.
 	 *
-	 * @return RayBogman_Content_Orchestrator
+	 * @return Ray_Bogman_Content_Orchestrator
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -298,7 +298,7 @@ final class RayBogman_Content_Orchestrator {
 		update_option( 'rbco_migration_verified', true );
 
 		wp_send_json_success( array(
-			'message'  => __( 'All settings verified! Your configuration is fully active in RayBogman Content Orchestrator.', 'raybogman-content-orchestrator' ),
+			'message'  => __( 'All settings verified! Your configuration is fully active in Ray Bogman Content Orchestrator.', 'raybogman-content-orchestrator' ),
 			'settings' => $settings,
 		) );
 	}
@@ -344,7 +344,7 @@ final class RayBogman_Content_Orchestrator {
 		if ( ! isset( $schedules['rbco_every_minute'] ) ) {
 			$schedules['rbco_every_minute'] = array(
 				'interval' => 60,
-				'display'  => __( 'Every Minute (RayBogman Content Orchestrator)', 'raybogman-content-orchestrator' ),
+				'display'  => __( 'Every Minute (Ray Bogman Content Orchestrator)', 'raybogman-content-orchestrator' ),
 			);
 		}
 		return $schedules;
@@ -444,4 +444,4 @@ final class RayBogman_Content_Orchestrator {
 	}
 }
 
-RayBogman_Content_Orchestrator::get_instance();
+Ray_Bogman_Content_Orchestrator::get_instance();

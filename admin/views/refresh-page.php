@@ -2,7 +2,7 @@
 /**
  * Refresh Content page template — tabbed: Overview + Individual.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,7 +22,7 @@ $rbco_active_tab = isset( $_GET['view'] ) /* phpcs:ignore WordPress.Security.Non
 <div class="wrap rbco-wrap">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-update rbco-heading-icon"></span>
-		<?php esc_html_e( 'RayBogman Content Orchestrator — Refresh Content', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Refresh Content', 'raybogman-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
 		<?php esc_html_e( 'Scan all posts for issues or refresh a specific post with AI improvements — while keeping your existing URL and SEO value.', 'raybogman-content-orchestrator' ); ?>

@@ -2,7 +2,7 @@
 /**
  * Main content creation page template.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,7 +21,7 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 <div class="wrap rbco-wrap">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-edit-large rbco-heading-icon"></span>
-		<?php esc_html_e( 'RayBogman Content Orchestrator — Create Content', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Create Content', 'raybogman-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
 		<?php esc_html_e( 'AI-powered content creation with website scanning, SEO optimization, and Yoast SEO integration.', 'raybogman-content-orchestrator' ); ?>

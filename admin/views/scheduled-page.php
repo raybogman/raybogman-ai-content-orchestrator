@@ -2,7 +2,7 @@
 /**
  * Scheduled content page — Human in the loop review queue.
  *
- * @package RayBogman_Content_Orchestrator
+ * @package Ray_Bogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,7 +27,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 <div class="wrap rbco-wrap">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-calendar-alt rbco-heading-icon"></span>
-		<?php esc_html_e( 'RayBogman Content Orchestrator — Scheduled', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Scheduled', 'raybogman-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
 		<?php esc_html_e( 'Review queue for AI-generated content awaiting human approval, plus content already scheduled for publication.', 'raybogman-content-orchestrator' ); ?>
