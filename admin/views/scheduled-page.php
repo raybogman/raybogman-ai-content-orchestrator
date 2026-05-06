@@ -2,7 +2,7 @@
 /**
  * Scheduled content page — Human in the loop review queue.
  *
- * @package Ray_Bogman_Content_Orchestrator
+ * @package Ray_Bogman_AI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,17 +27,17 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 <div class="wrap rbco-wrap">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-calendar-alt rbco-heading-icon"></span>
-		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Scheduled', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman AI Content Orchestrator — Scheduled', 'raybogman-ai-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
-		<?php esc_html_e( 'Review queue for AI-generated content awaiting human approval, plus content already scheduled for publication.', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Review queue for AI-generated content awaiting human approval, plus content already scheduled for publication.', 'raybogman-ai-content-orchestrator' ); ?>
 	</p>
 
 	<?php if ( $rbco_wp_cron_disabled ) : ?>
 		<div class="notice notice-warning inline">
 			<p>
-				<strong><?php esc_html_e( 'WordPress cron is disabled.', 'raybogman-content-orchestrator' ); ?></strong>
-				<?php esc_html_e( 'DISABLE_WP_CRON is set on this site, so scheduled posts will not publish automatically. Either configure a real cron job, or use the "Publish now" button to publish items manually. This page also auto-publishes overdue items whenever you load it.', 'raybogman-content-orchestrator' ); ?>
+				<strong><?php esc_html_e( 'WordPress cron is disabled.', 'raybogman-ai-content-orchestrator' ); ?></strong>
+				<?php esc_html_e( 'DISABLE_WP_CRON is set on this site, so scheduled posts will not publish automatically. Either configure a real cron job, or use the "Publish now" button to publish items manually. This page also auto-publishes overdue items whenever you load it.', 'raybogman-ai-content-orchestrator' ); ?>
 			</p>
 		</div>
 	<?php endif; ?>
@@ -47,30 +47,30 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 		<div class="rbco-card-header">
 			<h2>
 				<span class="dashicons dashicons-clock" style="margin-right: 6px;"></span>
-				<?php esc_html_e( 'Cron Status', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Cron Status', 'raybogman-ai-content-orchestrator' ); ?>
 			</h2>
 		</div>
 		<div class="rbco-card-body">
 			<table class="widefat" style="background: transparent; border: none;">
 				<tbody>
 					<tr>
-						<td style="width: 220px; font-weight: 600; border: none;"><?php esc_html_e( 'Cron event:', 'raybogman-content-orchestrator' ); ?></td>
-						<td style="border: none;"><code>rbco_catch_up_scheduled</code> &mdash; <?php esc_html_e( 'every minute', 'raybogman-content-orchestrator' ); ?></td>
+						<td style="width: 220px; font-weight: 600; border: none;"><?php esc_html_e( 'Cron event:', 'raybogman-ai-content-orchestrator' ); ?></td>
+						<td style="border: none;"><code>rbco_catch_up_scheduled</code> &mdash; <?php esc_html_e( 'every minute', 'raybogman-ai-content-orchestrator' ); ?></td>
 					</tr>
 					<tr>
-						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Next scheduled run:', 'raybogman-content-orchestrator' ); ?></td>
+						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Next scheduled run:', 'raybogman-ai-content-orchestrator' ); ?></td>
 						<td style="border: none;">
 							<?php if ( $rbco_next_cron ) : ?>
 								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $rbco_next_cron ) ); ?>
 								(<?php echo esc_html( human_time_diff( time(), $rbco_next_cron ) ); ?>)
 							<?php else : ?>
-								<span style="color: #d63638;"><?php esc_html_e( 'Not scheduled', 'raybogman-content-orchestrator' ); ?></span>
+								<span style="color: #d63638;"><?php esc_html_e( 'Not scheduled', 'raybogman-ai-content-orchestrator' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
 					<?php if ( ! empty( $rbco_last_catchup ) ) : ?>
 						<tr>
-							<td style="font-weight: 600; border: none; vertical-align: top;"><?php esc_html_e( 'Last catch-up run:', 'raybogman-content-orchestrator' ); ?></td>
+							<td style="font-weight: 600; border: none; vertical-align: top;"><?php esc_html_e( 'Last catch-up run:', 'raybogman-ai-content-orchestrator' ); ?></td>
 							<td style="border: none;">
 								<?php echo esc_html( wp_date( 'Y-m-d H:i:s', $rbco_last_catchup['time'] ) ); ?>
 								(<?php echo esc_html( human_time_diff( $rbco_last_catchup['time'], time() ) ); ?> ago)
@@ -78,14 +78,14 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 								<?php
 								printf(
 									/* translators: 1: found count, 2: published count */
-									esc_html__( 'found %1$d future posts, published %2$d', 'raybogman-content-orchestrator' ),
+									esc_html__( 'found %1$d future posts, published %2$d', 'raybogman-ai-content-orchestrator' ),
 									(int) $rbco_last_catchup['found'],
 									(int) $rbco_last_catchup['published']
 								);
 								?>
 								<?php if ( ! empty( $rbco_last_catchup['details'] ) ) : ?>
 									<details style="margin-top: 6px;">
-										<summary style="cursor: pointer; color: #2271b1;"><?php esc_html_e( 'Show details', 'raybogman-content-orchestrator' ); ?></summary>
+										<summary style="cursor: pointer; color: #2271b1;"><?php esc_html_e( 'Show details', 'raybogman-ai-content-orchestrator' ); ?></summary>
 										<pre style="background: #f0f0f1; padding: 10px; border-radius: 3px; font-size: 12px; margin-top: 6px;"><?php echo esc_html( implode( "\n", $rbco_last_catchup['details'] ) ); ?></pre>
 									</details>
 								<?php endif; ?>
@@ -93,11 +93,11 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 						</tr>
 					<?php endif; ?>
 					<tr>
-						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Manual trigger:', 'raybogman-content-orchestrator' ); ?></td>
+						<td style="font-weight: 600; border: none;"><?php esc_html_e( 'Manual trigger:', 'raybogman-ai-content-orchestrator' ); ?></td>
 						<td style="border: none;">
 							<button type="button" class="button" id="rbco-run-catchup-now">
 								<span class="dashicons dashicons-update" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
-								<?php esc_html_e( 'Run catch-up now', 'raybogman-content-orchestrator' ); ?>
+								<?php esc_html_e( 'Run catch-up now', 'raybogman-ai-content-orchestrator' ); ?>
 							</button>
 							<span id="rbco-catchup-result" style="margin-left: 12px;"></span>
 						</td>
@@ -110,17 +110,17 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 	<!-- Stats bar -->
 	<div class="rbco-status-bar">
 		<span class="rbco-status-item">
-			<strong><?php esc_html_e( 'Awaiting review:', 'raybogman-content-orchestrator' ); ?></strong>
+			<strong><?php esc_html_e( 'Awaiting review:', 'raybogman-ai-content-orchestrator' ); ?></strong>
 			<span class="rbco-badge <?php echo $rbco_pending_count > 0 ? 'rbco-badge-warning' : 'rbco-badge-success'; ?>">
 				<?php echo esc_html( $rbco_pending_count ); ?>
 			</span>
 		</span>
 		<span class="rbco-status-item">
-			<strong><?php esc_html_e( 'Scheduled:', 'raybogman-content-orchestrator' ); ?></strong>
+			<strong><?php esc_html_e( 'Scheduled:', 'raybogman-ai-content-orchestrator' ); ?></strong>
 			<span class="rbco-badge rbco-badge-success"><?php echo esc_html( $rbco_future_count ); ?></span>
 		</span>
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-create' ) ); ?>" class="rbco-status-item rbco-status-link">
-			<?php esc_html_e( 'Create New Content', 'raybogman-content-orchestrator' ); ?> &rarr;
+			<?php esc_html_e( 'Create New Content', 'raybogman-ai-content-orchestrator' ); ?> &rarr;
 		</a>
 	</div>
 
@@ -128,12 +128,12 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 		<div class="rbco-card">
 			<div class="rbco-card-body" style="text-align: center; padding: 40px 20px;">
 				<span class="dashicons dashicons-calendar" style="font-size: 48px; width: 48px; height: 48px; color: #c3c4c7;"></span>
-				<h2 style="margin-top: 16px;"><?php esc_html_e( 'No scheduled content yet', 'raybogman-content-orchestrator' ); ?></h2>
+				<h2 style="margin-top: 16px;"><?php esc_html_e( 'No scheduled content yet', 'raybogman-ai-content-orchestrator' ); ?></h2>
 				<p class="description" style="max-width: 500px; margin: 8px auto 16px;">
-					<?php esc_html_e( 'Create new content and select "Schedule for later" to see it appear here. Drafts will wait for your approval; published items schedule automatically.', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Create new content and select "Schedule for later" to see it appear here. Drafts will wait for your approval; published items schedule automatically.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-create' ) ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Create Content', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Create Content', 'raybogman-ai-content-orchestrator' ); ?>
 				</a>
 			</div>
 		</div>
@@ -156,7 +156,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 			<div class="rbco-card-header">
 				<h2>
 					<span class="dashicons dashicons-schedule" style="margin-right:6px; color:#2271b1;"></span>
-					<?php esc_html_e( 'Upcoming Publications', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Upcoming Publications', 'raybogman-ai-content-orchestrator' ); ?>
 				</h2>
 			</div>
 			<div class="rbco-card-body">
@@ -166,9 +166,9 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 						$rbco_is_pending = $rbco_up['needs_review'];
 						$rbco_dot_color  = $rbco_is_future ? '#00a32a' : '#dba617';
 						$rbco_status_label = $rbco_is_future
-							? __( 'Scheduled', 'raybogman-content-orchestrator' )
-							: __( 'Awaiting approval', 'raybogman-content-orchestrator' );
-						$rbco_date_str = ! empty( $rbco_up['scheduled_at_formatted'] ) ? $rbco_up['scheduled_at_formatted'] : __( 'Publish on approval', 'raybogman-content-orchestrator' );
+							? __( 'Scheduled', 'raybogman-ai-content-orchestrator' )
+							: __( 'Awaiting approval', 'raybogman-ai-content-orchestrator' );
+						$rbco_date_str = ! empty( $rbco_up['scheduled_at_formatted'] ) ? $rbco_up['scheduled_at_formatted'] : __( 'Publish on approval', 'raybogman-ai-content-orchestrator' );
 
 						$rbco_days_until = '';
 						if ( ! empty( $rbco_up['scheduled_at'] ) && $rbco_up['scheduled_at'] > 0 ) {
@@ -177,7 +177,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 								$rbco_days = ceil( $rbco_diff / DAY_IN_SECONDS );
 								$rbco_days_until = sprintf(
 									/* translators: %s: human-readable time */
-									__( 'in %s', 'raybogman-content-orchestrator' ),
+									__( 'in %s', 'raybogman-ai-content-orchestrator' ),
 									human_time_diff( time(), $rbco_up['scheduled_at'] )
 								);
 							}
@@ -199,7 +199,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 								<?php echo esc_html( $rbco_up['title'] ); ?>
 							</a>
 							<?php if ( ! empty( $rbco_up['linkedin'] ) ) : ?>
-								<span class="dashicons dashicons-linkedin" style="color:#0a66c2; vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-left:4px;" title="<?php esc_attr_e( 'LinkedIn', 'raybogman-content-orchestrator' ); ?>"></span>
+								<span class="dashicons dashicons-linkedin" style="color:#0a66c2; vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-left:4px;" title="<?php esc_attr_e( 'LinkedIn', 'raybogman-ai-content-orchestrator' ); ?>"></span>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -215,19 +215,19 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 				<div class="rbco-card-header">
 					<h2>
 						<span class="dashicons dashicons-clock" style="margin-right: 6px; color: #dba617;"></span>
-						<?php esc_html_e( 'Awaiting Human Review', 'raybogman-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Awaiting Human Review', 'raybogman-ai-content-orchestrator' ); ?>
 					</h2>
 				</div>
 				<div class="rbco-card-body" style="padding: 0;">
 					<div id="rbco-bulk-actions-bar" style="display:none; padding:8px 12px; background:#f0f6fc; border-bottom:1px solid #c3c4c7;">
-						<label style="margin-right:8px;"><input type="checkbox" id="rbco-review-check-all" /> <?php esc_html_e( 'Select all', 'raybogman-content-orchestrator' ); ?></label>
+						<label style="margin-right:8px;"><input type="checkbox" id="rbco-review-check-all" /> <?php esc_html_e( 'Select all', 'raybogman-ai-content-orchestrator' ); ?></label>
 						<button type="button" class="button" id="rbco-bulk-delete-btn">
 							<span class="dashicons dashicons-trash" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; color:#d63638; margin-right:2px;"></span>
-							<?php esc_html_e( 'Delete Selected', 'raybogman-content-orchestrator' ); ?>
+							<?php esc_html_e( 'Delete Selected', 'raybogman-ai-content-orchestrator' ); ?>
 						</button>
 						<button type="button" class="button" id="rbco-bulk-approve-btn" style="margin-left:4px;">
 							<span class="dashicons dashicons-yes" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; color:#00a32a; margin-right:2px;"></span>
-							<?php esc_html_e( 'Approve Selected', 'raybogman-content-orchestrator' ); ?>
+							<?php esc_html_e( 'Approve Selected', 'raybogman-ai-content-orchestrator' ); ?>
 						</button>
 						<span id="rbco-bulk-action-status" style="margin-left:12px;"></span>
 					</div>
@@ -235,11 +235,11 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 						<thead>
 							<tr>
 								<th style="width:30px;"><input type="checkbox" id="rbco-review-check-all-th" /></th>
-								<th><?php esc_html_e( 'Title', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width: 90px;"><?php esc_html_e( 'Type', 'raybogman-content-orchestrator' ); ?></th>
-								<th><?php esc_html_e( 'Categories', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width: 180px;"><?php esc_html_e( 'Scheduled For', 'raybogman-content-orchestrator' ); ?></th>
-								<th class="rbco-actions-col"><?php esc_html_e( 'Actions', 'raybogman-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 90px;"><?php esc_html_e( 'Type', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Categories', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 180px;"><?php esc_html_e( 'Scheduled For', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th class="rbco-actions-col"><?php esc_html_e( 'Actions', 'raybogman-ai-content-orchestrator' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -250,15 +250,15 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 									<td>
 										<strong><?php echo esc_html( $rbco_item['title'] ); ?></strong>
 										<?php if ( ! empty( $rbco_item['linkedin'] ) ) : ?>
-											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'raybogman-content-orchestrator' ); ?>"></span>
+											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'raybogman-ai-content-orchestrator' ); ?>"></span>
 										<?php endif; ?>
 										<?php if ( ! empty( $rbco_item['focus_keyphrase'] ) ) : ?>
-											<br><small class="description"><?php esc_html_e( 'Focus:', 'raybogman-content-orchestrator' ); ?> <?php echo esc_html( $rbco_item['focus_keyphrase'] ); ?></small>
+											<br><small class="description"><?php esc_html_e( 'Focus:', 'raybogman-ai-content-orchestrator' ); ?> <?php echo esc_html( $rbco_item['focus_keyphrase'] ); ?></small>
 										<?php endif; ?>
 									</td>
 									<td>
 										<span class="rbco-tag">
-											<?php echo 'post' === $rbco_item['type'] ? esc_html__( 'Blog', 'raybogman-content-orchestrator' ) : esc_html__( 'Page', 'raybogman-content-orchestrator' ); ?>
+											<?php echo 'post' === $rbco_item['type'] ? esc_html__( 'Blog', 'raybogman-ai-content-orchestrator' ) : esc_html__( 'Page', 'raybogman-ai-content-orchestrator' ); ?>
 										</span>
 									</td>
 									<td>
@@ -276,15 +276,15 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 									<td class="rbco-actions-cell">
 										<button type="button" class="button button-primary rbco-approve-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>">
 											<span class="dashicons dashicons-yes" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
-											<?php esc_html_e( 'Approve', 'raybogman-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Approve', 'raybogman-ai-content-orchestrator' ); ?>
 										</button>
-										<a href="<?php echo esc_url( $rbco_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'raybogman-content-orchestrator' ); ?>">
+										<a href="<?php echo esc_url( $rbco_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-edit" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</a>
-										<button type="button" class="button rbco-reschedule-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'raybogman-content-orchestrator' ); ?>">
+										<button type="button" class="button rbco-reschedule-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</button>
-										<button type="button" class="button rbco-delete-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'raybogman-content-orchestrator' ); ?>">
+										<button type="button" class="button rbco-delete-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 										</button>
 									</td>
@@ -302,18 +302,18 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 				<div class="rbco-card-header">
 					<h2>
 						<span class="dashicons dashicons-calendar-alt" style="margin-right: 6px; color: #00a32a;"></span>
-						<?php esc_html_e( 'Scheduled for Publication', 'raybogman-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Scheduled for Publication', 'raybogman-ai-content-orchestrator' ); ?>
 					</h2>
 				</div>
 				<div class="rbco-card-body" style="padding: 0;">
 					<table class="widefat striped rbco-scheduled-table">
 						<thead>
 							<tr>
-								<th><?php esc_html_e( 'Title', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width: 90px;"><?php esc_html_e( 'Type', 'raybogman-content-orchestrator' ); ?></th>
-								<th><?php esc_html_e( 'Categories', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width: 180px;"><?php esc_html_e( 'Publishes At', 'raybogman-content-orchestrator' ); ?></th>
-								<th class="rbco-actions-col"><?php esc_html_e( 'Actions', 'raybogman-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 90px;"><?php esc_html_e( 'Type', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Categories', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 180px;"><?php esc_html_e( 'Publishes At', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th class="rbco-actions-col"><?php esc_html_e( 'Actions', 'raybogman-ai-content-orchestrator' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -323,15 +323,15 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 									<td>
 										<strong><?php echo esc_html( $rbco_item['title'] ); ?></strong>
 										<?php if ( ! empty( $rbco_item['linkedin'] ) ) : ?>
-											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'raybogman-content-orchestrator' ); ?>"></span>
+											<span class="dashicons dashicons-linkedin" style="color: #0a66c2; vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-left: 4px;" title="<?php esc_attr_e( 'Will be shared to LinkedIn when published', 'raybogman-ai-content-orchestrator' ); ?>"></span>
 										<?php endif; ?>
 										<?php if ( ! empty( $rbco_item['focus_keyphrase'] ) ) : ?>
-											<br><small class="description"><?php esc_html_e( 'Focus:', 'raybogman-content-orchestrator' ); ?> <?php echo esc_html( $rbco_item['focus_keyphrase'] ); ?></small>
+											<br><small class="description"><?php esc_html_e( 'Focus:', 'raybogman-ai-content-orchestrator' ); ?> <?php echo esc_html( $rbco_item['focus_keyphrase'] ); ?></small>
 										<?php endif; ?>
 									</td>
 									<td>
 										<span class="rbco-tag">
-											<?php echo 'post' === $rbco_item['type'] ? esc_html__( 'Blog', 'raybogman-content-orchestrator' ) : esc_html__( 'Page', 'raybogman-content-orchestrator' ); ?>
+											<?php echo 'post' === $rbco_item['type'] ? esc_html__( 'Blog', 'raybogman-ai-content-orchestrator' ) : esc_html__( 'Page', 'raybogman-ai-content-orchestrator' ); ?>
 										</span>
 									</td>
 									<td>
@@ -347,17 +347,17 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 										<span class="rbco-schedule-display"><?php echo esc_html( $rbco_item['scheduled_at_formatted'] ); ?></span>
 									</td>
 									<td class="rbco-actions-cell">
-										<button type="button" class="button button-primary rbco-publish-now-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Publish immediately (skip waiting for scheduled time)', 'raybogman-content-orchestrator' ); ?>">
+										<button type="button" class="button button-primary rbco-publish-now-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Publish immediately (skip waiting for scheduled time)', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-megaphone" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
-											<?php esc_html_e( 'Publish Now', 'raybogman-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Publish Now', 'raybogman-ai-content-orchestrator' ); ?>
 										</button>
-										<a href="<?php echo esc_url( $rbco_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'raybogman-content-orchestrator' ); ?>">
+										<a href="<?php echo esc_url( $rbco_item['edit_url'] ); ?>" class="button" target="_blank" title="<?php esc_attr_e( 'Edit', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-edit" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</a>
-										<button type="button" class="button rbco-reschedule-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'raybogman-content-orchestrator' ); ?>">
+										<button type="button" class="button rbco-reschedule-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Reschedule', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										</button>
-										<button type="button" class="button rbco-delete-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'raybogman-content-orchestrator' ); ?>">
+										<button type="button" class="button rbco-delete-btn" data-post-id="<?php echo esc_attr( $rbco_item['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'raybogman-ai-content-orchestrator' ); ?>">
 											<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 										</button>
 									</td>
@@ -377,7 +377,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 			<div class="rbco-card-header">
 				<h2>
 					<span class="dashicons dashicons-linkedin" style="margin-right: 6px; color: #0a66c2;"></span>
-					<?php esc_html_e( 'LinkedIn Sharing Status', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'LinkedIn Sharing Status', 'raybogman-ai-content-orchestrator' ); ?>
 				</h2>
 			</div>
 			<div class="rbco-card-body" style="padding: 0;">
@@ -385,23 +385,23 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 				<div class="rbco-li-bulk-toolbar" style="padding: 10px 12px; border-bottom: 1px solid #c3c4c7; background: #f6f7f7; display: flex; align-items: center; gap: 10px;">
 					<button type="button" class="button rbco-li-bulk-delete-btn" disabled>
 						<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
-						<?php esc_html_e( 'Delete Selected', 'raybogman-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Delete Selected', 'raybogman-ai-content-orchestrator' ); ?>
 						(<span class="rbco-li-bulk-count">0</span>)
 					</button>
 					<span class="description" style="margin-left: auto; font-size: 12px;">
-						<?php esc_html_e( 'Bulk delete removes posts from this dashboard only. Does not delete WordPress posts or LinkedIn shares.', 'raybogman-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Bulk delete removes posts from this dashboard only. Does not delete WordPress posts or LinkedIn shares.', 'raybogman-ai-content-orchestrator' ); ?>
 					</span>
 				</div>
 				<table class="widefat striped">
 					<thead>
 						<tr>
 							<th style="width: 30px; padding-left: 12px;">
-								<input type="checkbox" class="rbco-li-select-all" title="<?php esc_attr_e( 'Select all', 'raybogman-content-orchestrator' ); ?>" />
+								<input type="checkbox" class="rbco-li-select-all" title="<?php esc_attr_e( 'Select all', 'raybogman-ai-content-orchestrator' ); ?>" />
 							</th>
-							<th><?php esc_html_e( 'Title', 'raybogman-content-orchestrator' ); ?></th>
-							<th style="width: 160px;"><?php esc_html_e( 'Published', 'raybogman-content-orchestrator' ); ?></th>
-							<th style="width: 200px;"><?php esc_html_e( 'LinkedIn Status', 'raybogman-content-orchestrator' ); ?></th>
-							<th style="width: 180px;"><?php esc_html_e( 'Actions', 'raybogman-content-orchestrator' ); ?></th>
+							<th><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+							<th style="width: 160px;"><?php esc_html_e( 'Published', 'raybogman-ai-content-orchestrator' ); ?></th>
+							<th style="width: 200px;"><?php esc_html_e( 'LinkedIn Status', 'raybogman-ai-content-orchestrator' ); ?></th>
+							<th style="width: 180px;"><?php esc_html_e( 'Actions', 'raybogman-ai-content-orchestrator' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -414,13 +414,13 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 									<strong><?php echo esc_html( $rbco_li['title'] ); ?></strong>
 									<br>
 									<a href="<?php echo esc_url( $rbco_li['url'] ); ?>" target="_blank" class="description">
-										<?php esc_html_e( 'View on WordPress', 'raybogman-content-orchestrator' ); ?> &rarr;
+										<?php esc_html_e( 'View on WordPress', 'raybogman-ai-content-orchestrator' ); ?> &rarr;
 									</a>
 									<?php if ( ! empty( $rbco_li['linkedin_commentary'] ) ) : ?>
 										<br>
 										<a href="#" class="rbco-li-toggle-preview" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>" style="font-size: 12px;">
 											<span class="dashicons dashicons-visibility" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
-											<?php esc_html_e( 'Show LinkedIn post preview', 'raybogman-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Show LinkedIn post preview', 'raybogman-ai-content-orchestrator' ); ?>
 										</a>
 										<div class="rbco-li-preview" id="rbco-li-preview-<?php echo esc_attr( $rbco_li['id'] ); ?>" style="display: none; margin-top: 8px;" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>">
 											<!-- View mode -->
@@ -431,7 +431,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 														<?php
 														printf(
 															/* translators: %d: character count */
-															esc_html__( '%d characters', 'raybogman-content-orchestrator' ),
+															esc_html__( '%d characters', 'raybogman-ai-content-orchestrator' ),
 															esc_html( mb_strlen( $rbco_li['linkedin_commentary'] ) )
 														);
 														?>
@@ -440,11 +440,11 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 												<p style="margin: 8px 0 0;">
 													<button type="button" class="button button-small rbco-li-edit-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>">
 														<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
-														<?php esc_html_e( 'Edit', 'raybogman-content-orchestrator' ); ?>
+														<?php esc_html_e( 'Edit', 'raybogman-ai-content-orchestrator' ); ?>
 													</button>
 													<button type="button" class="button button-small rbco-li-regen-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>">
 														<span class="dashicons dashicons-update" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span>
-														<?php esc_html_e( 'Regenerate', 'raybogman-content-orchestrator' ); ?>
+														<?php esc_html_e( 'Regenerate', 'raybogman-ai-content-orchestrator' ); ?>
 													</button>
 												</p>
 											</div>
@@ -456,7 +456,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 														<?php
 														printf(
 															/* translators: %d: character count */
-															esc_html__( '%d / 2900 characters', 'raybogman-content-orchestrator' ),
+															esc_html__( '%d / 2900 characters', 'raybogman-ai-content-orchestrator' ),
 															esc_html( mb_strlen( $rbco_li['linkedin_commentary'] ) )
 														);
 														?>
@@ -464,10 +464,10 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 												</p>
 												<p style="margin: 8px 0 0;">
 													<button type="button" class="button button-primary button-small rbco-li-save-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>">
-														<?php esc_html_e( 'Save', 'raybogman-content-orchestrator' ); ?>
+														<?php esc_html_e( 'Save', 'raybogman-ai-content-orchestrator' ); ?>
 													</button>
 													<button type="button" class="button button-small rbco-li-cancel-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>">
-														<?php esc_html_e( 'Cancel', 'raybogman-content-orchestrator' ); ?>
+														<?php esc_html_e( 'Cancel', 'raybogman-ai-content-orchestrator' ); ?>
 													</button>
 												</p>
 											</div>
@@ -480,15 +480,15 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 								<td class="rbco-li-status-<?php echo esc_attr( $rbco_li['id'] ); ?>">
 									<?php if ( 'shared' === $rbco_li['linkedin_status'] ) : ?>
 										<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
-										<strong style="color: #00a32a;"><?php esc_html_e( 'Shared', 'raybogman-content-orchestrator' ); ?></strong>
+										<strong style="color: #00a32a;"><?php esc_html_e( 'Shared', 'raybogman-ai-content-orchestrator' ); ?></strong>
 										<br><small class="description"><?php echo esc_html( wp_date( 'Y-m-d H:i', $rbco_li['shared_at'] ) ); ?></small>
 									<?php elseif ( 'error' === $rbco_li['linkedin_status'] ) : ?>
 										<span class="dashicons dashicons-warning" style="color: #d63638;"></span>
-										<strong style="color: #d63638;"><?php esc_html_e( 'Failed', 'raybogman-content-orchestrator' ); ?></strong>
+										<strong style="color: #d63638;"><?php esc_html_e( 'Failed', 'raybogman-ai-content-orchestrator' ); ?></strong>
 										<br><small class="description" style="color: #d63638;"><?php echo esc_html( mb_substr( $rbco_li['linkedin_error'], 0, 100 ) ); ?></small>
 									<?php else : ?>
 										<span class="dashicons dashicons-minus" style="color: #646970;"></span>
-										<em class="description"><?php esc_html_e( 'Not shared yet', 'raybogman-content-orchestrator' ); ?></em>
+										<em class="description"><?php esc_html_e( 'Not shared yet', 'raybogman-ai-content-orchestrator' ); ?></em>
 									<?php endif; ?>
 								</td>
 								<td>
@@ -496,15 +496,15 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 										<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
 										<?php
 										if ( 'shared' === $rbco_li['linkedin_status'] ) {
-											esc_html_e( 'Re-share', 'raybogman-content-orchestrator' );
+											esc_html_e( 'Re-share', 'raybogman-ai-content-orchestrator' );
 										} elseif ( 'error' === $rbco_li['linkedin_status'] ) {
-											esc_html_e( 'Retry', 'raybogman-content-orchestrator' );
+											esc_html_e( 'Retry', 'raybogman-ai-content-orchestrator' );
 										} else {
-											esc_html_e( 'Share Now', 'raybogman-content-orchestrator' );
+											esc_html_e( 'Share Now', 'raybogman-ai-content-orchestrator' );
 										}
 										?>
 									</button>
-									<button type="button" class="button rbco-li-remove-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'raybogman-content-orchestrator' ); ?>">
+									<button type="button" class="button rbco-li-remove-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'raybogman-ai-content-orchestrator' ); ?>">
 										<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 									</button>
 								</td>
@@ -514,9 +514,9 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 				</table>
 				<p class="description" style="padding: 12px 16px; margin: 0; background: #f6f7f7; border-top: 1px solid #c3c4c7;">
 					<span class="dashicons dashicons-info" style="color: #2271b1; vertical-align: text-bottom;"></span>
-					<?php esc_html_e( 'Check your LinkedIn profile feed at', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Check your LinkedIn profile feed at', 'raybogman-ai-content-orchestrator' ); ?>
 					<a href="https://www.linkedin.com/in/me/recent-activity/all/" target="_blank">linkedin.com/in/me/recent-activity</a>
-					<?php esc_html_e( 'to see shared posts. Posts may take a few seconds to appear.', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'to see shared posts. Posts may take a few seconds to appear.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 			</div>
 		</div>
@@ -527,12 +527,12 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 <div id="rbco-reschedule-modal" class="rbco-modal" style="display: none;">
 	<div class="rbco-modal-backdrop"></div>
 	<div class="rbco-modal-content">
-		<h2><?php esc_html_e( 'Reschedule', 'raybogman-content-orchestrator' ); ?></h2>
-		<p class="description"><?php esc_html_e( 'Select a new date and time for this item.', 'raybogman-content-orchestrator' ); ?></p>
+		<h2><?php esc_html_e( 'Reschedule', 'raybogman-ai-content-orchestrator' ); ?></h2>
+		<p class="description"><?php esc_html_e( 'Select a new date and time for this item.', 'raybogman-ai-content-orchestrator' ); ?></p>
 		<input type="datetime-local" id="rbco-reschedule-input" class="regular-text" />
 		<p style="margin-top: 16px; text-align: right;">
-			<button type="button" class="button" id="rbco-reschedule-cancel"><?php esc_html_e( 'Cancel', 'raybogman-content-orchestrator' ); ?></button>
-			<button type="button" class="button button-primary" id="rbco-reschedule-save"><?php esc_html_e( 'Save', 'raybogman-content-orchestrator' ); ?></button>
+			<button type="button" class="button" id="rbco-reschedule-cancel"><?php esc_html_e( 'Cancel', 'raybogman-ai-content-orchestrator' ); ?></button>
+			<button type="button" class="button button-primary" id="rbco-reschedule-save"><?php esc_html_e( 'Save', 'raybogman-ai-content-orchestrator' ); ?></button>
 		</p>
 	</div>
 </div>
@@ -599,7 +599,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 
 	// Publish now button
 	$('.rbco-publish-now-btn').on('click', function() {
-		if (!confirm('<?php echo esc_js( __( 'Publish this post immediately, ignoring the scheduled time?', 'raybogman-content-orchestrator' ) ); ?>')) return;
+		if (!confirm('<?php echo esc_js( __( 'Publish this post immediately, ignoring the scheduled time?', 'raybogman-ai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn    = $(this);
 		var postId  = $btn.data('post-id');
@@ -629,7 +629,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 
 	// Delete button
 	$('.rbco-delete-btn').on('click', function() {
-		if (!confirm('<?php echo esc_js( __( 'Move this item to the trash?', 'raybogman-content-orchestrator' ) ); ?>')) return;
+		if (!confirm('<?php echo esc_js( __( 'Move this item to the trash?', 'raybogman-ai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn   = $(this);
 		var postId = $btn.data('post-id');
@@ -691,7 +691,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 
 		if (ids.length === 0) return;
 
-		if (!confirm('<?php echo esc_js( __( 'Remove the selected posts from the LinkedIn Sharing Status dashboard? The WordPress posts and any LinkedIn shares will NOT be deleted.', 'raybogman-content-orchestrator' ) ); ?>'.replace('the selected posts', ids.length + ' selected post' + (ids.length === 1 ? '' : 's')))) {
+		if (!confirm('<?php echo esc_js( __( 'Remove the selected posts from the LinkedIn Sharing Status dashboard? The WordPress posts and any LinkedIn shares will NOT be deleted.', 'raybogman-ai-content-orchestrator' ) ); ?>'.replace('the selected posts', ids.length + ' selected post' + (ids.length === 1 ? '' : 's')))) {
 			return;
 		}
 
@@ -727,7 +727,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 
 	// Remove from LinkedIn Sharing Status dashboard
 	$(document).on('click', '.rbco-li-remove-btn', function() {
-		if (!confirm('<?php echo esc_js( __( 'Remove this post from the LinkedIn Sharing Status dashboard? The WordPress post and any existing LinkedIn share will NOT be deleted — this only hides it from this list.', 'raybogman-content-orchestrator' ) ); ?>')) {
+		if (!confirm('<?php echo esc_js( __( 'Remove this post from the LinkedIn Sharing Status dashboard? The WordPress post and any existing LinkedIn share will NOT be deleted — this only hides it from this list.', 'raybogman-ai-content-orchestrator' ) ); ?>')) {
 			return;
 		}
 
@@ -807,14 +807,14 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 				$wrap.find('.rbco-li-char-count').text(response.data.length + ' characters');
 				$wrap.find('.rbco-li-preview-edit').hide();
 				$wrap.find('.rbco-li-preview-view').show();
-				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'raybogman-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			} else {
 				alert('Error: ' + (response.data.message || 'Unknown error'));
-				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'raybogman-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			}
 		}).fail(function(xhr) {
 			alert('Request failed: ' + xhr.status);
-			$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'raybogman-content-orchestrator' ) ); ?>');
+			$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Save', 'raybogman-ai-content-orchestrator' ) ); ?>');
 		});
 	});
 
@@ -824,7 +824,7 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 		var postId = $btn.data('post-id');
 		var $wrap  = $('#rbco-li-preview-' + postId);
 
-		if (!confirm('<?php echo esc_js( __( 'Regenerate the LinkedIn post via AI? The current text will be replaced.', 'raybogman-content-orchestrator' ) ); ?>')) {
+		if (!confirm('<?php echo esc_js( __( 'Regenerate the LinkedIn post via AI? The current text will be replaced.', 'raybogman-ai-content-orchestrator' ) ); ?>')) {
 			return;
 		}
 
@@ -872,19 +872,19 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 			if (response.success) {
 				$status.html(
 					'<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>' +
-					' <strong style="color: #00a32a;"><?php echo esc_js( __( 'Shared', 'raybogman-content-orchestrator' ) ); ?></strong>' +
-					'<br><small class="description"><?php echo esc_js( __( 'Just now', 'raybogman-content-orchestrator' ) ); ?></small>'
+					' <strong style="color: #00a32a;"><?php echo esc_js( __( 'Shared', 'raybogman-ai-content-orchestrator' ) ); ?></strong>' +
+					'<br><small class="description"><?php echo esc_js( __( 'Just now', 'raybogman-ai-content-orchestrator' ) ); ?></small>'
 				);
-				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Re-share', 'raybogman-content-orchestrator' ) ); ?>');
-				alert('<?php echo esc_js( __( 'Successfully shared to LinkedIn! Check your profile feed.', 'raybogman-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Re-share', 'raybogman-ai-content-orchestrator' ) ); ?>');
+				alert('<?php echo esc_js( __( 'Successfully shared to LinkedIn! Check your profile feed.', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			} else {
 				var msg = (response.data && response.data.message) ? response.data.message : 'Unknown error';
 				$status.html(
 					'<span class="dashicons dashicons-warning" style="color: #d63638;"></span>' +
-					' <strong style="color: #d63638;"><?php echo esc_js( __( 'Failed', 'raybogman-content-orchestrator' ) ); ?></strong>' +
+					' <strong style="color: #d63638;"><?php echo esc_js( __( 'Failed', 'raybogman-ai-content-orchestrator' ) ); ?></strong>' +
 					'<br><small class="description" style="color: #d63638;">' + $('<div>').text(msg).html() + '</small>'
 				);
-				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Retry', 'raybogman-content-orchestrator' ) ); ?>');
+				$btn.prop('disabled', false).html('<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span> <?php echo esc_js( __( 'Retry', 'raybogman-ai-content-orchestrator' ) ); ?>');
 				alert('LinkedIn error: ' + msg);
 			}
 		}).fail(function(xhr) {
@@ -942,10 +942,10 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 		var ids = [];
 		$('.rbco-review-check:checked').each(function() { ids.push($(this).val()); });
 		if (!ids.length) return;
-		if (!confirm('<?php echo esc_js( __( 'Move', 'raybogman-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items to the trash?', 'raybogman-content-orchestrator' ) ); ?>')) return;
+		if (!confirm('<?php echo esc_js( __( 'Move', 'raybogman-ai-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items to the trash?', 'raybogman-ai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn = $(this);
-		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Deleting...', 'raybogman-content-orchestrator' ) ); ?>');
+		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Deleting...', 'raybogman-ai-content-orchestrator' ) ); ?>');
 		var done = 0;
 		$.each(ids, function(_, id) {
 			$.post(ajaxUrl, { action: 'rbco_delete_scheduled', nonce: nonce, post_id: id }, function() {
@@ -961,10 +961,10 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 		var ids = [];
 		$('.rbco-review-check:checked').each(function() { ids.push($(this).val()); });
 		if (!ids.length) return;
-		if (!confirm('<?php echo esc_js( __( 'Approve', 'raybogman-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items?', 'raybogman-content-orchestrator' ) ); ?>')) return;
+		if (!confirm('<?php echo esc_js( __( 'Approve', 'raybogman-ai-content-orchestrator' ) ); ?> ' + ids.length + ' <?php echo esc_js( __( 'items?', 'raybogman-ai-content-orchestrator' ) ); ?>')) return;
 
 		var $btn = $(this);
-		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Approving...', 'raybogman-content-orchestrator' ) ); ?>');
+		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Approving...', 'raybogman-ai-content-orchestrator' ) ); ?>');
 		var done = 0;
 		$.each(ids, function(_, id) {
 			$.post(ajaxUrl, { action: 'rbco_approve_scheduled', nonce: nonce, post_id: id }, function() {

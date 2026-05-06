@@ -110,27 +110,27 @@ class RBCO_PDF_Library {
 			$messages = array(
 				UPLOAD_ERR_INI_SIZE   => sprintf(
      /* translators: %s: dynamic value */
-					__( 'File exceeds the server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'raybogman-content-orchestrator' ),
+					__( 'File exceeds the server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'raybogman-ai-content-orchestrator' ),
 					self::get_max_upload_size_formatted()
 				),
-				UPLOAD_ERR_FORM_SIZE  => __( 'File exceeds the form upload limit.', 'raybogman-content-orchestrator' ),
-				UPLOAD_ERR_PARTIAL    => __( 'File was only partially uploaded. Please try again.', 'raybogman-content-orchestrator' ),
-				UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'raybogman-content-orchestrator' ),
-				UPLOAD_ERR_NO_TMP_DIR => __( 'Server missing temporary folder. Contact your hosting provider.', 'raybogman-content-orchestrator' ),
-				UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk. Contact your hosting provider.', 'raybogman-content-orchestrator' ),
-				UPLOAD_ERR_EXTENSION  => __( 'Upload blocked by a server extension.', 'raybogman-content-orchestrator' ),
+				UPLOAD_ERR_FORM_SIZE  => __( 'File exceeds the form upload limit.', 'raybogman-ai-content-orchestrator' ),
+				UPLOAD_ERR_PARTIAL    => __( 'File was only partially uploaded. Please try again.', 'raybogman-ai-content-orchestrator' ),
+				UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'raybogman-ai-content-orchestrator' ),
+				UPLOAD_ERR_NO_TMP_DIR => __( 'Server missing temporary folder. Contact your hosting provider.', 'raybogman-ai-content-orchestrator' ),
+				UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk. Contact your hosting provider.', 'raybogman-ai-content-orchestrator' ),
+				UPLOAD_ERR_EXTENSION  => __( 'Upload blocked by a server extension.', 'raybogman-ai-content-orchestrator' ),
 			);
 			$msg = isset( $messages[ $file['error'] ] )
 				? $messages[ $file['error'] ]
     /* translators: %s: dynamic value */
-				: sprintf( __( 'Upload error code: %d', 'raybogman-content-orchestrator' ), $file['error'] );
+				: sprintf( __( 'Upload error code: %d', 'raybogman-ai-content-orchestrator' ), $file['error'] );
 			return new WP_Error( 'upload_error', $msg );
 		}
 
 		// Validate file type.
 		$file_type = wp_check_filetype( $file['name'], array( 'pdf' => 'application/pdf' ) );
 		if ( empty( $file_type['ext'] ) ) {
-			return new WP_Error( 'invalid_type', __( 'Only PDF files are allowed.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'invalid_type', __( 'Only PDF files are allowed.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		// Validate file size against our limit.
@@ -138,7 +138,7 @@ class RBCO_PDF_Library {
 		if ( $file['size'] > $max_size ) {
 			return new WP_Error( 'too_large', sprintf(
 				__( /* translators: 1: file size, 2: max size */
-			'PDF is too large (%1\$s). Maximum allowed: %2\$s.', 'raybogman-content-orchestrator' ),
+			'PDF is too large (%1\$s). Maximum allowed: %2\$s.', 'raybogman-ai-content-orchestrator' ),
 				size_format( $file['size'] ),
 				size_format( $max_size )
 			) );

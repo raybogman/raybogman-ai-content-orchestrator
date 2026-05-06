@@ -47,7 +47,7 @@ class RBCO_Settings {
 		// ── Project Vision Section ──────────────────────────────────
 		add_settings_section(
 			'rbco_project_vision_section',
-			__( 'Project Vision', 'raybogman-content-orchestrator' ),
+			__( 'Project Vision', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_project_vision_section' ),
 			self::TAB_CONTENT
 		);
@@ -60,22 +60,22 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_project_vision',
-			__( 'Baseline Instructions', 'raybogman-content-orchestrator' ),
+			__( 'Baseline Instructions', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_textarea_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'          => 'rbco_project_vision',
 				'rows'        => 8,
-				'placeholder' => __( 'e.g. Always write in a friendly, professional tone. Our brand name is "Acme Corp". Target audience is small business owners...', 'raybogman-content-orchestrator' ),
-				'description' => __( 'These instructions are automatically included with every AI content generation request. Use this to define your brand voice, tone, audience, or any rules the AI should always follow.', 'raybogman-content-orchestrator' ),
+				'placeholder' => __( 'e.g. Always write in a friendly, professional tone. Our brand name is "Acme Corp". Target audience is small business owners...', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'These instructions are automatically included with every AI content generation request. Use this to define your brand voice, tone, audience, or any rules the AI should always follow.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── AI Provider Section ──────────────────────────────────────
 		add_settings_section(
 			'rbco_provider_section',
-			__( 'AI Provider', 'raybogman-content-orchestrator' ),
+			__( 'AI Provider', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_provider_section' ),
 			self::TAB_GENERAL
 		);
@@ -89,7 +89,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_ai_provider',
-			__( 'Active Provider', 'raybogman-content-orchestrator' ),
+			__( 'Active Provider', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_GENERAL,
 			'rbco_provider_section',
@@ -99,14 +99,14 @@ class RBCO_Settings {
 					'claude' => 'Claude (Anthropic)',
 					'openai' => 'OpenAI (GPT)',
 				),
-				'description' => __( 'Choose which AI provider to use for content generation.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Choose which AI provider to use for content generation.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── Claude (Anthropic) Section ──────────────────────────────
 		add_settings_section(
 			'rbco_claude_section',
-			__( 'Claude (Anthropic)', 'raybogman-content-orchestrator' ),
+			__( 'Claude (Anthropic)', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_claude_section' ),
 			self::TAB_GENERAL
 		);
@@ -120,14 +120,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_anthropic_api_key',
-			__( 'Anthropic API Key', 'raybogman-content-orchestrator' ),
+			__( 'Anthropic API Key', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_GENERAL,
 			'rbco_claude_section',
 			array(
 				'id'          => 'rbco_anthropic_api_key',
 				'placeholder' => 'sk-ant-api03-...',
-				'description' => __( 'Your Claude API key. Sign up free at console.anthropic.com to get one.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Your Claude API key. Sign up free at console.anthropic.com to get one.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -140,7 +140,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_claude_model',
-			__( 'Claude Model', 'raybogman-content-orchestrator' ),
+			__( 'Claude Model', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_GENERAL,
 			'rbco_claude_section',
@@ -151,14 +151,14 @@ class RBCO_Settings {
 					'claude-opus-4-6'           => 'Claude Opus 4.6',
 					'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5',
 				),
-				'description' => __( 'Which Claude model to use. Sonnet is recommended for most users (fast and high quality). Opus is the most capable but slower. Haiku is the fastest and cheapest.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Which Claude model to use. Sonnet is recommended for most users (fast and high quality). Opus is the most capable but slower. Haiku is the fastest and cheapest.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── OpenAI Section ──────────────────────────────────────────
 		add_settings_section(
 			'rbco_openai_section',
-			__( 'OpenAI (GPT)', 'raybogman-content-orchestrator' ),
+			__( 'OpenAI (GPT)', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_openai_section' ),
 			self::TAB_GENERAL
 		);
@@ -172,14 +172,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_openai_api_key',
-			__( 'OpenAI API Key', 'raybogman-content-orchestrator' ),
+			__( 'OpenAI API Key', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_GENERAL,
 			'rbco_openai_section',
 			array(
 				'id'          => 'rbco_openai_api_key',
 				'placeholder' => 'sk-...',
-				'description' => __( 'Your OpenAI API key. Sign up free at platform.openai.com to get one.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Your OpenAI API key. Sign up free at platform.openai.com to get one.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -192,7 +192,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_openai_model',
-			__( 'OpenAI Model', 'raybogman-content-orchestrator' ),
+			__( 'OpenAI Model', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_GENERAL,
 			'rbco_openai_section',
@@ -206,14 +206,14 @@ class RBCO_Settings {
 					'gpt-4.1-mini' => 'GPT-4.1 Mini',
 					'gpt-4.1-nano' => 'GPT-4.1 Nano',
 				),
-				'description' => __( 'Which OpenAI model to use. GPT-4o is recommended for most users (fast and high quality). Mini and Nano versions are faster and cheaper but less capable.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Which OpenAI model to use. GPT-4o is recommended for most users (fast and high quality). Mini and Nano versions are faster and cheaper but less capable.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── Image Provider Section ──────────────────────────────────
 		add_settings_section(
 			'rbco_image_provider_section',
-			__( 'Featured Image Provider', 'raybogman-content-orchestrator' ),
+			__( 'Featured Image Provider', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_image_provider_section' ),
 			self::TAB_IMAGES
 		);
@@ -227,7 +227,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_image_provider',
-			__( 'Image Provider', 'raybogman-content-orchestrator' ),
+			__( 'Image Provider', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_IMAGES,
 			'rbco_image_provider_section',
@@ -237,7 +237,7 @@ class RBCO_Settings {
 					'openai'   => 'OpenAI (DALL-E 3)',
 					'ideogram' => rbco_is_pro() ? 'Ideogram' : 'Ideogram (Enterprise)',
 				),
-				'description' => __( 'Choose which service creates your featured images. OpenAI (DALL-E 3) produces realistic images. Ideogram produces stylized, high-quality images. Each requires its own API key.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Choose which service creates your featured images. OpenAI (DALL-E 3) produces realistic images. Ideogram produces stylized, high-quality images. Each requires its own API key.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -250,14 +250,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_ideogram_api_key',
-			__( 'Ideogram API Key', 'raybogman-content-orchestrator' ),
+			__( 'Ideogram API Key', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_IMAGES,
 			'rbco_image_provider_section',
 			array(
 				'id'          => 'rbco_ideogram_api_key',
 				'placeholder' => 'ig-...',
-				'description' => __( 'Your Ideogram API key. Sign up at ideogram.ai/manage-api to get one.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Your Ideogram API key. Sign up at ideogram.ai/manage-api to get one.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -270,7 +270,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_image_style',
-			__( 'Image Visual Style', 'raybogman-content-orchestrator' ),
+			__( 'Image Visual Style', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_IMAGES,
 			'rbco_image_provider_section',
@@ -283,7 +283,7 @@ class RBCO_Settings {
 					'DESIGN'    => 'Design / Graphic',
 					'FICTION'   => 'Fiction / Cinematic',
 				),
-				'description' => __( 'The look and feel of generated images. "Auto" picks the best style based on your blog format (e.g. Storytelling gets cinematic images, Data-Driven gets infographic-style images). Works with both image providers.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'The look and feel of generated images. "Auto" picks the best style based on your blog format (e.g. Storytelling gets cinematic images, Data-Driven gets infographic-style images). Works with both image providers.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -296,14 +296,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_brand_colors',
-			__( 'Brand Colors', 'raybogman-content-orchestrator' ),
+			__( 'Brand Colors', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_brand_colors_field' ),
 			self::TAB_IMAGES,
 			'rbco_image_provider_section',
 			array(
 				'id'          => 'rbco_brand_colors',
 				'placeholder' => '#1a73e8, #34a853, #ea4335',
-				'description' => __( 'Your brand colors as hex codes (e.g. #1a73e8), separated by commas. The AI will try to use these colors in your featured images. Leave empty to let the AI choose. Use the "Scan Theme Colors" button to auto-detect your website\'s colors.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Your brand colors as hex codes (e.g. #1a73e8), separated by commas. The AI will try to use these colors in your featured images. Leave empty to let the AI choose. Use the "Scan Theme Colors" button to auto-detect your website\'s colors.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -316,22 +316,22 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_image_negative_prompt',
-			__( 'Avoid in Images', 'raybogman-content-orchestrator' ),
+			__( 'Avoid in Images', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_textarea_field' ),
 			self::TAB_IMAGES,
 			'rbco_image_provider_section',
 			array(
 				'id'          => 'rbco_image_negative_prompt',
 				'rows'        => 3,
-				'placeholder' => __( 'e.g. clipart, stock photo, generic office, blurry, low quality, text overlay', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Describe what you do NOT want in your images. For example: clipart, blurry, stock photo, text overlay. The AI will try to avoid these things.', 'raybogman-content-orchestrator' ),
+				'placeholder' => __( 'e.g. clipart, stock photo, generic office, blurry, low quality, text overlay', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Describe what you do NOT want in your images. For example: clipart, blurry, stock photo, text overlay. The AI will try to avoid these things.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── Default Featured Image Section ──────────────────────────
 		add_settings_section(
 			'rbco_default_image_section',
-			__( 'Default Featured Image', 'raybogman-content-orchestrator' ),
+			__( 'Default Featured Image', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_default_image_section' ),
 			self::TAB_IMAGES
 		);
@@ -344,13 +344,13 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_default_featured_image',
-			__( 'Base Image', 'raybogman-content-orchestrator' ),
+			__( 'Base Image', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_media_upload_field' ),
 			self::TAB_IMAGES,
 			'rbco_default_image_section',
 			array(
 				'id'          => 'rbco_default_featured_image',
-				'description' => __( 'Choose a background image from your media library. This image is used as the featured image when AI image generation is turned off. If title overlay is enabled, the blog title is placed on top of this image.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Choose a background image from your media library. This image is used as the featured image when AI image generation is turned off. If title overlay is enabled, the blog title is placed on top of this image.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -362,17 +362,17 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_overlay_enabled',
-			__( 'Title Overlay', 'raybogman-content-orchestrator' ),
+			__( 'Title Overlay', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_IMAGES,
 			'rbco_default_image_section',
 			array(
 				'id'      => 'rbco_overlay_enabled',
 				'options' => array(
-					'1' => __( 'Enabled — overlay blog title on image', 'raybogman-content-orchestrator' ),
-					''  => __( 'Disabled', 'raybogman-content-orchestrator' ),
+					'1' => __( 'Enabled — overlay blog title on image', 'raybogman-ai-content-orchestrator' ),
+					''  => __( 'Disabled', 'raybogman-ai-content-orchestrator' ),
 				),
-				'description' => __( 'The blog title is automatically split across 2 lines, displayed in uppercase, and centered on your background image. Each post gets its own unique featured image.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'The blog title is automatically split across 2 lines, displayed in uppercase, and centered on your background image. Each post gets its own unique featured image.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -384,14 +384,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_overlay_text_color',
-			__( 'Overlay Text Color', 'raybogman-content-orchestrator' ),
+			__( 'Overlay Text Color', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_color_field' ),
 			self::TAB_IMAGES,
 			'rbco_default_image_section',
 			array(
 				'id'          => 'rbco_overlay_text_color',
 				'default'     => '#0d5e50',
-				'description' => __( 'Text color for the title overlay. Used for both lines.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Text color for the title overlay. Used for both lines.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -403,15 +403,15 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_overlay_font_bold',
-			__( 'Bold Font File', 'raybogman-content-orchestrator' ),
+			__( 'Bold Font File', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_media_upload_field' ),
 			self::TAB_IMAGES,
 			'rbco_default_image_section',
 			array(
 				'id'          => 'rbco_overlay_font_bold',
-				'button_text' => __( 'Upload Font', 'raybogman-content-orchestrator' ),
+				'button_text' => __( 'Upload Font', 'raybogman-ai-content-orchestrator' ),
 				'media_type'  => 'application',
-				'description' => __( 'Upload a font file (.ttf) for the first line of text. We recommend downloading Poppins-Bold.ttf from Google Fonts for a clean, modern look.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Upload a font file (.ttf) for the first line of text. We recommend downloading Poppins-Bold.ttf from Google Fonts for a clean, modern look.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -423,15 +423,15 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_overlay_font_italic',
-			__( 'Italic Font File', 'raybogman-content-orchestrator' ),
+			__( 'Italic Font File', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_media_upload_field' ),
 			self::TAB_IMAGES,
 			'rbco_default_image_section',
 			array(
 				'id'          => 'rbco_overlay_font_italic',
-				'button_text' => __( 'Upload Font', 'raybogman-content-orchestrator' ),
+				'button_text' => __( 'Upload Font', 'raybogman-ai-content-orchestrator' ),
 				'media_type'  => 'application',
-				'description' => __( 'Upload a font file (.ttf) for the second line of text. If not set, the bold font is used for both lines.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Upload a font file (.ttf) for the second line of text. If not set, the bold font is used for both lines.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -444,7 +444,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_default_output_format',
-			__( 'Default Output Format', 'raybogman-content-orchestrator' ),
+			__( 'Default Output Format', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
@@ -454,7 +454,7 @@ class RBCO_Settings {
 					'wordpress' => 'WordPress (Standard)',
 					'thrive'    => 'Thrive Architect',
 				),
-				'description' => __( 'The output format that is selected by default when you create new content. You can still change it for each individual post.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'The output format that is selected by default when you create new content. You can still change it for each individual post.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -467,17 +467,17 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_internal_linking',
-			__( 'Automatic Internal Links', 'raybogman-content-orchestrator' ),
+			__( 'Automatic Internal Links', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'      => 'rbco_internal_linking',
 				'options' => array(
-					'1' => __( 'Enabled — automatically add internal links', 'raybogman-content-orchestrator' ),
-					'0' => __( 'Disabled', 'raybogman-content-orchestrator' ),
+					'1' => __( 'Enabled — automatically add internal links', 'raybogman-ai-content-orchestrator' ),
+					'0' => __( 'Disabled', 'raybogman-ai-content-orchestrator' ),
 				),
-				'description' => __( 'After the AI writes the article, the plugin scans your existing published posts and adds 3-5 relevant links within the text. This boosts your SEO by strengthening your site\'s internal link structure — no manual effort needed.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'After the AI writes the article, the plugin scans your existing published posts and adds 3-5 relevant links within the text. This boosts your SEO by strengthening your site\'s internal link structure — no manual effort needed.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -490,7 +490,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_max_internal_links',
-			__( 'Max Internal Links', 'raybogman-content-orchestrator' ),
+			__( 'Max Internal Links', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
@@ -498,7 +498,7 @@ class RBCO_Settings {
 				'id'          => 'rbco_max_internal_links',
 				'min'         => 1,
 				'max'         => 15,
-				'description' => __( 'Maximum number of internal links to add per post. 3-5 is recommended for most blogs. Too many links can look spammy.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Maximum number of internal links to add per post. 3-5 is recommended for most blogs. Too many links can look spammy.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -511,18 +511,18 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_link_placement',
-			__( 'Link Placement', 'raybogman-content-orchestrator' ),
+			__( 'Link Placement', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'      => 'rbco_link_placement',
 				'options' => array(
-					'both'   => __( 'Inline + Related Articles section (recommended)', 'raybogman-content-orchestrator' ),
-					'inline' => __( 'Inline only — links spread naturally through paragraphs', 'raybogman-content-orchestrator' ),
-					'footer' => __( 'Related Articles section only — clean list at the bottom', 'raybogman-content-orchestrator' ),
+					'both'   => __( 'Inline + Related Articles section (recommended)', 'raybogman-ai-content-orchestrator' ),
+					'inline' => __( 'Inline only — links spread naturally through paragraphs', 'raybogman-ai-content-orchestrator' ),
+					'footer' => __( 'Related Articles section only — clean list at the bottom', 'raybogman-ai-content-orchestrator' ),
 				),
-				'description' => __( 'Where to place internal links. "Inline" inserts links within your paragraphs (best for SEO). "Related Articles" adds a styled section at the bottom (best for readers). "Both" tries inline first and puts remaining links in the footer section.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Where to place internal links. "Inline" inserts links within your paragraphs (best for SEO). "Related Articles" adds a styled section at the bottom (best for readers). "Both" tries inline first and puts remaining links in the footer section.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -535,17 +535,17 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_competitor_analysis',
-			__( 'Competitor Gap Analysis', 'raybogman-content-orchestrator' ),
+			__( 'Competitor Gap Analysis', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'      => 'rbco_competitor_analysis',
 				'options' => array(
-					'1' => __( 'Enabled — analyze competitors for every post', 'raybogman-content-orchestrator' ),
-					'0' => __( 'Disabled', 'raybogman-content-orchestrator' ),
+					'1' => __( 'Enabled — analyze competitors for every post', 'raybogman-ai-content-orchestrator' ),
+					'0' => __( 'Disabled', 'raybogman-ai-content-orchestrator' ),
 				),
-				'description' => __( 'Before writing, the AI scans what top Google results typically cover for your keyword, then identifies 2-3 topics they miss. Your article is written to fill those gaps — giving you a competitive edge. You can still toggle this per post on the Create Content page.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Before writing, the AI scans what top Google results typically cover for your keyword, then identifies 2-3 topics they miss. Your article is written to fill those gaps — giving you a competitive edge. You can still toggle this per post on the Create Content page.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -558,22 +558,22 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_schedule_frequency',
-			__( 'Publishing Schedule', 'raybogman-content-orchestrator' ),
+			__( 'Publishing Schedule', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'      => 'rbco_schedule_frequency',
 				'options' => array(
-					'none'      => __( 'No schedule — publish dates set manually', 'raybogman-content-orchestrator' ),
-					'daily'     => __( 'Daily — one post per day', 'raybogman-content-orchestrator' ),
-					'every2'    => __( 'Every 2 days', 'raybogman-content-orchestrator' ),
-					'every3'    => __( 'Every 3 days', 'raybogman-content-orchestrator' ),
-					'weekly'    => __( 'Weekly — one post per week', 'raybogman-content-orchestrator' ),
-					'biweekly'  => __( 'Bi-weekly — every two weeks', 'raybogman-content-orchestrator' ),
-					'monthly'   => __( 'Monthly — one post per month', 'raybogman-content-orchestrator' ),
+					'none'      => __( 'No schedule — publish dates set manually', 'raybogman-ai-content-orchestrator' ),
+					'daily'     => __( 'Daily — one post per day', 'raybogman-ai-content-orchestrator' ),
+					'every2'    => __( 'Every 2 days', 'raybogman-ai-content-orchestrator' ),
+					'every3'    => __( 'Every 3 days', 'raybogman-ai-content-orchestrator' ),
+					'weekly'    => __( 'Weekly — one post per week', 'raybogman-ai-content-orchestrator' ),
+					'biweekly'  => __( 'Bi-weekly — every two weeks', 'raybogman-ai-content-orchestrator' ),
+					'monthly'   => __( 'Monthly — one post per month', 'raybogman-ai-content-orchestrator' ),
 				),
-				'description' => __( 'Default publishing frequency for Bulk Create. When set, the "Auto-fill Dates" button on the Bulk Create page uses this interval. You can override it per batch.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Default publishing frequency for Bulk Create. When set, the "Auto-fill Dates" button on the Bulk Create page uses this interval. You can override it per batch.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -585,13 +585,13 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_schedule_time',
-			__( 'Default Publish Time', 'raybogman-content-orchestrator' ),
+			__( 'Default Publish Time', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_time_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'          => 'rbco_schedule_time',
-				'description' => __( 'The time of day to publish posts. Research shows Tuesday-Wednesday between 9-11 AM gets the most organic traffic.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'The time of day to publish posts. Research shows Tuesday-Wednesday between 9-11 AM gets the most organic traffic.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -603,17 +603,17 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_schedule_skip_weekends',
-			__( 'Skip Weekends', 'raybogman-content-orchestrator' ),
+			__( 'Skip Weekends', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'      => 'rbco_schedule_skip_weekends',
 				'options' => array(
-					'1' => __( 'Yes — only schedule on weekdays (Mon-Fri)', 'raybogman-content-orchestrator' ),
-					'0' => __( 'No — include weekends', 'raybogman-content-orchestrator' ),
+					'1' => __( 'Yes — only schedule on weekdays (Mon-Fri)', 'raybogman-ai-content-orchestrator' ),
+					'0' => __( 'No — include weekends', 'raybogman-ai-content-orchestrator' ),
 				),
-				'description' => __( 'When enabled, auto-filled dates skip Saturday and Sunday.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'When enabled, auto-filled dates skip Saturday and Sunday.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -626,21 +626,21 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_notify_emails',
-			__( 'Publish Notification', 'raybogman-content-orchestrator' ),
+			__( 'Publish Notification', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_text_field' ),
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
 				'id'          => 'rbco_notify_emails',
 				'placeholder' => 'you@example.com, team@example.com',
-				'description' => __( 'Email addresses to notify when a scheduled post is published (comma-separated). Leave empty to disable notifications.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Email addresses to notify when a scheduled post is published (comma-separated). Leave empty to disable notifications.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── Thrive Architect Section ────────────────────────────────
 		add_settings_section(
 			'rbco_thrive_section',
-			__( 'Thrive Architect', 'raybogman-content-orchestrator' ),
+			__( 'Thrive Architect', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_thrive_section' ),
 			self::TAB_THRIVE
 		);
@@ -653,13 +653,13 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_thrive_toc_id',
-			__( 'Table of Contents', 'raybogman-content-orchestrator' ),
+			__( 'Table of Contents', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_thrive_library_dropdown' ),
 			self::TAB_THRIVE,
 			'rbco_thrive_section',
 			array(
 				'id'          => 'rbco_thrive_toc_id',
-				'description' => __( 'Choose a saved Table of Contents block from your Thrive library. It will be placed right after the introduction paragraph. Leave empty if you don\'t want a Table of Contents.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Choose a saved Table of Contents block from your Thrive library. It will be placed right after the introduction paragraph. Leave empty if you don\'t want a Table of Contents.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -671,20 +671,20 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_thrive_cta_symbol_id',
-			__( 'Call-to-Action Button', 'raybogman-content-orchestrator' ),
+			__( 'Call-to-Action Button', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_thrive_library_dropdown' ),
 			self::TAB_THRIVE,
 			'rbco_thrive_section',
 			array(
 				'id'          => 'rbco_thrive_cta_symbol_id',
-				'description' => __( 'Choose a saved call-to-action block from your Thrive library (e.g. your "Download" button). It appears after the Table of Contents and at the bottom of every post.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Choose a saved call-to-action block from your Thrive library (e.g. your "Download" button). It appears after the Table of Contents and at the bottom of every post.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── Scanner Section ─────────────────────────────────────────
 		add_settings_section(
 			'rbco_scanner_section',
-			__( 'Website Scanner', 'raybogman-content-orchestrator' ),
+			__( 'Website Scanner', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_scanner_section' ),
 			self::TAB_SCANNER
 		);
@@ -698,7 +698,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_max_pages_to_crawl',
-			__( 'Max Pages to Scan', 'raybogman-content-orchestrator' ),
+			__( 'Max Pages to Scan', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_SCANNER,
 			'rbco_scanner_section',
@@ -706,7 +706,7 @@ class RBCO_Settings {
 				'id'          => 'rbco_max_pages_to_crawl',
 				'min'         => 1,
 				'max'         => 100,
-				'description' => __( 'How many pages the plugin will scan from the website you enter. More pages = more context for the AI, but takes longer.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'How many pages the plugin will scan from the website you enter. More pages = more context for the AI, but takes longer.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -719,7 +719,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_max_context_chars',
-			__( 'Max Text to Send to AI', 'raybogman-content-orchestrator' ),
+			__( 'Max Text to Send to AI', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_SCANNER,
 			'rbco_scanner_section',
@@ -728,7 +728,7 @@ class RBCO_Settings {
 				'min'         => 5000,
 				'max'         => 50000,
 				'step'        => 1000,
-				'description' => __( 'Maximum amount of scanned text (in characters) sent to the AI. Higher values give the AI more context but cost more. Default (18,000) works well for most sites.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'Maximum amount of scanned text (in characters) sent to the AI. Higher values give the AI more context but cost more. Default (18,000) works well for most sites.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -741,7 +741,7 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_request_timeout',
-			__( 'Scan Timeout (seconds)', 'raybogman-content-orchestrator' ),
+			__( 'Scan Timeout (seconds)', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_number_field' ),
 			self::TAB_SCANNER,
 			'rbco_scanner_section',
@@ -749,14 +749,14 @@ class RBCO_Settings {
 				'id'          => 'rbco_request_timeout',
 				'min'         => 5,
 				'max'         => 60,
-				'description' => __( 'How long (in seconds) to wait for each page to load during scanning. Increase this if scanning fails on slow websites.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'How long (in seconds) to wait for each page to load during scanning. Increase this if scanning fails on slow websites.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
 		// ── LinkedIn Section ────────────────────────────────────────
 		add_settings_section(
 			'rbco_linkedin_section',
-			__( 'LinkedIn Integration', 'raybogman-content-orchestrator' ),
+			__( 'LinkedIn Integration', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_linkedin_section' ),
 			self::TAB_LINKEDIN
 		);
@@ -770,14 +770,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_linkedin_client_id',
-			__( 'LinkedIn Client ID', 'raybogman-content-orchestrator' ),
+			__( 'LinkedIn Client ID', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_text_field' ),
 			self::TAB_LINKEDIN,
 			'rbco_linkedin_section',
 			array(
 				'id'          => 'rbco_linkedin_client_id',
 				'placeholder' => '86abc123def456',
-				'description' => __( 'From your LinkedIn Developer App.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'From your LinkedIn Developer App.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -790,20 +790,20 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_linkedin_client_secret',
-			__( 'LinkedIn Client Secret', 'raybogman-content-orchestrator' ),
+			__( 'LinkedIn Client Secret', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_LINKEDIN,
 			'rbco_linkedin_section',
 			array(
 				'id'          => 'rbco_linkedin_client_secret',
 				'placeholder' => '',
-				'description' => __( 'From your LinkedIn Developer App. Keep this secret.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'From your LinkedIn Developer App. Keep this secret.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 		// ── Instagram Section ───────────────────────────────────
 		add_settings_section(
 			'rbco_instagram_section',
-			__( 'Instagram', 'raybogman-content-orchestrator' ),
+			__( 'Instagram', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_instagram_section' ),
 			self::TAB_INSTAGRAM
 		);
@@ -816,14 +816,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_instagram_app_id',
-			__( 'Meta App ID', 'raybogman-content-orchestrator' ),
+			__( 'Meta App ID', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_text_field' ),
 			self::TAB_INSTAGRAM,
 			'rbco_instagram_section',
 			array(
 				'id'          => 'rbco_instagram_app_id',
 				'placeholder' => '',
-				'description' => __( 'From your Meta App at developers.facebook.com. This is the App ID, not the Instagram account ID.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'From your Meta App at developers.facebook.com. This is the App ID, not the Instagram account ID.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -835,14 +835,14 @@ class RBCO_Settings {
 
 		add_settings_field(
 			'rbco_instagram_app_secret',
-			__( 'Meta App Secret', 'raybogman-content-orchestrator' ),
+			__( 'Meta App Secret', 'raybogman-ai-content-orchestrator' ),
 			array( __CLASS__, 'render_password_field' ),
 			self::TAB_INSTAGRAM,
 			'rbco_instagram_section',
 			array(
 				'id'          => 'rbco_instagram_app_secret',
 				'placeholder' => '',
-				'description' => __( 'From your Meta App. Keep this secret.', 'raybogman-content-orchestrator' ),
+				'description' => __( 'From your Meta App. Keep this secret.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 	}
@@ -850,23 +850,23 @@ class RBCO_Settings {
 	/* ── Section descriptions ──────────────────────────────────── */
 
 	public static function render_project_vision_section() {
-		echo '<p>' . esc_html__( 'Set instructions that the AI always follows when writing content. These are included with every content generation.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Set instructions that the AI always follows when writing content. These are included with every content generation.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_provider_section() {
-		echo '<p>' . esc_html__( 'Select which AI provider to use for generating content. You can configure both and switch between them.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Select which AI provider to use for generating content. You can configure both and switch between them.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_claude_section() {
-		echo '<p>' . esc_html__( 'Configure your Anthropic Claude API credentials and model.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your Anthropic Claude API credentials and model.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_openai_section() {
-		echo '<p>' . esc_html__( 'Configure your OpenAI API credentials and model.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your OpenAI API credentials and model.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_default_image_section() {
-		echo '<p>' . esc_html__( 'Configure a default featured image that is used when AI image generation is not enabled. Optionally overlay the blog title on the image to create a unique branded featured image for each post.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure a default featured image that is used when AI image generation is not enabled. Optionally overlay the blog title on the image to create a unique branded featured image for each post.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	/**
@@ -874,7 +874,7 @@ class RBCO_Settings {
 	 */
 	public static function render_media_upload_field( $args ) {
 		$value       = (int) get_option( $args['id'], 0 );
-		$button_text = isset( $args['button_text'] ) ? $args['button_text'] : __( 'Select Image', 'raybogman-content-orchestrator' );
+		$button_text = isset( $args['button_text'] ) ? $args['button_text'] : __( 'Select Image', 'raybogman-ai-content-orchestrator' );
 		$description = isset( $args['description'] ) ? $args['description'] : '';
 		$preview_url = '';
 		$file_name   = '';
@@ -901,7 +901,7 @@ class RBCO_Settings {
 			printf(
 				' <button type="button" class="button rbco-media-remove-btn" data-target="%s">%s</button>',
 				esc_attr( $field_id ),
-				esc_html__( 'Remove', 'raybogman-content-orchestrator' )
+				esc_html__( 'Remove', 'raybogman-ai-content-orchestrator' )
 			);
 		}
 
@@ -940,8 +940,8 @@ class RBCO_Settings {
 					var $preview = $('.rbco-media-preview[data-target="' + target + '"]');
 
 					var frame = wp.media({
-						title: '<?php echo esc_js( __( 'Select or Upload', 'raybogman-content-orchestrator' ) ); ?>',
-						button: { text: '<?php echo esc_js( __( 'Use This', 'raybogman-content-orchestrator' ) ); ?>' },
+						title: '<?php echo esc_js( __( 'Select or Upload', 'raybogman-ai-content-orchestrator' ) ); ?>',
+						button: { text: '<?php echo esc_js( __( 'Use This', 'raybogman-ai-content-orchestrator' ) ); ?>' },
 						multiple: false
 					});
 
@@ -956,7 +956,7 @@ class RBCO_Settings {
 						}
 						// Show remove button.
 						if (!$btn.next('.rbco-media-remove-btn').length) {
-							$btn.after(' <button type="button" class="button rbco-media-remove-btn" data-target="' + target + '"><?php echo esc_js( __( 'Remove', 'raybogman-content-orchestrator' ) ); ?></button>');
+							$btn.after(' <button type="button" class="button rbco-media-remove-btn" data-target="' + target + '"><?php echo esc_js( __( 'Remove', 'raybogman-ai-content-orchestrator' ) ); ?></button>');
 						}
 					});
 
@@ -1021,8 +1021,8 @@ class RBCO_Settings {
 	}
 
 	public static function render_thrive_section() {
-		echo '<p>' . esc_html__( 'Settings for Thrive Architect integration. When Thrive Architect is selected as the output format, each heading, paragraph, and list becomes its own editable block in Thrive\'s visual editor.', 'raybogman-content-orchestrator' ) . '</p>';
-		echo '<p>' . esc_html__( 'Choose a saved Thrive block to use as your call-to-action. It appears in two places: right after the Table of Contents and at the bottom of every post.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Settings for Thrive Architect integration. When Thrive Architect is selected as the output format, each heading, paragraph, and list becomes its own editable block in Thrive\'s visual editor.', 'raybogman-ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Choose a saved Thrive block to use as your call-to-action. It appears in two places: right after the Table of Contents and at the bottom of every post.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	/**
@@ -1046,7 +1046,7 @@ class RBCO_Settings {
 			printf(
 				'<option value="0" %s>%s</option>',
 				selected( $value, 0, false ),
-				esc_html__( '— None —', 'raybogman-content-orchestrator' )
+				esc_html__( '— None —', 'raybogman-ai-content-orchestrator' )
 			);
 			foreach ( $groups as $group_label => $items ) {
 				if ( empty( $items ) ) {
@@ -1079,19 +1079,19 @@ class RBCO_Settings {
 	}
 
 	public static function render_image_provider_section() {
-		echo '<p>' . esc_html__( 'Choose which AI service creates your blog\'s featured images, and configure its settings.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Choose which AI service creates your blog\'s featured images, and configure its settings.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_scanner_section() {
-		echo '<p>' . esc_html__( 'Control how the plugin scans websites. When you enter a URL on the Create Content page, the plugin reads pages from that website to give the AI useful background information.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Control how the plugin scans websites. When you enter a URL on the Create Content page, the plugin reads pages from that website to give the AI useful background information.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_linkedin_section() {
-		echo '<p>' . esc_html__( 'Connect your LinkedIn account to automatically share your blog posts when they are published. Follow the setup guide below to connect your account.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Connect your LinkedIn account to automatically share your blog posts when they are published. Follow the setup guide below to connect your account.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	public static function render_instagram_section() {
-		echo '<p>' . esc_html__( 'Connect your Instagram Business account to automatically share posts with a featured image and AI-generated caption when they are published.', 'raybogman-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Connect your Instagram Business account to automatically share posts with a featured image and AI-generated caption when they are published.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	/* ── Field renderers ───────────────────────────────────────── */
@@ -1238,12 +1238,12 @@ class RBCO_Settings {
 		echo '</div>';
 		echo ' <button type="button" class="button" id="rbco-scan-theme-colors">';
 		echo '<span class="dashicons dashicons-art" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; margin-right:4px;"></span>';
-		esc_html_e( 'Scan Theme Colors', 'raybogman-content-orchestrator' );
+		esc_html_e( 'Scan Theme Colors', 'raybogman-ai-content-orchestrator' );
 		echo '</button>';
 		echo '<span style="color:#787c82; font-size:12px;" id="rbco-color-count">';
 		if ( ! empty( $value ) ) {
    /* translators: %s: dynamic value */
-			printf( esc_html__( '%d/4 selected', 'raybogman-content-orchestrator' ), intval( min( count( array_filter( $colors ) ), 4 ) ) );
+			printf( esc_html__( '%d/4 selected', 'raybogman-ai-content-orchestrator' ), intval( min( count( array_filter( $colors ) ), 4 ) ) );
 		}
 		echo '</span>';
 		echo '</div>';
@@ -1530,15 +1530,15 @@ class RBCO_Settings {
 	 */
 	public static function get_tabs() {
 		return array(
-			'general'  => __( 'General', 'raybogman-content-orchestrator' ),
-			'content'  => __( 'Content', 'raybogman-content-orchestrator' ),
-			'images'   => __( 'Images', 'raybogman-content-orchestrator' ),
-			'thrive'   => __( 'Thrive Architect (Beta)', 'raybogman-content-orchestrator' ),
-			'linkedin'  => __( 'LinkedIn', 'raybogman-content-orchestrator' ),
-			'instagram' => __( 'Instagram', 'raybogman-content-orchestrator' ),
-			'scanner'  => __( 'Scanner', 'raybogman-content-orchestrator' ),
-			'faq'      => __( 'FAQ', 'raybogman-content-orchestrator' ),
-			'about'    => __( 'About', 'raybogman-content-orchestrator' ),
+			'general'  => __( 'General', 'raybogman-ai-content-orchestrator' ),
+			'content'  => __( 'Content', 'raybogman-ai-content-orchestrator' ),
+			'images'   => __( 'Images', 'raybogman-ai-content-orchestrator' ),
+			'thrive'   => __( 'Thrive Architect (Beta)', 'raybogman-ai-content-orchestrator' ),
+			'linkedin'  => __( 'LinkedIn', 'raybogman-ai-content-orchestrator' ),
+			'instagram' => __( 'Instagram', 'raybogman-ai-content-orchestrator' ),
+			'scanner'  => __( 'Scanner', 'raybogman-ai-content-orchestrator' ),
+			'faq'      => __( 'FAQ', 'raybogman-ai-content-orchestrator' ),
+			'about'    => __( 'About', 'raybogman-ai-content-orchestrator' ),
 		);
 	}
 

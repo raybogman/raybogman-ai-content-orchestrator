@@ -25,7 +25,7 @@ jobs:
         env:
           DEV_ID: '33246'
           PLUGIN_ID: '28680'
-          PLUGIN_SLUG: 'raybogman-content-orchestrator'
+          PLUGIN_SLUG: 'raybogman-ai-content-orchestrator'
           PUBLIC_KEY: ${{ secrets.FREEMIUS_PUBLIC_KEY }}
           SECRET_KEY: ${{ secrets.FREEMIUS_SECRET_KEY }}
         with:

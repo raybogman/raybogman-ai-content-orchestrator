@@ -2,7 +2,7 @@
 /**
  * Bulk Create page template.
  *
- * @package Ray_Bogman_Content_Orchestrator
+ * @package Ray_Bogman_AI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,10 +19,10 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 <div class="wrap rbco-wrap">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-admin-page rbco-heading-icon"></span>
-		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Bulk Create', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman AI Content Orchestrator — Bulk Create', 'raybogman-ai-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
-		<?php esc_html_e( 'Create multiple blog posts at once. Enter your topics, pick a style and schedule, and generate them all in one go.', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Create multiple blog posts at once. Enter your topics, pick a style and schedule, and generate them all in one go.', 'raybogman-ai-content-orchestrator' ); ?>
 	</p>
 
 	<!-- ─── Seed Keyword / Suggest Topics ──────────────────── -->
@@ -30,23 +30,23 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 		<div class="rbco-card-header">
 			<h2>
 				<span class="dashicons dashicons-lightbulb" style="margin-right: 6px;"></span>
-				<?php esc_html_e( 'Topic Ideas (optional)', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Topic Ideas (optional)', 'raybogman-ai-content-orchestrator' ); ?>
 			</h2>
 		</div>
 		<div class="rbco-card-body">
 			<p class="description" style="margin-bottom: 12px;">
-				<?php esc_html_e( 'Enter a seed keyword and let AI suggest topics for your batch. You can also fill in topics manually below.', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Enter a seed keyword and let AI suggest topics for your batch. You can also fill in topics manually below.', 'raybogman-ai-content-orchestrator' ); ?>
 			</p>
 			<div style="display: flex; align-items: center; gap: 8px;">
-				<input type="text" id="rbco-bulk-seed" class="regular-text" placeholder="<?php esc_attr_e( 'e.g. sustainable fashion', 'raybogman-content-orchestrator' ); ?>" />
+				<input type="text" id="rbco-bulk-seed" class="regular-text" placeholder="<?php esc_attr_e( 'e.g. sustainable fashion', 'raybogman-ai-content-orchestrator' ); ?>" />
 				<button type="button" id="rbco-bulk-suggest" class="button">
 					<span class="dashicons dashicons-update" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; margin-right: 4px;"></span>
-					<?php esc_html_e( 'Suggest Topics', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Suggest Topics', 'raybogman-ai-content-orchestrator' ); ?>
 				</button>
 			</div>
 			<div id="rbco-bulk-suggest-progress" style="display: none; margin-top: 12px; padding: 10px 14px; background: #f0f6fc; border-left: 3px solid #2271b1; border-radius: 3px;">
 				<span class="spinner is-active" style="float: none; margin: 0 8px 0 0; vertical-align: middle;"></span>
-				<span id="rbco-bulk-suggest-status"><?php esc_html_e( 'Asking AI to generate topic ideas...', 'raybogman-content-orchestrator' ); ?></span>
+				<span id="rbco-bulk-suggest-status"><?php esc_html_e( 'Asking AI to generate topic ideas...', 'raybogman-ai-content-orchestrator' ); ?></span>
 			</div>
 		</div>
 	</div>
@@ -56,7 +56,7 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 		<div class="rbco-card-header">
 			<h2>
 				<span class="dashicons dashicons-list-view" style="margin-right: 6px;"></span>
-				<?php esc_html_e( 'Topics', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Topics', 'raybogman-ai-content-orchestrator' ); ?>
 			</h2>
 		</div>
 		<div class="rbco-card-body">
@@ -68,26 +68,26 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 			<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; padding:10px 14px; background:#f6f7f7; border:1px solid #e0e0e0; border-radius:4px;">
 				<label style="font-weight:600; margin-right:4px;">
 					<span class="dashicons dashicons-calendar-alt" style="vertical-align:text-bottom; margin-right:2px;"></span>
-					<?php esc_html_e( 'Auto-fill Dates:', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Auto-fill Dates:', 'raybogman-ai-content-orchestrator' ); ?>
 				</label>
 				<select id="rbco-schedule-freq" style="min-width:140px;">
-					<option value="none" <?php selected( $rbco_sched_freq, 'none' ); ?>><?php esc_html_e( 'Manual', 'raybogman-content-orchestrator' ); ?></option>
-					<option value="daily" <?php selected( $rbco_sched_freq, 'daily' ); ?>><?php esc_html_e( 'Daily', 'raybogman-content-orchestrator' ); ?></option>
-					<option value="every2" <?php selected( $rbco_sched_freq, 'every2' ); ?>><?php esc_html_e( 'Every 2 days', 'raybogman-content-orchestrator' ); ?></option>
-					<option value="every3" <?php selected( $rbco_sched_freq, 'every3' ); ?>><?php esc_html_e( 'Every 3 days', 'raybogman-content-orchestrator' ); ?></option>
-					<option value="weekly" <?php selected( $rbco_sched_freq, 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'raybogman-content-orchestrator' ); ?></option>
-					<option value="biweekly" <?php selected( $rbco_sched_freq, 'biweekly' ); ?>><?php esc_html_e( 'Bi-weekly', 'raybogman-content-orchestrator' ); ?></option>
-					<option value="monthly" <?php selected( $rbco_sched_freq, 'monthly' ); ?>><?php esc_html_e( 'Monthly', 'raybogman-content-orchestrator' ); ?></option>
+					<option value="none" <?php selected( $rbco_sched_freq, 'none' ); ?>><?php esc_html_e( 'Manual', 'raybogman-ai-content-orchestrator' ); ?></option>
+					<option value="daily" <?php selected( $rbco_sched_freq, 'daily' ); ?>><?php esc_html_e( 'Daily', 'raybogman-ai-content-orchestrator' ); ?></option>
+					<option value="every2" <?php selected( $rbco_sched_freq, 'every2' ); ?>><?php esc_html_e( 'Every 2 days', 'raybogman-ai-content-orchestrator' ); ?></option>
+					<option value="every3" <?php selected( $rbco_sched_freq, 'every3' ); ?>><?php esc_html_e( 'Every 3 days', 'raybogman-ai-content-orchestrator' ); ?></option>
+					<option value="weekly" <?php selected( $rbco_sched_freq, 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'raybogman-ai-content-orchestrator' ); ?></option>
+					<option value="biweekly" <?php selected( $rbco_sched_freq, 'biweekly' ); ?>><?php esc_html_e( 'Bi-weekly', 'raybogman-ai-content-orchestrator' ); ?></option>
+					<option value="monthly" <?php selected( $rbco_sched_freq, 'monthly' ); ?>><?php esc_html_e( 'Monthly', 'raybogman-ai-content-orchestrator' ); ?></option>
 				</select>
-				<label><?php esc_html_e( 'at', 'raybogman-content-orchestrator' ); ?></label>
+				<label><?php esc_html_e( 'at', 'raybogman-ai-content-orchestrator' ); ?></label>
 				<input type="time" id="rbco-schedule-time" value="<?php echo esc_attr( $rbco_sched_time ); ?>" style="width:100px;" />
 				<label style="margin-left:8px;">
 					<input type="checkbox" id="rbco-schedule-skip-weekends" <?php checked( $rbco_sched_skip ); ?> />
-					<?php esc_html_e( 'Skip weekends', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Skip weekends', 'raybogman-ai-content-orchestrator' ); ?>
 				</label>
 				<button type="button" id="rbco-autofill-dates" class="button" style="margin-left:auto;">
 					<span class="dashicons dashicons-calendar-alt" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span>
-					<?php esc_html_e( 'Fill Dates', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Fill Dates', 'raybogman-ai-content-orchestrator' ); ?>
 				</button>
 			</div>
 
@@ -95,18 +95,18 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 				<thead>
 					<tr>
 						<th style="width: 40px;">
-							<input type="checkbox" id="rbco-bulk-check-all" title="<?php esc_attr_e( 'Select all', 'raybogman-content-orchestrator' ); ?>" />
+							<input type="checkbox" id="rbco-bulk-check-all" title="<?php esc_attr_e( 'Select all', 'raybogman-ai-content-orchestrator' ); ?>" />
 						</th>
-						<th><?php esc_html_e( 'Topic', 'raybogman-content-orchestrator' ); ?></th>
-						<th style="width: 220px;"><?php esc_html_e( 'Blog Style', 'raybogman-content-orchestrator' ); ?></th>
-						<th style="width: 170px;"><?php esc_html_e( 'Publish Date', 'raybogman-content-orchestrator' ); ?></th>
+						<th><?php esc_html_e( 'Topic', 'raybogman-ai-content-orchestrator' ); ?></th>
+						<th style="width: 220px;"><?php esc_html_e( 'Blog Style', 'raybogman-ai-content-orchestrator' ); ?></th>
+						<th style="width: 170px;"><?php esc_html_e( 'Publish Date', 'raybogman-ai-content-orchestrator' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php for ( $rbco_i = 1; $rbco_i <= 5; $rbco_i++ ) : ?>
 						<tr class="rbco-bulk-row">
 							<td><input type="checkbox" class="rbco-bulk-check" checked /></td>
-							<td><input type="text" class="large-text rbco-bulk-topic" placeholder="<?php esc_attr_e( 'Enter topic...', 'raybogman-content-orchestrator' ); ?>" /></td>
+							<td><input type="text" class="large-text rbco-bulk-topic" placeholder="<?php esc_attr_e( 'Enter topic...', 'raybogman-ai-content-orchestrator' ); ?>" /></td>
 							<td>
 								<select class="rbco-bulk-style">
 									<?php foreach ( $rbco_styles as $rbco_style ) : ?>
@@ -124,7 +124,7 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 			<p style="margin-top: 12px;">
 				<button type="button" id="rbco-bulk-add-row" class="button">
 					<span class="dashicons dashicons-plus-alt2" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; margin-right: 4px;"></span>
-					<?php esc_html_e( 'Add Row', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Add Row', 'raybogman-ai-content-orchestrator' ); ?>
 				</button>
 			</p>
 		</div>
@@ -135,7 +135,7 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 		<div class="rbco-card-header">
 			<h2>
 				<span class="dashicons dashicons-admin-generic" style="margin-right: 6px;"></span>
-				<?php esc_html_e( 'Shared Settings', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Shared Settings', 'raybogman-ai-content-orchestrator' ); ?>
 			</h2>
 		</div>
 		<div class="rbco-card-body">
@@ -144,18 +144,18 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 					<!-- URL to Scan -->
 					<tr>
 						<th scope="row">
-							<label for="rbco-bulk-url"><?php esc_html_e( 'URL to Scan', 'raybogman-content-orchestrator' ); ?></label>
+							<label for="rbco-bulk-url"><?php esc_html_e( 'URL to Scan', 'raybogman-ai-content-orchestrator' ); ?></label>
 						</th>
 						<td>
 							<input type="text" id="rbco-bulk-url" class="large-text" placeholder="https://example.com" />
 							<p class="description">
-								<?php esc_html_e( 'Separate multiple URLs with commas. The same URLs are used for all posts in this batch. Leave empty to skip scanning.', 'raybogman-content-orchestrator' ); ?>
+								<?php esc_html_e( 'Separate multiple URLs with commas. The same URLs are used for all posts in this batch. Leave empty to skip scanning.', 'raybogman-ai-content-orchestrator' ); ?>
 							</p>
 							<p style="margin-top: 10px;">
 								<label>
 									<input type="checkbox" id="rbco-bulk-save-url" />
-									<?php esc_html_e( 'Save URL for next time', 'raybogman-content-orchestrator' ); ?>
-									<span class="description">&mdash; <?php esc_html_e( 'quickly reuse it later without re-typing', 'raybogman-content-orchestrator' ); ?></span>
+									<?php esc_html_e( 'Save URL for next time', 'raybogman-ai-content-orchestrator' ); ?>
+									<span class="description">&mdash; <?php esc_html_e( 'quickly reuse it later without re-typing', 'raybogman-ai-content-orchestrator' ); ?></span>
 								</label>
 							</p>
 						</td>
@@ -163,19 +163,19 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 					<?php if ( ! empty( $rbco_saved_urls ) ) : ?>
 					<tr id="rbco-bulk-saved-urls-row">
 						<th scope="row">
-							<?php esc_html_e( 'Saved URLs', 'raybogman-content-orchestrator' ); ?>
+							<?php esc_html_e( 'Saved URLs', 'raybogman-ai-content-orchestrator' ); ?>
 						</th>
 						<td>
 							<div id="rbco-bulk-saved-urls-list" class="rbco-saved-urls">
 								<?php foreach ( $rbco_saved_urls as $rbco_saved_url ) : ?>
 									<span class="rbco-url-chip" data-url="<?php echo esc_attr( $rbco_saved_url ); ?>">
 										<span class="rbco-url-chip-text"><?php echo esc_html( $rbco_saved_url ); ?></span>
-										<button type="button" class="rbco-url-chip-remove" title="<?php esc_attr_e( 'Remove', 'raybogman-content-orchestrator' ); ?>">&times;</button>
+										<button type="button" class="rbco-url-chip-remove" title="<?php esc_attr_e( 'Remove', 'raybogman-ai-content-orchestrator' ); ?>">&times;</button>
 									</span>
 								<?php endforeach; ?>
 							</div>
 							<p class="description">
-								<?php esc_html_e( 'Click a URL to use it. Click the × to remove it from the saved list.', 'raybogman-content-orchestrator' ); ?>
+								<?php esc_html_e( 'Click a URL to use it. Click the × to remove it from the saved list.', 'raybogman-ai-content-orchestrator' ); ?>
 							</p>
 						</td>
 					</tr>
@@ -184,28 +184,28 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 					<!-- Publish Status -->
 					<tr>
 						<th scope="row">
-							<label for="rbco-bulk-status"><?php esc_html_e( 'Publish Status', 'raybogman-content-orchestrator' ); ?></label>
+							<label for="rbco-bulk-status"><?php esc_html_e( 'Publish Status', 'raybogman-ai-content-orchestrator' ); ?></label>
 						</th>
 						<td>
 							<select id="rbco-bulk-status">
-								<option value="draft"><?php esc_html_e( 'Draft', 'raybogman-content-orchestrator' ); ?></option>
-								<option value="publish"><?php esc_html_e( 'Publish', 'raybogman-content-orchestrator' ); ?></option>
+								<option value="draft"><?php esc_html_e( 'Draft', 'raybogman-ai-content-orchestrator' ); ?></option>
+								<option value="publish"><?php esc_html_e( 'Publish', 'raybogman-ai-content-orchestrator' ); ?></option>
 							</select>
 						</td>
 					</tr>
 
 					<!-- Featured Image -->
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Featured Image', 'raybogman-content-orchestrator' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Featured Image', 'raybogman-ai-content-orchestrator' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" id="rbco-bulk-image" <?php echo $rbco_img_configured ? '' : 'disabled'; ?> />
-								<strong><?php esc_html_e( 'Generate AI featured image for each post', 'raybogman-content-orchestrator' ); ?></strong>
+								<strong><?php esc_html_e( 'Generate AI featured image for each post', 'raybogman-ai-content-orchestrator' ); ?></strong>
 							</label>
 							<?php if ( ! $rbco_img_configured ) : ?>
 								<p class="description">
 									<span class="dashicons dashicons-warning" style="color: #dba617; vertical-align: text-bottom;"></span>
-									<em><?php esc_html_e( 'Requires an image provider API key. Configure it in Settings.', 'raybogman-content-orchestrator' ); ?></em>
+									<em><?php esc_html_e( 'Requires an image provider API key. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ); ?></em>
 								</p>
 							<?php endif; ?>
 						</td>
@@ -214,11 +214,11 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 					<?php if ( $rbco_li_connected ) : ?>
 					<!-- LinkedIn -->
 					<tr>
-						<th scope="row"><?php esc_html_e( 'LinkedIn', 'raybogman-content-orchestrator' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'LinkedIn', 'raybogman-ai-content-orchestrator' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" id="rbco-bulk-linkedin" />
-								<strong><?php esc_html_e( 'Share each post to LinkedIn when published', 'raybogman-content-orchestrator' ); ?></strong>
+								<strong><?php esc_html_e( 'Share each post to LinkedIn when published', 'raybogman-ai-content-orchestrator' ); ?></strong>
 							</label>
 						</td>
 					</tr>
@@ -227,11 +227,11 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 					<?php if ( RBCO_Instagram::is_connected() ) : ?>
 					<!-- Instagram -->
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Instagram', 'raybogman-content-orchestrator' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Instagram', 'raybogman-ai-content-orchestrator' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" id="rbco-bulk-instagram" />
-								<strong><?php esc_html_e( 'Share each post to Instagram when published', 'raybogman-content-orchestrator' ); ?></strong>
+								<strong><?php esc_html_e( 'Share each post to Instagram when published', 'raybogman-ai-content-orchestrator' ); ?></strong>
 							</label>
 						</td>
 					</tr>
@@ -239,18 +239,18 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 
 					<!-- SEO Enhancements -->
 					<tr>
-						<th scope="row"><?php esc_html_e( 'SEO Enhancements', 'raybogman-content-orchestrator' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'SEO Enhancements', 'raybogman-ai-content-orchestrator' ); ?></th>
 						<td>
 							<fieldset>
 								<label style="display:block; margin-bottom:6px;">
 									<input type="checkbox" id="rbco-bulk-internal-linking" <?php echo RBCO_Settings::is_internal_linking_enabled() ? 'checked' : ''; ?> />
-									<strong><?php esc_html_e( 'Auto-add internal links', 'raybogman-content-orchestrator' ); ?></strong>
-									<span class="description"> — <?php esc_html_e( 'links to your existing published posts for better SEO', 'raybogman-content-orchestrator' ); ?></span>
+									<strong><?php esc_html_e( 'Auto-add internal links', 'raybogman-ai-content-orchestrator' ); ?></strong>
+									<span class="description"> — <?php esc_html_e( 'links to your existing published posts for better SEO', 'raybogman-ai-content-orchestrator' ); ?></span>
 								</label>
 								<label style="display:block;">
 									<input type="checkbox" id="rbco-bulk-competitor-analysis" <?php echo RBCO_Settings::get_competitor_analysis_enabled() ? 'checked' : ''; ?> />
-									<strong><?php esc_html_e( 'Analyze competitors first', 'raybogman-content-orchestrator' ); ?></strong>
-									<span class="description"> — <?php esc_html_e( 'scans top Google results for your keyword and writes content that covers more topics', 'raybogman-content-orchestrator' ); ?></span>
+									<strong><?php esc_html_e( 'Analyze competitors first', 'raybogman-ai-content-orchestrator' ); ?></strong>
+									<span class="description"> — <?php esc_html_e( 'scans top Google results for your keyword and writes content that covers more topics', 'raybogman-ai-content-orchestrator' ); ?></span>
 								</label>
 							</fieldset>
 						</td>
@@ -258,18 +258,18 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 
 					<!-- Output Format -->
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Output Format', 'raybogman-content-orchestrator' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Output Format', 'raybogman-ai-content-orchestrator' ); ?></th>
 						<td>
 							<select id="rbco-bulk-output-format" style="min-width:260px;">
-								<option value="wordpress" <?php selected( $rbco_default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'raybogman-content-orchestrator' ); ?></option>
-								<option value="thrive" <?php selected( $rbco_default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'raybogman-content-orchestrator' ); ?></option>
+								<option value="wordpress" <?php selected( $rbco_default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'raybogman-ai-content-orchestrator' ); ?></option>
+								<option value="thrive" <?php selected( $rbco_default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'raybogman-ai-content-orchestrator' ); ?></option>
 							</select>
 						</td>
 					</tr>
 
 					<!-- Categories -->
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Categories', 'raybogman-content-orchestrator' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Categories', 'raybogman-ai-content-orchestrator' ); ?></th>
 						<td>
 							<div class="rbco-checkbox-list">
 								<?php if ( ! empty( $rbco_categories ) ) : ?>
@@ -280,11 +280,11 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 										</label>
 									<?php endforeach; ?>
 								<?php else : ?>
-									<p class="description"><?php esc_html_e( 'No categories found. The AI will suggest and create categories automatically.', 'raybogman-content-orchestrator' ); ?></p>
+									<p class="description"><?php esc_html_e( 'No categories found. The AI will suggest and create categories automatically.', 'raybogman-ai-content-orchestrator' ); ?></p>
 								<?php endif; ?>
 							</div>
 							<p class="description" style="margin-top: 6px;">
-								<?php esc_html_e( 'Select categories for all posts, or leave empty to let the AI decide.', 'raybogman-content-orchestrator' ); ?>
+								<?php esc_html_e( 'Select categories for all posts, or leave empty to let the AI decide.', 'raybogman-ai-content-orchestrator' ); ?>
 							</p>
 						</td>
 					</tr>
@@ -297,7 +297,7 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 	<p class="submit">
 		<button type="button" id="rbco-bulk-generate" class="button button-primary button-hero">
 			<span class="dashicons dashicons-admin-post rbco-btn-icon"></span>
-			<?php esc_html_e( 'Generate All (0 posts)', 'raybogman-content-orchestrator' ); ?>
+			<?php esc_html_e( 'Generate All (0 posts)', 'raybogman-ai-content-orchestrator' ); ?>
 		</button>
 	</p>
 
@@ -306,11 +306,11 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 		<div class="rbco-card-header" style="display:flex; justify-content:space-between; align-items:center;">
 			<h2 style="margin:0;">
 				<span class="spinner is-active" id="rbco-bulk-spinner" style="float: none; margin: 0 8px 0 0;"></span>
-				<?php esc_html_e( 'Generating...', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Generating...', 'raybogman-ai-content-orchestrator' ); ?>
 			</h2>
-			<button type="button" class="button button-small rbco-save-log" data-log="#rbco-bulk-progress-log" title="<?php esc_attr_e( 'Download log as text file', 'raybogman-content-orchestrator' ); ?>">
+			<button type="button" class="button button-small rbco-save-log" data-log="#rbco-bulk-progress-log" title="<?php esc_attr_e( 'Download log as text file', 'raybogman-ai-content-orchestrator' ); ?>">
 				<span class="dashicons dashicons-download" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span>
-				<?php esc_html_e( 'Save Log', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Save Log', 'raybogman-ai-content-orchestrator' ); ?>
 			</button>
 		</div>
 		<div class="rbco-card-body">
@@ -323,16 +323,16 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 		<div class="rbco-card-header rbco-card-header-success">
 			<h2 id="rbco-bulk-results-header">
 				<span class="dashicons dashicons-yes-alt" style="margin-right: 6px;"></span>
-				<?php esc_html_e( 'Created Posts', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Created Posts', 'raybogman-ai-content-orchestrator' ); ?>
 			</h2>
 		</div>
 		<div class="rbco-card-body">
 			<table class="widefat striped" id="rbco-bulk-results-table">
 				<thead>
 					<tr>
-						<th style="width:55%;"><?php esc_html_e( 'Title', 'raybogman-content-orchestrator' ); ?></th>
-						<th style="width:12%;"><?php esc_html_e( 'Status', 'raybogman-content-orchestrator' ); ?></th>
-						<th style="width:33%;"><?php esc_html_e( 'Actions', 'raybogman-content-orchestrator' ); ?></th>
+						<th style="width:55%;"><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+						<th style="width:12%;"><?php esc_html_e( 'Status', 'raybogman-ai-content-orchestrator' ); ?></th>
+						<th style="width:33%;"><?php esc_html_e( 'Actions', 'raybogman-ai-content-orchestrator' ); ?></th>
 					</tr>
 				</thead>
 				<tbody id="rbco-bulk-results-body"></tbody>
@@ -352,7 +352,7 @@ jQuery(document).ready(function($) {
 		var styleOptions = $('#rbco-bulk-table tbody tr:first .rbco-bulk-style').html();
 		return '<tr class="rbco-bulk-row">' +
 			'<td><input type="checkbox" class="rbco-bulk-check" checked /></td>' +
-			'<td><input type="text" class="large-text rbco-bulk-topic" placeholder="<?php echo esc_js( __( 'Enter topic...', 'raybogman-content-orchestrator' ) ); ?>" /></td>' +
+			'<td><input type="text" class="large-text rbco-bulk-topic" placeholder="<?php echo esc_js( __( 'Enter topic...', 'raybogman-ai-content-orchestrator' ) ); ?>" /></td>' +
 			'<td><select class="rbco-bulk-style">' + styleOptions + '</select></td>' +
 			'<td><input type="date" class="rbco-bulk-date" /></td>' +
 			'</tr>';
@@ -365,8 +365,8 @@ jQuery(document).ready(function($) {
 		var count = $('#rbco-bulk-table .rbco-bulk-check:checked').length;
 		$('#rbco-bulk-generate').html(
 			'<span class="dashicons dashicons-admin-post rbco-btn-icon"></span> ' +
-			'<?php echo esc_js( __( 'Generate All', 'raybogman-content-orchestrator' ) ); ?>' +
-			' (' + count + ' ' + (count === 1 ? '<?php echo esc_js( __( 'post', 'raybogman-content-orchestrator' ) ); ?>' : '<?php echo esc_js( __( 'posts', 'raybogman-content-orchestrator' ) ); ?>') + ')'
+			'<?php echo esc_js( __( 'Generate All', 'raybogman-ai-content-orchestrator' ) ); ?>' +
+			' (' + count + ' ' + (count === 1 ? '<?php echo esc_js( __( 'post', 'raybogman-ai-content-orchestrator' ) ); ?>' : '<?php echo esc_js( __( 'posts', 'raybogman-ai-content-orchestrator' ) ); ?>') + ')'
 		);
 	}
 
@@ -374,7 +374,7 @@ jQuery(document).ready(function($) {
 	$('#rbco-autofill-dates').on('click', function() {
 		var freq = $('#rbco-schedule-freq').val();
 		if (freq === 'none') {
-			alert('<?php echo esc_js( __( 'Select a frequency first (Daily, Weekly, etc.).', 'raybogman-content-orchestrator' ) ); ?>');
+			alert('<?php echo esc_js( __( 'Select a frequency first (Daily, Weekly, etc.).', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			return;
 		}
 
@@ -486,7 +486,7 @@ jQuery(document).ready(function($) {
 	$('#rbco-bulk-suggest').on('click', function() {
 		var seed = $('#rbco-bulk-seed').val().trim();
 		if (!seed) {
-			alert('<?php echo esc_js( __( 'Enter a seed keyword first.', 'raybogman-content-orchestrator' ) ); ?>');
+			alert('<?php echo esc_js( __( 'Enter a seed keyword first.', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			return;
 		}
 
@@ -497,7 +497,7 @@ jQuery(document).ready(function($) {
 
 		$btn.prop('disabled', true).html(
 			'<span class="dashicons dashicons-update" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; margin-right: 4px; animation: rotation 1s linear infinite;"></span> ' +
-			'<?php echo esc_js( __( 'Generating...', 'raybogman-content-orchestrator' ) ); ?>'
+			'<?php echo esc_js( __( 'Generating...', 'raybogman-ai-content-orchestrator' ) ); ?>'
 		);
 		$status.text('Asking AI to generate topic ideas for \u201C' + seed + '\u201D...');
 		$progress.slideDown(200);
@@ -508,7 +508,7 @@ jQuery(document).ready(function($) {
 		});
 		var count = $checkedEmpty.length;
 		if (count === 0) {
-			alert('<?php echo esc_js( __( 'No empty checked rows available. Check the rows you want to fill, then click Suggest Topics.', 'raybogman-content-orchestrator' ) ); ?>');
+			alert('<?php echo esc_js( __( 'No empty checked rows available. Check the rows you want to fill, then click Suggest Topics.', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			$btn.prop('disabled', false).html(originalHtml);
 			$progress.slideUp(200);
 			return;
@@ -540,17 +540,17 @@ jQuery(document).ready(function($) {
 				});
 				updateCount();
 				$status.html('<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span> ' +
-					'<?php echo esc_js( __( 'Done! ', 'raybogman-content-orchestrator' ) ); ?>' + topics.length + ' <?php echo esc_js( __( 'topics added to the table.', 'raybogman-content-orchestrator' ) ); ?>');
+					'<?php echo esc_js( __( 'Done! ', 'raybogman-ai-content-orchestrator' ) ); ?>' + topics.length + ' <?php echo esc_js( __( 'topics added to the table.', 'raybogman-ai-content-orchestrator' ) ); ?>');
 				$progress.find('.spinner').removeClass('is-active');
 				setTimeout(function() { $progress.slideUp(300); }, 4000);
 			} else {
-				var msg = res.data && res.data.message ? res.data.message : '<?php echo esc_js( __( 'Failed to generate topics.', 'raybogman-content-orchestrator' ) ); ?>';
+				var msg = res.data && res.data.message ? res.data.message : '<?php echo esc_js( __( 'Failed to generate topics.', 'raybogman-ai-content-orchestrator' ) ); ?>';
 				$status.html('<span class="dashicons dashicons-warning" style="color:#d63638; vertical-align:text-bottom;"></span> ' + msg);
 				$progress.find('.spinner').removeClass('is-active');
 				setTimeout(function() { $progress.slideUp(300); }, 5000);
 			}
 		}).fail(function() {
-			$status.html('<span class="dashicons dashicons-warning" style="color:#d63638; vertical-align:text-bottom;"></span> <?php echo esc_js( __( 'Request failed. Please try again.', 'raybogman-content-orchestrator' ) ); ?>');
+			$status.html('<span class="dashicons dashicons-warning" style="color:#d63638; vertical-align:text-bottom;"></span> <?php echo esc_js( __( 'Request failed. Please try again.', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			$progress.find('.spinner').removeClass('is-active');
 			setTimeout(function() { $progress.slideUp(300); }, 5000);
 		}).always(function() {
@@ -564,7 +564,7 @@ jQuery(document).ready(function($) {
 	// Warn before navigating away during generation.
 	$(window).on('beforeunload', function() {
 		if (bulkRunning) {
-			return '<?php echo esc_js( __( 'Bulk generation is still running. If you leave, remaining posts won\'t be created. Are you sure?', 'raybogman-content-orchestrator' ) ); ?>';
+			return '<?php echo esc_js( __( 'Bulk generation is still running. If you leave, remaining posts won\'t be created. Are you sure?', 'raybogman-ai-content-orchestrator' ) ); ?>';
 		}
 	});
 
@@ -636,7 +636,7 @@ jQuery(document).ready(function($) {
 		});
 
 		if (!jobs.length) {
-			alert('<?php echo esc_js( __( 'No topics to generate. Enter at least one topic and make sure the row is checked.', 'raybogman-content-orchestrator' ) ); ?>');
+			alert('<?php echo esc_js( __( 'No topics to generate. Enter at least one topic and make sure the row is checked.', 'raybogman-ai-content-orchestrator' ) ); ?>');
 			return;
 		}
 
@@ -655,7 +655,7 @@ jQuery(document).ready(function($) {
 		$('#rbco-bulk-results-body').empty();
 		$('#rbco-bulk-results-header').html(
 			'<span class="spinner is-active" style="float:none; margin:0 8px 0 0;"></span> ' +
-			'<?php echo esc_js( __( 'Created Posts', 'raybogman-content-orchestrator' ) ); ?> (0/' + jobs.length + ')'
+			'<?php echo esc_js( __( 'Created Posts', 'raybogman-ai-content-orchestrator' ) ); ?> (0/' + jobs.length + ')'
 		);
 		$('#rbco-bulk-results').slideDown(200);
 
@@ -668,8 +668,8 @@ jQuery(document).ready(function($) {
 				? '<span class="spinner is-active" style="float:none; margin:0 8px 0 0;"></span> '
 				: '<span class="dashicons dashicons-yes-alt" style="color:#00a32a; margin-right:6px;"></span> ';
 			var label = completed < total
-				? '<?php echo esc_js( __( 'Created Posts', 'raybogman-content-orchestrator' ) ); ?>'
-				: '<?php echo esc_js( __( 'Bulk Generation Complete', 'raybogman-content-orchestrator' ) ); ?>';
+				? '<?php echo esc_js( __( 'Created Posts', 'raybogman-ai-content-orchestrator' ) ); ?>'
+				: '<?php echo esc_js( __( 'Bulk Generation Complete', 'raybogman-ai-content-orchestrator' ) ); ?>';
 			$('#rbco-bulk-results-header').html(icon + label + ' (' + succeeded + '/' + total + ')');
 		}
 
@@ -678,10 +678,10 @@ jQuery(document).ready(function($) {
 				$('#rbco-bulk-spinner').removeClass('is-active');
 				$('#rbco-bulk-progress .rbco-card-header h2').html(
 					'<span class="dashicons dashicons-yes-alt" style="color:#00a32a; margin-right:6px;"></span> ' +
-					'<?php echo esc_js( __( 'Complete', 'raybogman-content-orchestrator' ) ); ?>'
+					'<?php echo esc_js( __( 'Complete', 'raybogman-ai-content-orchestrator' ) ); ?>'
 				);
 				bulkLog('');
-				bulkLog('━━━ ' + succeeded + '/' + total + ' <?php echo esc_js( __( 'posts created successfully', 'raybogman-content-orchestrator' ) ); ?> ━━━', 'step');
+				bulkLog('━━━ ' + succeeded + '/' + total + ' <?php echo esc_js( __( 'posts created successfully', 'raybogman-ai-content-orchestrator' ) ); ?> ━━━', 'step');
 				updateResultsHeader();
 				$btn.prop('disabled', false);
 				bulkRunning = false;
@@ -692,7 +692,7 @@ jQuery(document).ready(function($) {
 			var job = jobs[index];
 			var num = index + 1;
 			bulkLog('');
-			bulkLog('━━━ <?php echo esc_js( __( 'Post', 'raybogman-content-orchestrator' ) ); ?> ' + num + '/' + total + ': ' + job.topic + ' ━━━', 'step');
+			bulkLog('━━━ <?php echo esc_js( __( 'Post', 'raybogman-ai-content-orchestrator' ) ); ?> ' + num + '/' + total + ': ' + job.topic + ' ━━━', 'step');
 
 			runBulkStep(null, 1, job, function(success, data) {
 				completed++;
@@ -710,47 +710,47 @@ jQuery(document).ready(function($) {
 					$tbody.append(
 						'<tr>' +
 						'<td><a href="' + postUrl + '" target="_blank" style="font-weight:600; text-decoration:none;">' + $('<span>').text(title).html() + '</a><div style="margin-top:2px; color:#787c82; font-size:12px;">#' + postId + '</div></td>' +
-						'<td><span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom; margin-right:4px;"></span><?php echo esc_js( __( 'Created', 'raybogman-content-orchestrator' ) ); ?></td>' +
-						'<td style="white-space:nowrap;"><button type="button" class="button button-small rbco-detail-toggle" data-detail="' + rowId + '" style="margin-right:2px;"><span class="dashicons dashicons-info-outline" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span><?php echo esc_js( __( 'Details', 'raybogman-content-orchestrator' ) ); ?></button>' +
-						'<a href="' + postUrl + '" target="_blank" class="button button-small" style="margin-right:2px;"><span class="dashicons dashicons-visibility" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span><?php echo esc_js( __( 'View', 'raybogman-content-orchestrator' ) ); ?></a>' +
-						'<a href="' + editUrl + '" target="_blank" class="button button-small"><span class="dashicons dashicons-edit" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span><?php echo esc_js( __( 'Edit', 'raybogman-content-orchestrator' ) ); ?></a></td>' +
+						'<td><span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom; margin-right:4px;"></span><?php echo esc_js( __( 'Created', 'raybogman-ai-content-orchestrator' ) ); ?></td>' +
+						'<td style="white-space:nowrap;"><button type="button" class="button button-small rbco-detail-toggle" data-detail="' + rowId + '" style="margin-right:2px;"><span class="dashicons dashicons-info-outline" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span><?php echo esc_js( __( 'Details', 'raybogman-ai-content-orchestrator' ) ); ?></button>' +
+						'<a href="' + postUrl + '" target="_blank" class="button button-small" style="margin-right:2px;"><span class="dashicons dashicons-visibility" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span><?php echo esc_js( __( 'View', 'raybogman-ai-content-orchestrator' ) ); ?></a>' +
+						'<a href="' + editUrl + '" target="_blank" class="button button-small"><span class="dashicons dashicons-edit" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:2px;"></span><?php echo esc_js( __( 'Edit', 'raybogman-ai-content-orchestrator' ) ); ?></a></td>' +
 						'</tr>'
 					);
 
 					// Build detail panel — use a div wrapper for slideToggle (tr slideDown is unreliable).
 					var detailHtml = '<tr id="' + rowId + '" class="rbco-detail-row"><td colspan="3" style="padding:0;"><div class="rbco-detail-content" style="display:none; background:#f9f9f9; border-top:1px solid #e0e0e0; padding:16px 20px;">';
 					detailHtml += '<table class="form-table" style="margin:0;"><tbody>';
-					detailHtml += '<tr><th style="width:160px; padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Prompt', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(ai.prompt || job.topic).html() + '</td></tr>';
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Post ID', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + postId + '</td></tr>';
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Title', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(title).html() + '</td></tr>';
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Slug', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;"><code>' + $('<span>').text(ai.slug || wp.slug || '').html() + '</code></td></tr>';
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'URL', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;"><a href="' + postUrl + '" target="_blank">' + $('<span>').text(postUrl).html() + '</a></td></tr>';
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Meta Description', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(ai.meta_description || '').html() + '</td></tr>';
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Focus Keyphrase', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(ai.focus_keyphrase || '').html() + '</td></tr>';
+					detailHtml += '<tr><th style="width:160px; padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Prompt', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(ai.prompt || job.topic).html() + '</td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Post ID', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + postId + '</td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Title', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(title).html() + '</td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Slug', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;"><code>' + $('<span>').text(ai.slug || wp.slug || '').html() + '</code></td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'URL', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;"><a href="' + postUrl + '" target="_blank">' + $('<span>').text(postUrl).html() + '</a></td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Meta Description', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(ai.meta_description || '').html() + '</td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Focus Keyphrase', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(ai.focus_keyphrase || '').html() + '</td></tr>';
 
 					if (ai.tags && ai.tags.length) {
 						var tagsHtml = '';
 						$.each(ai.tags, function(_, t) { tagsHtml += '<span style="display:inline-block; background:#e7e8ea; padding:2px 10px; border-radius:12px; margin:2px 4px 2px 0; font-size:12px;">' + $('<span>').text(t).html() + '</span>'; });
-						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Tags', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + tagsHtml + '</td></tr>';
+						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Tags', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + tagsHtml + '</td></tr>';
 					}
 					if (ai.categories && ai.categories.length) {
 						var catsHtml = '';
 						$.each(ai.categories, function(_, c) { catsHtml += '<span style="display:inline-block; background:#d5e5f7; padding:2px 10px; border-radius:12px; margin:2px 4px 2px 0; font-size:12px;">' + $('<span>').text(c).html() + '</span>'; });
-						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Categories', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + catsHtml + '</td></tr>';
+						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Categories', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + catsHtml + '</td></tr>';
 					}
 
 					if (wp.yoast) {
-						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Yoast SEO', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;"><span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span> <?php echo esc_js( __( 'Updated', 'raybogman-content-orchestrator' ) ); ?></td></tr>';
+						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Yoast SEO', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;"><span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span> <?php echo esc_js( __( 'Updated', 'raybogman-ai-content-orchestrator' ) ); ?></td></tr>';
 					}
 
 					if (ai.linked_posts && ai.linked_posts.length) {
 						var linksHtml = '';
 						$.each(ai.linked_posts, function(_, lp) { linksHtml += '<div style="margin:2px 0;"><span class="dashicons dashicons-admin-links" style="font-size:14px; width:14px; height:14px; vertical-align:text-bottom; margin-right:4px; color:#2271b1;"></span><a href="' + lp.url + '" target="_blank">' + $('<span>').text(lp.title).html() + '</a></div>'; });
-						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Internal Links', 'raybogman-content-orchestrator' ) ); ?> (' + ai.linked_posts.length + ')</th><td style="padding:6px 0;">' + linksHtml + '</td></tr>';
+						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Internal Links', 'raybogman-ai-content-orchestrator' ) ); ?> (' + ai.linked_posts.length + ')</th><td style="padding:6px 0;">' + linksHtml + '</td></tr>';
 					}
 
 					// AI Provider.
-					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'AI Provider', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(rbco.provider.charAt(0).toUpperCase() + rbco.provider.slice(1) + ' (' + rbco.model + ')').html() + '</td></tr>';
+					detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'AI Provider', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + $('<span>').text(rbco.provider.charAt(0).toUpperCase() + rbco.provider.slice(1) + ' (' + rbco.model + ')').html() + '</td></tr>';
 
 					// Featured Image (4 options).
 					if (ai.image_urls && ai.image_urls.length) {
@@ -765,36 +765,36 @@ jQuery(document).ready(function($) {
 							imgHtml += '</div>';
 						}
 						imgHtml += '</div>';
-						imgHtml += '<p style="margin:8px 0 4px;"><button type="button" class="button button-small rbco-regen-images-btn" data-post-id="' + postId + '"><span class="dashicons dashicons-update" style="font-size:14px; width:14px; height:14px; vertical-align:text-bottom; margin-right:2px;"></span><?php echo esc_js( __( 'Regenerate 4 New Images', 'raybogman-content-orchestrator' ) ); ?></button></p>';
-						imgHtml += '<p style="margin:4px 0 0; font-size:11px; color:#646970;"><span class="dashicons dashicons-info" style="vertical-align:text-bottom; color:#2271b1; font-size:14px; width:14px; height:14px;"></span> <?php echo esc_js( __( 'Click any image to set it as the featured image.', 'raybogman-content-orchestrator' ) ); ?></p>';
+						imgHtml += '<p style="margin:8px 0 4px;"><button type="button" class="button button-small rbco-regen-images-btn" data-post-id="' + postId + '"><span class="dashicons dashicons-update" style="font-size:14px; width:14px; height:14px; vertical-align:text-bottom; margin-right:2px;"></span><?php echo esc_js( __( 'Regenerate 4 New Images', 'raybogman-ai-content-orchestrator' ) ); ?></button></p>';
+						imgHtml += '<p style="margin:4px 0 0; font-size:11px; color:#646970;"><span class="dashicons dashicons-info" style="vertical-align:text-bottom; color:#2271b1; font-size:14px; width:14px; height:14px;"></span> <?php echo esc_js( __( 'Click any image to set it as the featured image.', 'raybogman-ai-content-orchestrator' ) ); ?></p>';
 						imgHtml += '</div>';
-						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Featured Image', 'raybogman-content-orchestrator' ) ); ?> (' + ai.image_urls.length + ' <?php echo esc_js( __( 'options', 'raybogman-content-orchestrator' ) ); ?>)</th><td style="padding:6px 0;">' + imgHtml + '</td></tr>';
+						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Featured Image', 'raybogman-ai-content-orchestrator' ) ); ?> (' + ai.image_urls.length + ' <?php echo esc_js( __( 'options', 'raybogman-ai-content-orchestrator' ) ); ?>)</th><td style="padding:6px 0;">' + imgHtml + '</td></tr>';
 					}
 
 					// Repurpose buttons.
 					if (postId) {
 						var repHtml = '<div class="rbco-repurpose-wrap" data-post-id="' + postId + '">';
 						repHtml += '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">';
-						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="email"><span class="dashicons dashicons-email-alt" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'Email Newsletter', 'raybogman-content-orchestrator' ) ); ?></button>';
-						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="twitter"><span class="dashicons dashicons-twitter" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'X / Twitter', 'raybogman-content-orchestrator' ) ); ?></button>';
-						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="instagram"><span class="dashicons dashicons-camera" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'Instagram', 'raybogman-content-orchestrator' ) ); ?></button>';
-						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="pinterest"><span class="dashicons dashicons-share" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'Pinterest', 'raybogman-content-orchestrator' ) ); ?></button>';
+						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="email"><span class="dashicons dashicons-email-alt" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'Email Newsletter', 'raybogman-ai-content-orchestrator' ) ); ?></button>';
+						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="twitter"><span class="dashicons dashicons-twitter" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'X / Twitter', 'raybogman-ai-content-orchestrator' ) ); ?></button>';
+						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="instagram"><span class="dashicons dashicons-camera" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'Instagram', 'raybogman-ai-content-orchestrator' ) ); ?></button>';
+						repHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="pinterest"><span class="dashicons dashicons-share" style="vertical-align:text-bottom; font-size:14px; width:14px; height:14px; margin-right:3px;"></span><?php echo esc_js( __( 'Pinterest', 'raybogman-ai-content-orchestrator' ) ); ?></button>';
 						repHtml += '</div>';
 						repHtml += '<div class="rbco-repurpose-result" style="display:none;">';
 						repHtml += '<div class="rbco-repurpose-text" style="background:#f6f7f7; border-left:3px solid #2271b1; padding:12px; white-space:pre-wrap; font-size:13px; line-height:1.5; border-radius:2px; max-height:300px; overflow:auto;"></div>';
-						repHtml += '<div style="margin-top:6px;"><button type="button" class="button rbco-repurpose-copy-btn"><?php echo esc_js( __( 'Copy to Clipboard', 'raybogman-content-orchestrator' ) ); ?></button> <span class="rbco-repurpose-status" style="margin-left:6px;"></span></div>';
+						repHtml += '<div style="margin-top:6px;"><button type="button" class="button rbco-repurpose-copy-btn"><?php echo esc_js( __( 'Copy to Clipboard', 'raybogman-ai-content-orchestrator' ) ); ?></button> <span class="rbco-repurpose-status" style="margin-left:6px;"></span></div>';
 						repHtml += '</div></div>';
-						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Repurpose This Content', 'raybogman-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + repHtml + '</td></tr>';
+						detailHtml += '<tr><th style="padding:6px 10px 6px 0; font-weight:600;"><?php echo esc_js( __( 'Repurpose This Content', 'raybogman-ai-content-orchestrator' ) ); ?></th><td style="padding:6px 0;">' + repHtml + '</td></tr>';
 					}
 
 					detailHtml += '</tbody></table></div></td></tr>';
 					$tbody.append(detailHtml);
 				} else {
-					var errMsg = data && data.error ? data.error : '<?php echo esc_js( __( 'Failed', 'raybogman-content-orchestrator' ) ); ?>';
+					var errMsg = data && data.error ? data.error : '<?php echo esc_js( __( 'Failed', 'raybogman-ai-content-orchestrator' ) ); ?>';
 					$tbody.append(
 						'<tr>' +
 						'<td style="font-weight:600; padding-left:28px;">' + $('<span>').text(job.topic).html() + '</td>' +
-						'<td><span class="dashicons dashicons-warning" style="color:#d63638; vertical-align:text-bottom; margin-right:4px;"></span><span style="color:#d63638;"><?php echo esc_js( __( 'Failed', 'raybogman-content-orchestrator' ) ); ?></span></td>' +
+						'<td><span class="dashicons dashicons-warning" style="color:#d63638; vertical-align:text-bottom; margin-right:4px;"></span><span style="color:#d63638;"><?php echo esc_js( __( 'Failed', 'raybogman-ai-content-orchestrator' ) ); ?></span></td>' +
 						'<td><span style="color:#787c82; font-size:12px;">' + $('<span>').text(errMsg).html() + '</span></td>' +
 						'</tr>'
 					);

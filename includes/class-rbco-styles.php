@@ -29,8 +29,8 @@ class RBCO_Styles {
 		return array(
 
 			'standard' => array(
-				'name'        => __( 'Standard Blog Post', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Well-rounded article with introduction, table of contents, key sections, and FAQ. Good all-purpose format.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Standard Blog Post', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Well-rounded article with introduction, table of contents, key sections, and FAQ. Good all-purpose format.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-admin-post',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -56,8 +56,8 @@ class RBCO_Styles {
 			),
 
 			'how-to' => array(
-				'name'        => __( 'How-To Guide', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Step-by-step instructions. Optimized for featured snippets and "how to" search queries.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'How-To Guide', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Step-by-step instructions. Optimized for featured snippets and "how to" search queries.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-editor-ol',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -84,8 +84,8 @@ class RBCO_Styles {
 			),
 
 			'listicle' => array(
-				'name'        => __( 'Listicle', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Numbered list format (e.g., "10 Best..."). Highly scannable with 36% higher CTR in search results.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Listicle', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Numbered list format (e.g., "10 Best..."). Highly scannable with 36% higher CTR in search results.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-list-view',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -112,8 +112,8 @@ class RBCO_Styles {
 			),
 
 			'ultimate-guide' => array(
-				'name'        => __( 'Ultimate Guide', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Comprehensive deep-dive pillar content. Ranks for hundreds of long-tail keywords and builds topical authority.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Ultimate Guide', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Comprehensive deep-dive pillar content. Ranks for hundreds of long-tail keywords and builds topical authority.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-book',
 				'target_words' => '2500-4000',
 				'prompt'      => implode( "\n", array(
@@ -141,8 +141,8 @@ class RBCO_Styles {
 			),
 
 			'comparison' => array(
-				'name'        => __( 'Comparison / Versus', 'raybogman-content-orchestrator' ),
-				'description' => __( '"X vs Y" format. Captures high-intent decision-stage searches with structured comparisons.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Comparison / Versus', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( '"X vs Y" format. Captures high-intent decision-stage searches with structured comparisons.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-columns',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -168,8 +168,8 @@ class RBCO_Styles {
 			),
 
 			'case-study' => array(
-				'name'        => __( 'Case Study', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Real-world success story with data. Builds trust and credibility. Great for conversions and backlinks.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Case Study', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Real-world success story with data. Builds trust and credibility. Great for conversions and backlinks.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-chart-bar',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -197,8 +197,8 @@ class RBCO_Styles {
 			),
 
 			'problem-solution' => array(
-				'name'        => __( 'Problem-Solution', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Identifies a pain point, then provides the fix. Directly matches search intent for problem-based queries.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Problem-Solution', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Identifies a pain point, then provides the fix. Directly matches search intent for problem-based queries.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-lightbulb',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -225,8 +225,8 @@ class RBCO_Styles {
 			),
 
 			'beginners-guide' => array(
-				'name'        => __( 'Beginner\'s Guide', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Entry-level explainer. Captures "what is" and "how to start" top-of-funnel search traffic.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Beginner\'s Guide', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Entry-level explainer. Captures "what is" and "how to start" top-of-funnel search traffic.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-welcome-learn-more',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -256,8 +256,8 @@ class RBCO_Styles {
 			),
 
 			'data-driven' => array(
-				'name'        => __( 'Data-Driven / Research', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Statistics and research-backed analysis. Natural link magnet — content with data gets 2x more backlinks.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Data-Driven / Research', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Statistics and research-backed analysis. Natural link magnet — content with data gets 2x more backlinks.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-chart-area',
 				'target_words' => '1500-2500',
 				'prompt'      => implode( "\n", array(
@@ -285,8 +285,8 @@ class RBCO_Styles {
 			),
 
 			'storytelling' => array(
-				'name'        => __( 'Storytelling / Narrative', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Personal or brand narrative. High engagement — stories are 22x more memorable than facts alone.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Storytelling / Narrative', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Personal or brand narrative. High engagement — stories are 22x more memorable than facts alone.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-format-status',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(
@@ -313,8 +313,8 @@ class RBCO_Styles {
 			),
 
 			'opinion' => array(
-				'name'        => __( 'Opinion / Thought Leadership', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Expert perspective with a strong take. Builds authority, sparks discussion, and drives social shares.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Opinion / Thought Leadership', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Expert perspective with a strong take. Builds authority, sparks discussion, and drives social shares.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-megaphone',
 				'target_words' => '1000-1500',
 				'prompt'      => implode( "\n", array(
@@ -341,8 +341,8 @@ class RBCO_Styles {
 			),
 
 			'checklist' => array(
-				'name'        => __( 'Checklist', 'raybogman-content-orchestrator' ),
-				'description' => __( 'Actionable to-do list. High utility format that drives saves, bookmarks, and return visits.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Checklist', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'Actionable to-do list. High utility format that drives saves, bookmarks, and return visits.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-yes-alt',
 				'target_words' => '1000-1500',
 				'prompt'      => implode( "\n", array(
@@ -367,8 +367,8 @@ class RBCO_Styles {
 				) ),
 			),
 			'recipe' => array(
-				'name'        => __( 'Recipe', 'raybogman-content-orchestrator' ),
-				'description' => __( 'SEO-optimized recipe format with structured data hints. Targets rich snippets, "how to make" queries, and Google Recipe carousel.', 'raybogman-content-orchestrator' ),
+				'name'        => __( 'Recipe', 'raybogman-ai-content-orchestrator' ),
+				'description' => __( 'SEO-optimized recipe format with structured data hints. Targets rich snippets, "how to make" queries, and Google Recipe carousel.', 'raybogman-ai-content-orchestrator' ),
 				'icon'        => 'dashicons-carrot',
 				'target_words' => '1000-2000',
 				'prompt'      => implode( "\n", array(

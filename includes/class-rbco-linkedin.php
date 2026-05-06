@@ -80,7 +80,7 @@ class RBCO_LinkedIn {
 		// Validate state.
 		$saved_state = get_transient( 'rbco_linkedin_oauth_state' );
 		if ( empty( $saved_state ) || $state !== $saved_state ) {
-			return new WP_Error( 'invalid_state', __( 'Invalid OAuth state. Please try again.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'invalid_state', __( 'Invalid OAuth state. Please try again.', 'raybogman-ai-content-orchestrator' ) );
 		}
 		delete_transient( 'rbco_linkedin_oauth_state' );
 

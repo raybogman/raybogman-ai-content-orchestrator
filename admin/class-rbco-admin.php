@@ -2,7 +2,7 @@
 /**
  * Admin functionality.
  *
- * @package Ray_Bogman_Content_Orchestrator
+ * @package Ray_Bogman_AI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -99,28 +99,28 @@ class RBCO_Admin {
 	public function add_menu_pages() {
 		// Main menu — Dashboard is the landing page.
 		add_menu_page(
-			__( 'Ray Bogman Content Orchestrator', 'raybogman-content-orchestrator' ),
-			__( 'AI Content', 'raybogman-content-orchestrator' ),
+			__( 'Ray Bogman AI Content Orchestrator', 'raybogman-ai-content-orchestrator' ),
+			__( 'AI Content', 'raybogman-ai-content-orchestrator' ),
 			'edit_posts',
-			'raybogman-content-orchestrator',
+			'raybogman-ai-content-orchestrator',
 			array( $this, 'render_dashboard_page' ),
 			'dashicons-edit-large',
 			30
 		);
 
 		add_submenu_page(
-			'raybogman-content-orchestrator',
-			__( 'Dashboard', 'raybogman-content-orchestrator' ),
-			__( 'Dashboard', 'raybogman-content-orchestrator' ),
+			'raybogman-ai-content-orchestrator',
+			__( 'Dashboard', 'raybogman-ai-content-orchestrator' ),
+			__( 'Dashboard', 'raybogman-ai-content-orchestrator' ),
 			'edit_posts',
-			'raybogman-content-orchestrator',
+			'raybogman-ai-content-orchestrator',
 			array( $this, 'render_dashboard_page' )
 		);
 
 		add_submenu_page(
-			'raybogman-content-orchestrator',
-			__( 'Create Content', 'raybogman-content-orchestrator' ),
-			__( 'Create Content', 'raybogman-content-orchestrator' ),
+			'raybogman-ai-content-orchestrator',
+			__( 'Create Content', 'raybogman-ai-content-orchestrator' ),
+			__( 'Create Content', 'raybogman-ai-content-orchestrator' ),
 			'edit_posts',
 			'rbco-create',
 			array( $this, 'render_main_page' )
@@ -129,18 +129,18 @@ class RBCO_Admin {
 		$pro_badge = rbco_is_pro() ? '' : ' <span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;vertical-align:middle;">ENT</span>';
 
 		add_submenu_page(
-			'raybogman-content-orchestrator',
-			__( 'Bulk Create', 'raybogman-content-orchestrator' ),
-			__( 'Bulk Create', 'raybogman-content-orchestrator' ) . $pro_badge,
+			'raybogman-ai-content-orchestrator',
+			__( 'Bulk Create', 'raybogman-ai-content-orchestrator' ),
+			__( 'Bulk Create', 'raybogman-ai-content-orchestrator' ) . $pro_badge,
 			'edit_posts',
 			'rbco-bulk-create',
 			array( $this, 'render_bulk_create_page' )
 		);
 
 		add_submenu_page(
-			'raybogman-content-orchestrator',
-			__( 'Refresh Content', 'raybogman-content-orchestrator' ),
-			__( 'Refresh Content', 'raybogman-content-orchestrator' ) . $pro_badge,
+			'raybogman-ai-content-orchestrator',
+			__( 'Refresh Content', 'raybogman-ai-content-orchestrator' ),
+			__( 'Refresh Content', 'raybogman-ai-content-orchestrator' ) . $pro_badge,
 			'edit_posts',
 			'rbco-refresh',
 			array( $this, 'render_refresh_page' )
@@ -154,7 +154,7 @@ class RBCO_Admin {
 				$pending_count++;
 			}
 		}
-		$scheduled_label = __( 'Scheduled', 'raybogman-content-orchestrator' );
+		$scheduled_label = __( 'Scheduled', 'raybogman-ai-content-orchestrator' );
 		if ( $pending_count > 0 ) {
 			$scheduled_label .= sprintf(
 				' <span class="awaiting-mod count-%d"><span class="pending-count">%d</span></span>',
@@ -164,8 +164,8 @@ class RBCO_Admin {
 		}
 
 		add_submenu_page(
-			'raybogman-content-orchestrator',
-			__( 'Scheduled', 'raybogman-content-orchestrator' ),
+			'raybogman-ai-content-orchestrator',
+			__( 'Scheduled', 'raybogman-ai-content-orchestrator' ),
 			$scheduled_label,
 			'edit_posts',
 			'rbco-scheduled',
@@ -173,9 +173,9 @@ class RBCO_Admin {
 		);
 
 		add_submenu_page(
-			'raybogman-content-orchestrator',
-			__( 'Settings', 'raybogman-content-orchestrator' ),
-			__( 'Settings', 'raybogman-content-orchestrator' ),
+			'raybogman-ai-content-orchestrator',
+			__( 'Settings', 'raybogman-ai-content-orchestrator' ),
+			__( 'Settings', 'raybogman-ai-content-orchestrator' ),
 			'manage_options',
 			'rbco-settings',
 			array( $this, 'render_settings_page' )
@@ -194,7 +194,7 @@ class RBCO_Admin {
 	 */
 	public function render_bulk_create_page() {
 		if ( ! rbco_is_pro() ) {
-			$this->render_pro_upgrade_page( __( 'Bulk Create', 'raybogman-content-orchestrator' ), __( 'Generate multiple blog posts at once with AI topic suggestions, auto blog style recommendations, and scheduled publishing.', 'raybogman-content-orchestrator' ) );
+			$this->render_pro_upgrade_page( __( 'Bulk Create', 'raybogman-ai-content-orchestrator' ), __( 'Generate multiple blog posts at once with AI topic suggestions, auto blog style recommendations, and scheduled publishing.', 'raybogman-ai-content-orchestrator' ) );
 			return;
 		}
 		include RBCO_PLUGIN_DIR . 'admin/views/bulk-create-page.php';
@@ -205,7 +205,7 @@ class RBCO_Admin {
 	 */
 	public function render_refresh_page() {
 		if ( ! rbco_is_pro() ) {
-			$this->render_pro_upgrade_page( __( 'Refresh Content', 'raybogman-content-orchestrator' ), __( 'Analyze all published posts for SEO issues and refresh them with AI — fix thin content, add FAQ sections, update outdated posts.', 'raybogman-content-orchestrator' ) );
+			$this->render_pro_upgrade_page( __( 'Refresh Content', 'raybogman-ai-content-orchestrator' ), __( 'Analyze all published posts for SEO issues and refresh them with AI — fix thin content, add FAQ sections, update outdated posts.', 'raybogman-ai-content-orchestrator' ) );
 			return;
 		}
 		include RBCO_PLUGIN_DIR . 'admin/views/refresh-page.php';
@@ -236,7 +236,7 @@ class RBCO_Admin {
 				<span class="dashicons dashicons-lock rbco-heading-icon"></span>
 				<?php
 				/* translators: %s: feature name */
-				echo esc_html( sprintf( __( 'Ray Bogman Content Orchestrator — %s', 'raybogman-content-orchestrator' ), $feature_name ) );
+				echo esc_html( sprintf( __( 'Ray Bogman AI Content Orchestrator — %s', 'raybogman-ai-content-orchestrator' ), $feature_name ) );
 				?>
 			</h1>
 			<div class="rbco-card" style="max-width:700px; margin-top:20px;">
@@ -246,9 +246,9 @@ class RBCO_Admin {
 					<p style="font-size:15px; color:#50575e; max-width:500px; margin:12px auto 24px;"><?php echo esc_html( $description ); ?></p>
 					<a href="<?php echo esc_url( $upgrade_url ); ?>" class="button button-primary button-hero" style="background:#E4405F; border-color:#E4405F;">
 						<span class="dashicons dashicons-star-filled" style="vertical-align:text-bottom; font-size:20px; width:20px; height:20px; margin-right:6px;"></span>
-						<?php esc_html_e( 'Upgrade to Enterprise', 'raybogman-content-orchestrator' ); ?>
+						<?php esc_html_e( 'Upgrade to Enterprise', 'raybogman-ai-content-orchestrator' ); ?>
 					</a>
-					<p style="margin-top:16px; font-size:13px; color:#787c82;"><?php esc_html_e( 'Unlock all features including Bulk Create, Refresh Content, AI Images, Competitor Analysis, Content Repurposing, LinkedIn & Instagram sharing, and more.', 'raybogman-content-orchestrator' ); ?></p>
+					<p style="margin-top:16px; font-size:13px; color:#787c82;"><?php esc_html_e( 'Unlock all features including Bulk Create, Refresh Content, AI Images, Competitor Analysis, Content Repurposing, LinkedIn & Instagram sharing, and more.', 'raybogman-ai-content-orchestrator' ); ?></p>
 				</div>
 			</div>
 		</div>
@@ -268,7 +268,7 @@ class RBCO_Admin {
 	 * @param string $hook_suffix The current admin page hook suffix.
 	 */
 	public function enqueue_assets( $hook_suffix ) {
-		if ( false === strpos( $hook_suffix, 'raybogman-content-orchestrator' ) && false === strpos( $hook_suffix, 'rbco-' ) ) {
+		if ( false === strpos( $hook_suffix, 'raybogman-ai-content-orchestrator' ) && false === strpos( $hook_suffix, 'rbco-' ) ) {
 			return;
 		}
 
@@ -310,17 +310,17 @@ class RBCO_Admin {
 			'has_yoast'           => defined( 'WPSEO_VERSION' ),
 			'linkedin_connected'  => RBCO_LinkedIn::is_connected(),
 			'i18n'       => array(
-				'working'          => __( 'Working...', 'raybogman-content-orchestrator' ),
-				'create_content'   => __( 'Create Content', 'raybogman-content-orchestrator' ),
-				'prompt_required'  => __( 'Please enter a prompt.', 'raybogman-content-orchestrator' ),
-				'not_configured'   => __( 'Please configure your AI provider API key in Settings first.', 'raybogman-content-orchestrator' ),
-				'error'            => __( 'Error', 'raybogman-content-orchestrator' ),
-				'done'             => __( 'Done!', 'raybogman-content-orchestrator' ),
-				'published'        => __( 'Published', 'raybogman-content-orchestrator' ),
-				'draft'            => __( 'Draft', 'raybogman-content-orchestrator' ),
-				'updated'          => __( 'Updated', 'raybogman-content-orchestrator' ),
-				'not_available'    => __( 'Not available', 'raybogman-content-orchestrator' ),
-				'request_failed'   => __( 'Request failed', 'raybogman-content-orchestrator' ),
+				'working'          => __( 'Working...', 'raybogman-ai-content-orchestrator' ),
+				'create_content'   => __( 'Create Content', 'raybogman-ai-content-orchestrator' ),
+				'prompt_required'  => __( 'Please enter a prompt.', 'raybogman-ai-content-orchestrator' ),
+				'not_configured'   => __( 'Please configure your AI provider API key in Settings first.', 'raybogman-ai-content-orchestrator' ),
+				'error'            => __( 'Error', 'raybogman-ai-content-orchestrator' ),
+				'done'             => __( 'Done!', 'raybogman-ai-content-orchestrator' ),
+				'published'        => __( 'Published', 'raybogman-ai-content-orchestrator' ),
+				'draft'            => __( 'Draft', 'raybogman-ai-content-orchestrator' ),
+				'updated'          => __( 'Updated', 'raybogman-ai-content-orchestrator' ),
+				'not_available'    => __( 'Not available', 'raybogman-ai-content-orchestrator' ),
+				'request_failed'   => __( 'Request failed', 'raybogman-ai-content-orchestrator' ),
 			),
 		) );
 	}
@@ -336,12 +336,12 @@ class RBCO_Admin {
 			sprintf(
 				'<a href="%s">%s</a>',
 				admin_url( 'admin.php?page=rbco-create' ),
-				__( 'Create Content', 'raybogman-content-orchestrator' )
+				__( 'Create Content', 'raybogman-ai-content-orchestrator' )
 			),
 			sprintf(
 				'<a href="%s">%s</a>',
 				admin_url( 'admin.php?page=rbco-settings' ),
-				__( 'Settings', 'raybogman-content-orchestrator' )
+				__( 'Settings', 'raybogman-ai-content-orchestrator' )
 			),
 		);
 		return array_merge( $plugin_links, $links );
@@ -368,7 +368,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		wp_send_json_success( array(
@@ -383,7 +383,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$provider = isset( $_POST['provider'] ) ? sanitize_text_field( wp_unslash( $_POST['provider'] ) ) : '';
@@ -391,7 +391,7 @@ class RBCO_Admin {
 		if ( 'claude' === $provider ) {
 			$api_key = RBCO_Settings::get_anthropic_api_key();
 			if ( empty( $api_key ) ) {
-				wp_send_json_error( array( 'message' => __( 'No Anthropic API key saved. Enter the key and click Save Changes first.', 'raybogman-content-orchestrator' ) ) );
+				wp_send_json_error( array( 'message' => __( 'No Anthropic API key saved. Enter the key and click Save Changes first.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
 			$response = wp_remote_post( 'https://api.anthropic.com/v1/messages', array(
@@ -413,7 +413,7 @@ class RBCO_Admin {
 		} elseif ( 'openai' === $provider ) {
 			$api_key = RBCO_Settings::get_openai_api_key();
 			if ( empty( $api_key ) ) {
-				wp_send_json_error( array( 'message' => __( 'No OpenAI API key saved. Enter the key and click Save Changes first.', 'raybogman-content-orchestrator' ) ) );
+				wp_send_json_error( array( 'message' => __( 'No OpenAI API key saved. Enter the key and click Save Changes first.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
 			$response = wp_remote_post( 'https://api.openai.com/v1/chat/completions', array(
@@ -434,7 +434,7 @@ class RBCO_Admin {
 		} elseif ( 'ideogram' === $provider ) {
 			$api_key = RBCO_Settings::get_ideogram_api_key();
 			if ( empty( $api_key ) ) {
-				wp_send_json_error( array( 'message' => __( 'No Ideogram API key saved. Enter the key and click Save Changes first.', 'raybogman-content-orchestrator' ) ) );
+				wp_send_json_error( array( 'message' => __( 'No Ideogram API key saved. Enter the key and click Save Changes first.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
 			// Ideogram v3 uses multipart/form-data. Send a minimal generate request.
@@ -463,7 +463,7 @@ class RBCO_Admin {
 			) );
 
 		} else {
-			wp_send_json_error( array( 'message' => __( 'Invalid provider.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid provider.', 'raybogman-ai-content-orchestrator' ) ) );
 			return;
 		}
 
@@ -479,9 +479,9 @@ class RBCO_Admin {
 		$data      = json_decode( $resp_body, true );
 
 		if ( 401 === $code ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid API key (HTTP 401 Unauthorized).', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid API key (HTTP 401 Unauthorized).', 'raybogman-ai-content-orchestrator' ) ) );
 		} elseif ( 403 === $code ) {
-			wp_send_json_error( array( 'message' => __( 'Access denied (HTTP 403 Forbidden). Check your API key permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Access denied (HTTP 403 Forbidden). Check your API key permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		} elseif ( $code >= 200 && $code < 300 ) {
 			$model_used = '';
 			if ( is_array( $data ) && isset( $data['model'] ) ) {
@@ -489,13 +489,13 @@ class RBCO_Admin {
 			}
 			if ( 'ideogram' === $provider ) {
 				wp_send_json_success( array(
-					'message' => __( 'Connection successful! Ideogram is working.', 'raybogman-content-orchestrator' ),
+					'message' => __( 'Connection successful! Ideogram is working.', 'raybogman-ai-content-orchestrator' ),
 				) );
 			} else {
 				wp_send_json_success( array(
 					'message' => sprintf(
       /* translators: %s: dynamic value */
-						__( 'Connection successful! Using model: %s', 'raybogman-content-orchestrator' ),
+						__( 'Connection successful! Using model: %s', 'raybogman-ai-content-orchestrator' ),
 						$model_used
 					),
 				) );
@@ -584,7 +584,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Increase limits only for content generation steps (AI API calls can take 60-120s).
@@ -629,10 +629,10 @@ class RBCO_Admin {
 					}
 
 					if ( empty( $prompt ) ) {
-						wp_send_json_error( array( 'message' => __( 'Prompt is required.', 'raybogman-content-orchestrator' ) ) );
+						wp_send_json_error( array( 'message' => __( 'Prompt is required.', 'raybogman-ai-content-orchestrator' ) ) );
 					}
 					if ( ! RBCO_Settings::is_configured() ) {
-						wp_send_json_error( array( 'message' => __( 'API key is not configured.', 'raybogman-content-orchestrator' ) ) );
+						wp_send_json_error( array( 'message' => __( 'API key is not configured.', 'raybogman-ai-content-orchestrator' ) ) );
 					}
 
 					// Save URL if requested.
@@ -1174,12 +1174,12 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( empty( $post_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$result = RBCO_Publisher::approve_scheduled( $post_id );
@@ -1197,21 +1197,21 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'delete_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( empty( $post_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		if ( ! current_user_can( 'delete_post', $post_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'You cannot delete this post.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'You cannot delete this post.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$deleted = wp_trash_post( $post_id );
 		if ( ! $deleted ) {
-			wp_send_json_error( array( 'message' => __( 'Failed to delete post.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Failed to delete post.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		wp_send_json_success( array( 'id' => $post_id ) );
@@ -1224,7 +1224,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Clear rate-limit transient so a subsequent request-hook run also works.
@@ -1247,12 +1247,12 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( empty( $post_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$result = RBCO_Publisher::publish_now( $post_id );
@@ -1270,12 +1270,12 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
 		if ( empty( $url ) ) {
-			wp_send_json_error( array( 'message' => __( 'URL is required.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'URL is required.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$removed = RBCO_Settings::remove_url( $url );
@@ -1293,7 +1293,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Increase memory for large PDF chunk assembly (scoped to this handler only).
@@ -1305,7 +1305,7 @@ class RBCO_Admin {
 			wp_send_json_error( array(
 				'message' => sprintf(
      /* translators: %s: dynamic value */
-					__( 'No file received. The file likely exceeds your server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'raybogman-content-orchestrator' ),
+					__( 'No file received. The file likely exceeds your server upload limit (%s). Ask your hosting provider to increase upload_max_filesize and post_max_size in php.ini.', 'raybogman-ai-content-orchestrator' ),
 					RBCO_PDF_Library::get_max_upload_size_formatted()
 				),
 			) );
@@ -1339,7 +1339,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$chunk_number = isset( $_POST['chunk_number'] ) ? absint( $_POST['chunk_number'] ) : 0;
@@ -1348,7 +1348,7 @@ class RBCO_Admin {
 		$filename     = isset( $_POST['filename'] ) ? sanitize_file_name( wp_unslash( $_POST['filename'] ) ) : 'upload.pdf';
 
 		if ( empty( $temp_id ) || empty( $_FILES['chunk'] ) ) {
-			wp_send_json_error( array( 'message' => __( 'Missing chunk data.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing chunk data.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Check for upload errors on this chunk.
@@ -1356,7 +1356,7 @@ class RBCO_Admin {
 		if ( isset( $_FILES['chunk']['error'] ) && UPLOAD_ERR_OK !== (int) $_FILES['chunk']['error'] ) {
 			wp_send_json_error( array(
 				/* translators: %d: upload error code number */
-				'message' => sprintf( __( 'Chunk upload error (code %d). Try reducing chunk size.', 'raybogman-content-orchestrator' ), (int) $_FILES['chunk']['error'] ),
+				'message' => sprintf( __( 'Chunk upload error (code %d). Try reducing chunk size.', 'raybogman-ai-content-orchestrator' ), (int) $_FILES['chunk']['error'] ),
 			) );
 		}
 
@@ -1369,7 +1369,7 @@ class RBCO_Admin {
 		// Save this chunk using wp_handle_upload.
 		$chunk_file = trailingslashit( $temp_dir ) . sprintf( 'chunk_%05d', $chunk_number );
 		if ( ! isset( $_FILES['chunk']['tmp_name'] ) || empty( $_FILES['chunk']['tmp_name'] ) ) {
-			wp_send_json_error( array( 'message' => __( 'No chunk data received.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No chunk data received.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 		$chunk_upload = wp_handle_upload( $_FILES['chunk'], array( 'test_form' => false, 'test_type' => false ) );
 		if ( isset( $chunk_upload['error'] ) ) {
@@ -1381,7 +1381,7 @@ class RBCO_Admin {
 			WP_Filesystem();
 		}
 		if ( ! $wp_filesystem->move( $chunk_upload['file'], $chunk_file, true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Failed to save chunk.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Failed to save chunk.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Check if all chunks have been received.
@@ -1405,7 +1405,7 @@ class RBCO_Admin {
 		$out        = fopen( $final_file, 'wb' );
 
 		if ( ! $out ) {
-			wp_send_json_error( array( 'message' => __( 'Failed to create output file.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Failed to create output file.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		for ( $i = 0; $i < $total_chunks; $i++ ) {
@@ -1469,17 +1469,17 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$pdf_id = isset( $_POST['pdf_id'] ) ? sanitize_text_field( wp_unslash( $_POST['pdf_id'] ) ) : '';
 		if ( empty( $pdf_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'PDF ID is required.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'PDF ID is required.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$deleted = RBCO_PDF_Library::delete( $pdf_id );
 		if ( ! $deleted ) {
-			wp_send_json_error( array( 'message' => __( 'PDF not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'PDF not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		wp_send_json_success( array( 'id' => $pdf_id ) );
@@ -1492,22 +1492,22 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id     = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		$schedule_at = isset( $_POST['schedule_at'] ) ? self::parse_datetime_local( sanitize_text_field( wp_unslash( $_POST['schedule_at'] ) ) ) : 0;
 
 		if ( empty( $post_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 		if ( $schedule_at <= time() ) {
-			wp_send_json_error( array( 'message' => __( 'Scheduled time must be in the future.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Scheduled time must be in the future.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		update_post_meta( $post_id, '_rbco_scheduled_publish_at', $schedule_at );
@@ -1577,16 +1577,16 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		if ( ! RBCO_LinkedIn::is_connected() ) {
-			wp_send_json_error( array( 'message' => __( 'LinkedIn is not connected. Go to Settings and connect your account first.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'LinkedIn is not connected. Go to Settings and connect your account first.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Clear any previous error.
@@ -1602,7 +1602,7 @@ class RBCO_Admin {
 		}
 
 		wp_send_json_success( array(
-			'message'   => __( 'Successfully shared to LinkedIn!', 'raybogman-content-orchestrator' ),
+			'message'   => __( 'Successfully shared to LinkedIn!', 'raybogman-ai-content-orchestrator' ),
 			'shared_at' => time(),
 		) );
 	}
@@ -1617,12 +1617,12 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Clear all LinkedIn-related meta — this removes the post from the dashboard
@@ -1642,14 +1642,14 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_ids = isset( $_POST['post_ids'] ) ? array_map( 'absint', (array) $_POST['post_ids'] ) : array();
 		$post_ids = array_filter( $post_ids );
 
 		if ( empty( $post_ids ) ) {
-			wp_send_json_error( array( 'message' => __( 'No posts selected.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No posts selected.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$removed = 0;
@@ -1674,14 +1674,14 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id    = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		$commentary = isset( $_POST['commentary'] ) ? sanitize_textarea_field( wp_unslash( $_POST['commentary'] ) ) : '';
 
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Cap at LinkedIn's 3000 char limit.
@@ -1704,21 +1704,21 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		if ( ! RBCO_Settings::is_configured() ) {
-			wp_send_json_error( array( 'message' => __( 'AI provider not configured.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'AI provider not configured.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Build metadata array from the post.
@@ -1760,19 +1760,19 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id   = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		$image_idx = isset( $_POST['image_index'] ) ? absint( $_POST['image_index'] ) : 0;
 
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$options = get_post_meta( $post_id, '_rbco_image_options', true );
 		if ( ! is_array( $options ) || empty( $options[ $image_idx ] ) ) {
-			wp_send_json_error( array( 'message' => __( 'Image option not found or expired.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Image option not found or expired.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Remove the previous AICC-generated featured image attachment.
@@ -1810,17 +1810,17 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		if ( ! RBCO_Settings::is_image_configured() ) {
@@ -1830,7 +1830,7 @@ class RBCO_Admin {
 			wp_send_json_error( array(
 				'message' => sprintf(
 					/* translators: %s: image provider name */
-					__( '%s API key is required for image generation. Configure it in Settings.', 'raybogman-content-orchestrator' ),
+					__( '%s API key is required for image generation. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ),
 					$label
 				),
 			) );
@@ -1853,7 +1853,7 @@ class RBCO_Admin {
 			$image_urls    = $generator->generate_images( $image_prompts, 4, $blog_style );
 
 			if ( empty( $image_urls ) ) {
-				wp_send_json_error( array( 'message' => __( 'No images were generated.', 'raybogman-content-orchestrator' ) ) );
+				wp_send_json_error( array( 'message' => __( 'No images were generated.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
 			update_post_meta( $post_id, '_rbco_image_options', $image_urls );
@@ -1897,7 +1897,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
@@ -1905,12 +1905,12 @@ class RBCO_Admin {
 		$line2   = isset( $_POST['line2'] ) ? sanitize_text_field( wp_unslash( $_POST['line2'] ) ) : '';
 
 		if ( ! $post_id || empty( $line1 ) ) {
-			wp_send_json_error( array( 'message' => __( 'Post ID and at least line 1 are required.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post ID and at least line 1 are required.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$default_image_id = RBCO_Settings::get_default_featured_image();
 		if ( $default_image_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'No default featured image configured in Settings.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No default featured image configured in Settings.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		// Delete the old overlay image if it was AICC-generated.
@@ -1955,19 +1955,19 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		$format  = isset( $_POST['format'] ) ? sanitize_text_field( wp_unslash( $_POST['format'] ) ) : '';
 
 		if ( ! $post_id || empty( $format ) ) {
-			wp_send_json_error( array( 'message' => __( 'Post ID and format are required.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post ID and format are required.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$meta = array(
@@ -2004,14 +2004,14 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$seed  = isset( $_POST['seed'] ) ? sanitize_text_field( wp_unslash( $_POST['seed'] ) ) : '';
 		$count = isset( $_POST['count'] ) ? min( absint( $_POST['count'] ), 20 ) : 5;
 		$count = max( $count, 1 );
 		if ( empty( $seed ) ) {
-			wp_send_json_error( array( 'message' => __( 'Enter a seed keyword first.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Enter a seed keyword first.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		try {
@@ -2063,7 +2063,7 @@ class RBCO_Admin {
 			}
 
 			if ( empty( $topics ) ) {
-				wp_send_json_error( array( 'message' => __( 'AI returned no usable topics. Try a different keyword.', 'raybogman-content-orchestrator' ) ) );
+				wp_send_json_error( array( 'message' => __( 'AI returned no usable topics. Try a different keyword.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
 			wp_send_json_success( array( 'topics' => array_slice( $topics, 0, $count ) ) );
@@ -2076,17 +2076,17 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'Select a post first.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Select a post first.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$content    = wp_strip_all_tags( $post->post_content );
@@ -2103,7 +2103,7 @@ class RBCO_Admin {
 		if ( $word_count < 800 || $heading_count < 3 ) {
 			$issues[] = array(
 				'key'   => 'thin_sections',
-				'label' => __( 'Thin content — post has only', 'raybogman-content-orchestrator' ) . ' ' . $word_count . ' ' . __( 'words and', 'raybogman-content-orchestrator' ) . ' ' . $heading_count . ' ' . __( 'headings. Recommended: 1000+ words, 5+ headings.', 'raybogman-content-orchestrator' ),
+				'label' => __( 'Thin content — post has only', 'raybogman-ai-content-orchestrator' ) . ' ' . $word_count . ' ' . __( 'words and', 'raybogman-ai-content-orchestrator' ) . ' ' . $heading_count . ' ' . __( 'headings. Recommended: 1000+ words, 5+ headings.', 'raybogman-ai-content-orchestrator' ),
 			);
 		}
 
@@ -2112,7 +2112,7 @@ class RBCO_Admin {
 		if ( ! $has_faq ) {
 			$issues[] = array(
 				'key'   => 'missing_faq',
-				'label' => __( 'No FAQ section detected. Adding one improves SEO and featured snippets.', 'raybogman-content-orchestrator' ),
+				'label' => __( 'No FAQ section detected. Adding one improves SEO and featured snippets.', 'raybogman-ai-content-orchestrator' ),
 			);
 		}
 
@@ -2122,7 +2122,7 @@ class RBCO_Admin {
 			$issues[] = array(
 				'key'   => 'missing_internal_links',
     /* translators: %s: dynamic value */
-				'label' => sprintf( __( 'Only %d internal links found. Recommended: 3-5 for SEO.', 'raybogman-content-orchestrator' ), $link_count ),
+				'label' => sprintf( __( 'Only %d internal links found. Recommended: 3-5 for SEO.', 'raybogman-ai-content-orchestrator' ), $link_count ),
 			);
 		}
 
@@ -2132,7 +2132,7 @@ class RBCO_Admin {
 			$issues[] = array(
 				'key'   => 'outdated_content',
     /* translators: %s: dynamic value */
-				'label' => sprintf( __( 'Post is %d months old. Refreshing outdated content can recover lost rankings.', 'raybogman-content-orchestrator' ), $months ),
+				'label' => sprintf( __( 'Post is %d months old. Refreshing outdated content can recover lost rankings.', 'raybogman-ai-content-orchestrator' ), $months ),
 			);
 		}
 
@@ -2152,7 +2152,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$posts = get_posts( array(
@@ -2225,19 +2225,19 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		$issues  = isset( $_POST['issues'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['issues'] ) ) : array();
 
 		if ( ! $post_id ) {
-			wp_send_json_error( array( 'message' => __( 'No post selected.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No post selected.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		try {
@@ -2295,7 +2295,7 @@ class RBCO_Admin {
 			$new_content = preg_replace( '/\(content\s+continues[^)]*\)/i', '', $new_content );
 
 			if ( empty( $new_content ) ) {
-				wp_send_json_error( array( 'message' => __( 'AI returned empty content.', 'raybogman-content-orchestrator' ) ) );
+				wp_send_json_error( array( 'message' => __( 'AI returned empty content.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
 			// Update the post content.
@@ -2345,7 +2345,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$colors = array();
@@ -2455,7 +2455,7 @@ class RBCO_Admin {
 
 		if ( empty( $colors ) ) {
 			wp_send_json_error( array(
-				'message' => __( 'No colors detected from the active theme. You can enter brand colors manually.', 'raybogman-content-orchestrator' ),
+				'message' => __( 'No colors detected from the active theme. You can enter brand colors manually.', 'raybogman-ai-content-orchestrator' ),
 			) );
 			return;
 		}
@@ -2465,7 +2465,7 @@ class RBCO_Admin {
 			'sources' => array_unique( $sources ),
 			'message' => sprintf(
 				/* translators: 1: number of colors, 2: sources list */
-				__( 'Found %1$d colors from: %2$s', 'raybogman-content-orchestrator' ),
+				__( 'Found %1$d colors from: %2$s', 'raybogman-ai-content-orchestrator' ),
 				count( $colors ),
 				implode( ', ', array_unique( $sources ) )
 			),
@@ -2504,7 +2504,7 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		RBCO_LinkedIn::disconnect();
@@ -2561,12 +2561,12 @@ class RBCO_Admin {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$access_token = RBCO_Instagram::get_access_token();
 		if ( ! $access_token ) {
-			wp_send_json_error( array( 'message' => __( 'Not connected. Connect Instagram first.', 'raybogman-content-orchestrator' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Not connected. Connect Instagram first.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
 		$profile = RBCO_Instagram::get_profile();
@@ -2701,14 +2701,14 @@ class RBCO_Admin {
 
 		$subject = sprintf(
 			/* translators: 1: site name, 2: post title */
-			__( '[%1$s] Post published: %2$s', 'raybogman-content-orchestrator' ),
+			__( '[%1$s] Post published: %2$s', 'raybogman-ai-content-orchestrator' ),
 			$site_name,
 			$post->post_title
 		);
 
 		/* translators: 1: site name, 2: post title, 3: post URL, 4: edit URL */
 		$body = sprintf(
-			__( "A scheduled post has been published on %1\$s.\n\nTitle: %2\$s\nURL: %3\$s\nEdit: %4\$s\n\nThis notification was sent by Ray Bogman Content Orchestrator.", 'raybogman-content-orchestrator' ),
+			__( "A scheduled post has been published on %1\$s.\n\nTitle: %2\$s\nURL: %3\$s\nEdit: %4\$s\n\nThis notification was sent by Ray Bogman AI Content Orchestrator.", 'raybogman-ai-content-orchestrator' ),
 			$site_name,
 			$post->post_title,
 			$post_url,

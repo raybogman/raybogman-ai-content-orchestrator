@@ -2,7 +2,7 @@
 /**
  * Dashboard page — overview of AI-generated content, stats, and quick actions.
  *
- * @package Ray_Bogman_Content_Orchestrator
+ * @package Ray_Bogman_AI_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -68,22 +68,22 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 <div class="wrap">
 	<h1>
 		<span class="dashicons dashicons-chart-area" style="font-size: 28px; width: 28px; height: 28px; margin-right: 8px; vertical-align: text-bottom;"></span>
-		<?php esc_html_e( 'Ray Bogman Content Orchestrator — Dashboard', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Ray Bogman AI Content Orchestrator — Dashboard', 'raybogman-ai-content-orchestrator' ); ?>
 	</h1>
 
 	<!-- Stats cards -->
 	<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 900px; margin-top: 20px;">
 		<div class="rbco-card" style="text-align: center; padding: 20px;">
 			<div style="font-size: 36px; font-weight: 700; color: #2271b1;"><?php echo esc_html( $rbco_total_posts ); ?></div>
-			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Total AI Posts', 'raybogman-content-orchestrator' ); ?></div>
+			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Total AI Posts', 'raybogman-ai-content-orchestrator' ); ?></div>
 		</div>
 		<div class="rbco-card" style="text-align: center; padding: 20px;">
 			<div style="font-size: 36px; font-weight: 700; color: #00a32a;"><?php echo esc_html( $rbco_month_posts ); ?></div>
-			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'This Month', 'raybogman-content-orchestrator' ); ?></div>
+			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'This Month', 'raybogman-ai-content-orchestrator' ); ?></div>
 		</div>
 		<div class="rbco-card" style="text-align: center; padding: 20px;">
 			<div style="font-size: 36px; font-weight: 700; color: #dba617;"><?php echo esc_html( $rbco_scheduled_count ); ?></div>
-			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Scheduled / Pending', 'raybogman-content-orchestrator' ); ?></div>
+			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Scheduled / Pending', 'raybogman-ai-content-orchestrator' ); ?></div>
 		</div>
 	</div>
 
@@ -91,15 +91,15 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 		<!-- Recent AI Posts -->
 		<div class="rbco-card">
 			<div class="rbco-card-header">
-				<h2><?php esc_html_e( 'Recent AI-Generated Posts', 'raybogman-content-orchestrator' ); ?></h2>
+				<h2><?php esc_html_e( 'Recent AI-Generated Posts', 'raybogman-ai-content-orchestrator' ); ?></h2>
 			</div>
 			<div class="rbco-card-body">
 				<?php if ( ! empty( $rbco_top_posts ) ) : ?>
 					<table class="widefat striped" style="margin: 0;">
 						<thead>
 							<tr>
-								<th><?php esc_html_e( 'Title', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width:100px;"><?php esc_html_e( 'Date', 'raybogman-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width:100px;"><?php esc_html_e( 'Date', 'raybogman-ai-content-orchestrator' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -116,7 +116,7 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 						</tbody>
 					</table>
 				<?php else : ?>
-					<p class="description"><em><?php esc_html_e( 'No published AI-generated posts yet. Create your first one!', 'raybogman-content-orchestrator' ); ?></em></p>
+					<p class="description"><em><?php esc_html_e( 'No published AI-generated posts yet. Create your first one!', 'raybogman-ai-content-orchestrator' ); ?></em></p>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -124,19 +124,19 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 		<!-- Posts needing refresh -->
 		<div class="rbco-card">
 			<div class="rbco-card-header">
-				<h2><?php esc_html_e( 'Posts Needing a Refresh', 'raybogman-content-orchestrator' ); ?></h2>
+				<h2><?php esc_html_e( 'Posts Needing a Refresh', 'raybogman-ai-content-orchestrator' ); ?></h2>
 			</div>
 			<div class="rbco-card-body">
 				<p class="description" style="margin-top: 0;">
-					<?php esc_html_e( 'These posts haven\'t been updated in over 6 months. Refreshing old content can boost your search rankings.', 'raybogman-content-orchestrator' ); ?>
+					<?php esc_html_e( 'These posts haven\'t been updated in over 6 months. Refreshing old content can boost your search rankings.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<?php if ( ! empty( $rbco_stale_posts ) ) : ?>
 					<table class="widefat striped" style="margin: 0;">
 						<thead>
 							<tr>
-								<th><?php esc_html_e( 'Title', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width:120px;"><?php esc_html_e( 'Last Updated', 'raybogman-content-orchestrator' ); ?></th>
-								<th style="width:80px;"><?php esc_html_e( 'Words', 'raybogman-content-orchestrator' ); ?></th>
+								<th><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width:120px;"><?php esc_html_e( 'Last Updated', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width:80px;"><?php esc_html_e( 'Words', 'raybogman-ai-content-orchestrator' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -147,14 +147,14 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 											<?php echo esc_html( $post->post_title ); ?>
 										</a>
 									</td>
-									<td><?php echo esc_html( human_time_diff( strtotime( $post->post_modified ), time() ) ); ?> <?php esc_html_e( 'ago', 'raybogman-content-orchestrator' ); ?></td>
+									<td><?php echo esc_html( human_time_diff( strtotime( $post->post_modified ), time() ) ); ?> <?php esc_html_e( 'ago', 'raybogman-ai-content-orchestrator' ); ?></td>
 									<td style="text-align: center;"><?php echo esc_html( (int) ( $post->content_length / 6 ) ); ?></td>
 								</tr>
 							<?php endforeach; ?>
 						</tbody>
 					</table>
 				<?php else : ?>
-					<p class="description"><em><?php esc_html_e( 'All posts are up to date! No stale content found.', 'raybogman-content-orchestrator' ); ?></em></p>
+					<p class="description"><em><?php esc_html_e( 'All posts are up to date! No stale content found.', 'raybogman-ai-content-orchestrator' ); ?></em></p>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -163,28 +163,28 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 	<!-- Quick Actions -->
 	<div class="rbco-card" style="max-width: 1200px; margin-top: 20px;">
 		<div class="rbco-card-header">
-			<h2><?php esc_html_e( 'Quick Actions', 'raybogman-content-orchestrator' ); ?></h2>
+			<h2><?php esc_html_e( 'Quick Actions', 'raybogman-ai-content-orchestrator' ); ?></h2>
 		</div>
 		<div class="rbco-card-body" style="display: flex; gap: 12px; flex-wrap: wrap;">
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-create' ) ); ?>" class="button button-primary button-large">
 				<span class="dashicons dashicons-edit-large" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Create Content', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Create Content', 'raybogman-ai-content-orchestrator' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-bulk-create' ) ); ?>" class="button button-large">
 				<span class="dashicons dashicons-admin-page" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Bulk Create', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Bulk Create', 'raybogman-ai-content-orchestrator' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-refresh' ) ); ?>" class="button button-large">
 				<span class="dashicons dashicons-update" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Refresh Content', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Refresh Content', 'raybogman-ai-content-orchestrator' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-scheduled' ) ); ?>" class="button button-large">
 				<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Scheduled', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Scheduled', 'raybogman-ai-content-orchestrator' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-settings' ) ); ?>" class="button button-large">
 				<span class="dashicons dashicons-admin-generic" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Settings', 'raybogman-content-orchestrator' ); ?>
+				<?php esc_html_e( 'Settings', 'raybogman-ai-content-orchestrator' ); ?>
 			</a>
 		</div>
 	</div>

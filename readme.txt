@@ -1,11 +1,11 @@
-=== Ray Bogman Content Orchestrator ===
+=== Ray Bogman AI Content Orchestrator ===
 Contributors: raybogman
 Donate link: https://raybogman.com
 Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.1.1
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ AI-powered content creation for WordPress. Generates SEO-optimized blog posts us
 
 == Description ==
 
-Ray Bogman Content Orchestrator generates SEO-optimized blog posts and pages for your WordPress site using Claude AI (Anthropic) or OpenAI GPT models.
+Ray Bogman AI Content Orchestrator generates SEO-optimized blog posts and pages for your WordPress site using Claude AI (Anthropic) or OpenAI GPT models.
 
 **Key Features:**
 
@@ -139,13 +139,13 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 
 == Upgrade Notice ==
 
-= 3.1.1 =
-Major rebrand to Ray Bogman Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
+= 3.2.0 =
+Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
 
-= 3.1.1 =
-* Renamed: Plugin rebranded to Ray Bogman Content Orchestrator (slug: raybogman-content-orchestrator) to comply with WordPress.org naming guidelines.
+= 3.2.0 =
+* Renamed: Plugin rebranded to Ray Bogman AI Content Orchestrator (slug: raybogman-content-orchestrator) to comply with WordPress.org naming guidelines.
 * Fixed: All inline scripts wrapped with admin_footer hook for wp_enqueue compliance.
 * Fixed: Removed global ini_set/set_time_limit calls — now scoped to specific AJAX handlers only.
 * Fixed: Replaced move_uploaded_file() with wp_handle_upload() for WordPress file handling compliance.

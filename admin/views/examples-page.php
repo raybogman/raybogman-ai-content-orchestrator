@@ -493,10 +493,10 @@ $rbco_examples = array(
 <div class="wrap rbco-wrap" style="max-width: 1000px;">
 	<h1 class="wp-heading-inline">
 		<span class="dashicons dashicons-layout rbco-heading-icon"></span>
-		<?php esc_html_e( 'Blog Style Examples', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Blog Style Examples', 'raybogman-ai-content-orchestrator' ); ?>
 	</h1>
 	<p class="rbco-subtitle">
-		<?php esc_html_e( 'Preview what each blog style produces. Click any style to expand its example. Select your preferred style on the Create Content page.', 'raybogman-content-orchestrator' ); ?>
+		<?php esc_html_e( 'Preview what each blog style produces. Click any style to expand its example. Select your preferred style on the Create Content page.', 'raybogman-ai-content-orchestrator' ); ?>
 	</p>
 
 	<?php foreach ( $rbco_styles as $rbco_key => $rbco_style ) : ?>
@@ -520,7 +520,7 @@ $rbco_examples = array(
 					if ( isset( $rbco_examples[ $rbco_key ] ) ) {
 						echo wp_kses_post( $rbco_examples[ $rbco_key ] );
 					} else {
-						echo '<p class="description"><em>' . esc_html__( 'Example coming soon.', 'raybogman-content-orchestrator' ) . '</em></p>';
+						echo '<p class="description"><em>' . esc_html__( 'Example coming soon.', 'raybogman-ai-content-orchestrator' ) . '</em></p>';
 					}
 					?>
 				</div>

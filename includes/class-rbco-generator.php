@@ -528,7 +528,7 @@ class RBCO_Generator {
 		$api_key = RBCO_Settings::get_openai_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'OpenAI API key is required for image generation. Configure it in Settings.', 'raybogman-content-orchestrator' ) );
+			throw new Exception( __( 'OpenAI API key is required for image generation. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		// Append negative prompt and brand colors to the prompt text for DALL-E.
@@ -604,7 +604,7 @@ class RBCO_Generator {
 		$api_key = RBCO_Settings::get_ideogram_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'Ideogram API key is required for image generation. Configure it in Settings.', 'raybogman-content-orchestrator' ) );
+			throw new Exception( __( 'Ideogram API key is required for image generation. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		// Determine style_type: user override or auto-mapped from blog style.
@@ -891,7 +891,7 @@ class RBCO_Generator {
 		$api_key = RBCO_Settings::get_anthropic_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'Anthropic API key is not configured. Go to AI Content > Settings.', 'raybogman-content-orchestrator' ) );
+			throw new Exception( __( 'Anthropic API key is not configured. Go to AI Content > Settings.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		$body = array(
@@ -968,7 +968,7 @@ class RBCO_Generator {
 		$api_key = RBCO_Settings::get_openai_api_key();
 		if ( empty( $api_key ) ) {
    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'OpenAI API key is not configured. Go to AI Content > Settings.', 'raybogman-content-orchestrator' ) );
+			throw new Exception( __( 'OpenAI API key is not configured. Go to AI Content > Settings.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		$model = RBCO_Settings::get_openai_model();

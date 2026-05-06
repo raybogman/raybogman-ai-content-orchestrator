@@ -124,11 +124,11 @@ class RBCO_Publisher {
 		$post    = get_post( $post_id );
 
 		if ( ! $post ) {
-			return new WP_Error( 'not_found', __( 'Post not found.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'not_found', __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		if ( 'draft' !== $post->post_status ) {
-			return new WP_Error( 'invalid_status', __( 'Only draft posts can be approved.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'invalid_status', __( 'Only draft posts can be approved.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		$schedule_at = (int) get_post_meta( $post_id, '_rbco_scheduled_publish_at', true );
@@ -146,7 +146,7 @@ class RBCO_Publisher {
 			), true );
 
 			if ( is_wp_error( $updated ) || 0 === $updated ) {
-				return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to publish post.', 'raybogman-content-orchestrator' ) );
+				return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to publish post.', 'raybogman-ai-content-orchestrator' ) );
 			}
 
 			update_post_meta( $post_id, '_rbco_needs_review', '0' );
@@ -160,7 +160,7 @@ class RBCO_Publisher {
 		}
 
 		if ( $schedule_at <= time() + 60 ) {
-			return new WP_Error( 'invalid_schedule', __( 'Scheduled time must be at least 1 minute in the future.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'invalid_schedule', __( 'Scheduled time must be at least 1 minute in the future.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		// IMPORTANT: wp_update_post() ignores post_date changes for drafts unless
@@ -177,7 +177,7 @@ class RBCO_Publisher {
 		), true );
 
 		if ( is_wp_error( $updated ) || 0 === $updated ) {
-			return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to update post.', 'raybogman-content-orchestrator' ) );
+			return is_wp_error( $updated ) ? $updated : new WP_Error( 'update_failed', __( 'Failed to update post.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		// Verify the status actually stuck. If WordPress converted it back to
@@ -188,7 +188,7 @@ class RBCO_Publisher {
 				'status_not_future',
 				sprintf(
 					/* translators: %s: actual post status */
-					__( 'WordPress did not accept the scheduled status (got: %s). The scheduled date may be too close to now.', 'raybogman-content-orchestrator' ),
+					__( 'WordPress did not accept the scheduled status (got: %s). The scheduled date may be too close to now.', 'raybogman-ai-content-orchestrator' ),
 					$refreshed->post_status
 				)
 			);
@@ -300,11 +300,11 @@ class RBCO_Publisher {
 		$post    = get_post( $post_id );
 
 		if ( ! $post ) {
-			return new WP_Error( 'not_found', __( 'Post not found.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'not_found', __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		if ( ! in_array( $post->post_status, array( 'draft', 'future' ), true ) ) {
-			return new WP_Error( 'invalid_status', __( 'Only drafts and scheduled posts can be published.', 'raybogman-content-orchestrator' ) );
+			return new WP_Error( 'invalid_status', __( 'Only drafts and scheduled posts can be published.', 'raybogman-ai-content-orchestrator' ) );
 		}
 
 		// Clear any pending cron event.
@@ -379,7 +379,7 @@ class RBCO_Publisher {
 				'type'         => $post->post_type,
 				'status'       => $post->post_status,
 				'scheduled_at' => $schedule_at,
-				'scheduled_at_formatted' => $schedule_at > 0 ? wp_date( 'Y-m-d H:i', $schedule_at ) : __( 'Publish on approval', 'raybogman-content-orchestrator' ),
+				'scheduled_at_formatted' => $schedule_at > 0 ? wp_date( 'Y-m-d H:i', $schedule_at ) : __( 'Publish on approval', 'raybogman-ai-content-orchestrator' ),
 				'needs_review' => $needs_review,
 				'categories'   => $categories,
 				'edit_url'     => get_edit_post_link( $post->ID, 'raw' ),
