@@ -161,7 +161,12 @@ class RBCO_PDF_Library {
 		}
 		// Move to our custom directory if wp_handle_upload placed it elsewhere.
 		if ( $uploaded['file'] !== $filepath && file_exists( $uploaded['file'] ) ) {
-			rename( $uploaded['file'], $filepath );
+			global $wp_filesystem;
+			if ( empty( $wp_filesystem ) ) {
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				WP_Filesystem();
+			}
+			$wp_filesystem->move( $uploaded['file'], $filepath, true );
 		}
 
 		// Extract text from PDF.

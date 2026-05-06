@@ -1375,7 +1375,12 @@ class RBCO_Admin {
 		if ( isset( $chunk_upload['error'] ) ) {
 			wp_send_json_error( array( 'message' => $chunk_upload['error'] ) );
 		}
-		if ( ! rename( $chunk_upload['file'], $chunk_file ) ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+		if ( ! $wp_filesystem->move( $chunk_upload['file'], $chunk_file, true ) ) {
 			wp_send_json_error( array( 'message' => __( 'Failed to save chunk.', 'raybogman-content-orchestrator' ) ) );
 		}
 
