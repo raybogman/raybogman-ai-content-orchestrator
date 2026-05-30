@@ -11,6 +11,12 @@ on:
       - 'v*'
   workflow_dispatch:
 
+# Opt into Node.js 24 for JavaScript actions now (GitHub's automatic flip is
+# 2026-06-16). Silences the deprecation warning printed by
+# actions/upload-artifact@v5 and actions/checkout@v5 when running on Node 20.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -112,4 +118,4 @@ jobs:
         if: steps.version.outputs.DEPLOY != 'true'
         run: |
           echo "::notice::Freemius deploy skipped — ${{ steps.version.outputs.REASON }}."
-          echo "::notice::To ship a new release: bump the Version: header in ${{ github.workflow }} and merge to main, or push a v* tag."
+          echo "::notice::To ship a new release: bump the Version: header in raybogman-ai-content-orchestrator.php and merge to main, or push a v* tag."
