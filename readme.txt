@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,9 @@ What data is sent and when: Site URL, plugin version, and (for Enterprise) the l
 
 == Upgrade Notice ==
 
+= 3.2.2 =
+Build pipeline maintenance release — no functional or security changes. Safe to skip if 3.2.1 is installed.
+
 = 3.2.1 =
 WordPress.org plugin review compliance release. Recommended for all users.
 
@@ -143,6 +146,11 @@ WordPress.org plugin review compliance release. Recommended for all users.
 Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
+
+= 3.2.2 =
+* Build: GitHub Actions workflow now runs on every push to main (not only on v* tags), so every commit produces a visible CI run and a downloadable zip artifact. Freemius deploy is gated on a real Version: header bump so duplicate-version overwrites cannot happen.
+* Build: Bumped actions/checkout to v6.0.2 and actions/upload-artifact to v7.0.1 (both native Node.js 24) to clear the runner's Node 20 deprecation warning.
+* No functional or security changes vs 3.2.1.
 
 = 3.2.1 =
 * Fixed: All remaining inline JS/CSS now registered through wp_add_inline_script() / wp_enqueue_style() instead of raw <script>/<style> tags (admin views, settings fields, migration notice).
