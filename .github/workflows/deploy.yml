@@ -11,19 +11,13 @@ on:
       - 'v*'
   workflow_dispatch:
 
-# Opt into Node.js 24 for JavaScript actions now (GitHub's automatic flip is
-# 2026-06-16). Silences the deprecation warning printed by
-# actions/upload-artifact@v5 and actions/checkout@v5 when running on Node 20.
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     name: Build & deploy
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Need the previous commit to detect a Version: header change.
           fetch-depth: 2
@@ -94,7 +88,7 @@ jobs:
             -x 'vendor/freemius/patches/*'
 
       - name: Upload zip artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: raybogman-content-orchestrator-${{ steps.version.outputs.VERSION }}-${{ github.sha }}
           path: raybogman-content-orchestrator.zip
