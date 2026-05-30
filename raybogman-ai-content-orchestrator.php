@@ -3,9 +3,9 @@
  * Plugin Name:       Ray Bogman AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-ai-content-orchestrator
  * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
- * Version:           3.2.0
- * Requires at least: 5.8
- * Tested up to:      6.9
+ * Version:           3.2.1
+ * Requires at least: 5.9
+ * Tested up to:      7.0
  * Requires PHP:      7.4
  * Author:            Ray Bogman
  * Author URI:        https://bogman.info
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RBCO_VERSION', '3.2.0' );
+define( 'RBCO_VERSION', '3.2.1' );
 define( 'RBCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RBCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RBCO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -71,21 +71,22 @@ function rbco_is_pro() {
 }
 
 /**
- * Main plugin class.
+ * Main plugin class. Prefixed to satisfy WordPress.org class-prefix guidance
+ * (`RBCO_` is the plugin's chosen short prefix used throughout the codebase).
  */
-final class Ray_Bogman_AI_Content_Orchestrator {
+final class RBCO_Plugin {
 
 	/**
 	 * Singleton instance.
 	 *
-	 * @var Ray_Bogman_AI_Content_Orchestrator|null
+	 * @var RBCO_Plugin|null
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get singleton instance.
 	 *
-	 * @return Ray_Bogman_AI_Content_Orchestrator
+	 * @return RBCO_Plugin
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -135,7 +136,6 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 		// Migration: detect old AI Content Creator plugin and offer import + deactivate.
 		add_action( 'admin_notices', array( $this, 'maybe_show_migration_notice' ) );
 		add_action( 'wp_ajax_rbco_verify_migration', array( $this, 'ajax_verify_migration' ) );
-		add_action( 'wp_ajax_rbco_deactivate_old_plugin', array( $this, 'ajax_deactivate_old_plugin' ) );
 
 		// Allow TTF/OTF font uploads for the image overlay feature.
 		add_filter( 'upload_mimes', array( $this, 'allow_font_uploads' ) );
@@ -187,7 +187,7 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 				<span class="dashicons dashicons-migrate" style="color: #2271b1; vertical-align: text-bottom; font-size: 20px; margin-right: 6px;"></span>
 				<?php if ( $old_active ) : ?>
 					<strong><?php esc_html_e( 'AI Content Creator is still active!', 'raybogman-ai-content-orchestrator' ); ?></strong>
-					<?php esc_html_e( 'Both plugins share the same settings — your configuration is already active here. You can safely deactivate the old plugin.', 'raybogman-ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Both plugins share the same settings — your configuration is already active here. You can safely deactivate the old plugin yourself from the Plugins page.', 'raybogman-ai-content-orchestrator' ); ?>
 				<?php else : ?>
 					<strong><?php esc_html_e( 'Settings from AI Content Creator detected!', 'raybogman-ai-content-orchestrator' ); ?></strong>
 					<?php esc_html_e( 'Your previous configuration is automatically active — no migration needed.', 'raybogman-ai-content-orchestrator' ); ?>
@@ -199,10 +199,10 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 					<?php esc_html_e( 'Verify Settings', 'raybogman-ai-content-orchestrator' ); ?>
 				</button>
 				<?php if ( $old_active ) : ?>
-					<button type="button" class="button" id="rbco-deactivate-old-btn" style="color:#d63638;border-color:#d63638;">
-						<span class="dashicons dashicons-no" style="vertical-align:text-bottom;font-size:16px;width:16px;height:16px;margin-right:4px;"></span>
-						<?php esc_html_e( 'Deactivate AI Content Creator', 'raybogman-ai-content-orchestrator' ); ?>
-					</button>
+					<a href="<?php echo esc_url( admin_url( 'plugins.php?s=AI%20Content%20Creator&plugin_status=all' ) ); ?>" class="button" style="color:#d63638;border-color:#d63638;">
+						<span class="dashicons dashicons-admin-plugins" style="vertical-align:text-bottom;font-size:16px;width:16px;height:16px;margin-right:4px;"></span>
+						<?php esc_html_e( 'Go to Plugins page to deactivate it', 'raybogman-ai-content-orchestrator' ); ?>
+					</a>
 				<?php endif; ?>
 				<button type="button" class="button" id="rbco-dismiss-migration-btn">
 					<?php esc_html_e( 'Dismiss', 'raybogman-ai-content-orchestrator' ); ?>
@@ -210,10 +210,20 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 				<span id="rbco-migration-status"></span>
 			</p>
 		</div>
-		<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+		<?php
+		// Register an inline-only script handle and attach the notice behaviour
+		// through the proper script API instead of printing it inline.
+		wp_register_script( 'rbco-migration-notice', false, array( 'jquery' ), RBCO_VERSION, true );
+		wp_enqueue_script( 'rbco-migration-notice' );
+		wp_localize_script( 'rbco-migration-notice', 'rbcoMigration', array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => $nonce,
+		) );
+		ob_start();
+		?>
 		jQuery(document).ready(function($) {
-			var nonce = '<?php echo esc_js( $nonce ); ?>';
+			var ajaxurl = rbcoMigration.ajaxUrl;
+			var nonce = rbcoMigration.nonce;
 
 			$('#rbco-verify-migration-btn').on('click', function() {
 				var $btn = $(this);
@@ -235,27 +245,14 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 				}).always(function() { $btn.prop('disabled', false); });
 			});
 
-			$('#rbco-deactivate-old-btn').on('click', function() {
-				if (!confirm('<?php echo esc_js( __( 'Deactivate AI Content Creator? Your settings will be preserved.', 'raybogman-ai-content-orchestrator' ) ); ?>')) return;
-				var $btn = $(this);
-				$btn.prop('disabled', true).text('<?php echo esc_js( __( 'Deactivating...', 'raybogman-ai-content-orchestrator' ) ); ?>');
-				$.post(ajaxurl, { action: 'rbco_deactivate_old_plugin', nonce: nonce }).done(function(r) {
-					if (r.success) {
-						$btn.replaceWith('<span class="dashicons dashicons-yes-alt" style="color:#00a32a;vertical-align:text-bottom;"></span> <strong style="color:#00a32a;"><?php echo esc_js( __( 'AI Content Creator deactivated!', 'raybogman-ai-content-orchestrator' ) ); ?></strong>');
-					} else {
-						$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Deactivate AI Content Creator', 'raybogman-ai-content-orchestrator' ) ); ?>');
-						alert(r.data ? r.data.message : 'Failed.');
-					}
-				});
-			});
-
 			$('#rbco-dismiss-migration-btn').on('click', function() {
 				$.post(ajaxurl, { action: 'rbco_verify_migration', nonce: nonce, dismiss: '1' });
 				$('#rbco-migration-notice').fadeOut();
 			});
 		});
-		</script>
-<?php } ); ?>
+		<?php
+		wp_add_inline_script( 'rbco-migration-notice', ob_get_clean() );
+		?>
 		<?php
 	}
 
@@ -301,27 +298,6 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 			'message'  => __( 'All settings verified! Your configuration is fully active in Ray Bogman AI Content Orchestrator.', 'raybogman-ai-content-orchestrator' ),
 			'settings' => $settings,
 		) );
-	}
-
-	/**
-	 * AJAX: Deactivate the old AI Content Creator plugin.
-	 */
-	public function ajax_deactivate_old_plugin() {
-		check_ajax_referer( 'rbco_migration', 'nonce' );
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			wp_send_json_error( array( 'message' => 'Insufficient permissions.' ) );
-		}
-
-		$old_plugin = 'ai-content-creator/ai-content-creator.php';
-		if ( ! is_plugin_active( $old_plugin ) ) {
-			wp_send_json_success( array( 'message' => 'Already deactivated.' ) );
-			return;
-		}
-
-		deactivate_plugins( $old_plugin );
-		update_option( 'rbco_migration_verified', true );
-
-		wp_send_json_success( array( 'message' => 'AI Content Creator has been deactivated.' ) );
 	}
 
 	public function allow_font_uploads( $mimes ) {
@@ -444,4 +420,4 @@ final class Ray_Bogman_AI_Content_Orchestrator {
 	}
 }
 
-Ray_Bogman_AI_Content_Orchestrator::get_instance();
+RBCO_Plugin::get_instance();

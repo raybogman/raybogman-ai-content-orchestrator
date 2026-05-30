@@ -267,9 +267,9 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 									<?php echo esc_html( $rbco_styles['standard']['description'] ); ?>
 								</p>
 
-								<!-- Hidden preview data -->
+								<!-- Hidden preview data (inert markup, read by admin.js on hover) -->
 								<?php foreach ( $rbco_style_previews as $rbco_key => $rbco_html ) : ?>
-									<script type="text/html" id="rbco-style-preview-data-<?php echo esc_attr( $rbco_key ); ?>"><?php echo wp_kses_post( $rbco_html ); ?></script>
+									<div class="rbco-style-preview-data" id="rbco-style-preview-data-<?php echo esc_attr( $rbco_key ); ?>" style="display:none;"><?php echo wp_kses_post( $rbco_html ); ?></div>
 								<?php endforeach; ?>
 							</td>
 						</tr>
@@ -555,8 +555,11 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 	</div>
 </div>
 
-<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+<?php
+// Inline JS is registered through the proper script API (attached to the
+// already-enqueued 'rbco-admin' handle) instead of printing it inline.
+ob_start();
+?>
 // Toggle Thrive Architect warning based on Output Format selection.
 jQuery(document).ready(function($) {
 	var $format  = $('#rbco-output-format');
@@ -571,5 +574,6 @@ jQuery(document).ready(function($) {
 	$format.on('change', updateWarning);
 	updateWarning();
 });
-</script>
-<?php } ); ?>
+<?php
+wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+?>

@@ -570,6 +570,36 @@ class RBCO_Admin {
 	}
 
 	/**
+	 * Raise PHP execution/memory limits for a single long-running request.
+	 *
+	 * This is intentionally NOT called globally (no init/__construct usage).
+	 * It is invoked only inside the specific AJAX handlers that genuinely need
+	 * extended limits (AI generation and large PDF assembly). Memory is only
+	 * ever raised, never lowered, so a host with a higher limit is untouched.
+	 *
+	 * @param string $memory       Target memory limit, e.g. '256M'.
+	 * @param int    $time_seconds Target max execution time in seconds. 0 = skip.
+	 */
+	private function raise_limits_for_request( $memory = '256M', $time_seconds = 120 ) {
+		if ( $time_seconds > 0 && function_exists( 'set_time_limit' ) ) {
+			// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Scoped to this single request only.
+			@set_time_limit( $time_seconds );
+		}
+
+		// Raise memory via the WordPress API rather than the raw PHP setting.
+		// Using a custom context ('rbco') means our filter only fires for this
+		// call and never affects any other plugin or core code path.
+		$filter = function () use ( $memory ) {
+			return $memory;
+		};
+		add_filter( 'rbco_memory_limit', $filter );
+		if ( function_exists( 'wp_raise_memory_limit' ) ) {
+			wp_raise_memory_limit( 'rbco' );
+		}
+		remove_filter( 'rbco_memory_limit', $filter );
+	}
+
+	/**
 	 * Multi-step AJAX handler: breaks the pipeline into 4 short requests
 	 * so it works within any hosting timeout (typically 60 seconds).
 	 *
@@ -587,12 +617,9 @@ class RBCO_Admin {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
-		// Increase limits only for content generation steps (AI API calls can take 60-120s).
-		// Scoped to this AJAX handler only — not set globally.
-		if ( function_exists( 'set_time_limit' ) ) {
-			@set_time_limit( 120 ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- AI API calls need extended time.
-		}
-		@ini_set( 'memory_limit', '256M' ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Large HTML content processing.
+		// Increase limits only for content generation steps (AI API calls can
+		// take 60-120s). Scoped to this AJAX handler only — not set globally.
+		$this->raise_limits_for_request( '256M', 120 );
 
 		$step   = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 1;
 		$job_id = isset( $_POST['job_id'] ) ? sanitize_text_field( wp_unslash( $_POST['job_id'] ) ) : '';
@@ -1297,11 +1324,11 @@ class RBCO_Admin {
 		}
 
 		// Increase memory for large PDF chunk assembly (scoped to this handler only).
-		@ini_set( 'memory_limit', '256M' ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged
+		$this->raise_limits_for_request( '256M', 0 );
 
 		// When the file exceeds post_max_size, PHP silently drops the entire
 		// POST body — $_FILES and $_POST become empty arrays.
-		if ( empty( $_FILES['pdf_file'] ) ) {
+		if ( empty( $_FILES['pdf_file'] ) || ! is_array( $_FILES['pdf_file'] ) ) {
 			wp_send_json_error( array(
 				'message' => sprintf(
      /* translators: %s: dynamic value */
@@ -1311,8 +1338,29 @@ class RBCO_Admin {
 			) );
 		}
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload handled by WordPress functions in RBCO_PDF_Library::upload().
-		$result = RBCO_PDF_Library::upload( $_FILES['pdf_file'] );
+		// Validate and sanitize the uploaded file before handing it off.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Individual fields are validated/sanitized below.
+		$uploaded_file = $_FILES['pdf_file'];
+
+		if ( empty( $uploaded_file['tmp_name'] ) || ! is_uploaded_file( $uploaded_file['tmp_name'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid file upload.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		$safe_file = array(
+			'name'     => sanitize_file_name( isset( $uploaded_file['name'] ) ? wp_unslash( $uploaded_file['name'] ) : '' ),
+			'type'     => isset( $uploaded_file['type'] ) ? sanitize_mime_type( wp_unslash( $uploaded_file['type'] ) ) : '',
+			'tmp_name' => $uploaded_file['tmp_name'],
+			'error'    => isset( $uploaded_file['error'] ) ? absint( $uploaded_file['error'] ) : UPLOAD_ERR_NO_FILE,
+			'size'     => isset( $uploaded_file['size'] ) ? absint( $uploaded_file['size'] ) : 0,
+		);
+
+		// Final type guard: only PDFs (RBCO_PDF_Library::upload() re-checks too).
+		$filetype = wp_check_filetype( $safe_file['name'], array( 'pdf' => 'application/pdf' ) );
+		if ( 'pdf' !== $filetype['ext'] ) {
+			wp_send_json_error( array( 'message' => __( 'Only PDF files are allowed.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		$result = RBCO_PDF_Library::upload( $safe_file );
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
 		}
@@ -1368,10 +1416,19 @@ class RBCO_Admin {
 
 		// Save this chunk using wp_handle_upload.
 		$chunk_file = trailingslashit( $temp_dir ) . sprintf( 'chunk_%05d', $chunk_number );
-		if ( ! isset( $_FILES['chunk']['tmp_name'] ) || empty( $_FILES['chunk']['tmp_name'] ) ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Fields validated/sanitized below.
+		$chunk_input = $_FILES['chunk'];
+		if ( empty( $chunk_input['tmp_name'] ) || ! is_uploaded_file( $chunk_input['tmp_name'] ) ) {
 			wp_send_json_error( array( 'message' => __( 'No chunk data received.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
-		$chunk_upload = wp_handle_upload( $_FILES['chunk'], array( 'test_form' => false, 'test_type' => false ) );
+		$safe_chunk   = array(
+			'name'     => sanitize_file_name( isset( $chunk_input['name'] ) ? wp_unslash( $chunk_input['name'] ) : 'chunk' ),
+			'type'     => isset( $chunk_input['type'] ) ? sanitize_mime_type( wp_unslash( $chunk_input['type'] ) ) : '',
+			'tmp_name' => $chunk_input['tmp_name'],
+			'error'    => isset( $chunk_input['error'] ) ? absint( $chunk_input['error'] ) : UPLOAD_ERR_NO_FILE,
+			'size'     => isset( $chunk_input['size'] ) ? absint( $chunk_input['size'] ) : 0,
+		);
+		$chunk_upload = wp_handle_upload( $safe_chunk, array( 'test_form' => false, 'test_type' => false ) );
 		if ( isset( $chunk_upload['error'] ) ) {
 			wp_send_json_error( array( 'message' => $chunk_upload['error'] ) );
 		}
@@ -1529,6 +1586,42 @@ class RBCO_Admin {
 	}
 
 	/**
+	 * Store a one-time admin notice for the current user.
+	 *
+	 * Used by the OAuth callbacks instead of passing status/error text through
+	 * unauthenticated $_GET parameters. The notice is read once and deleted.
+	 *
+	 * @param string $platform 'linkedin' or 'instagram'.
+	 * @param string $type     'success', 'error' or 'info'.
+	 * @param string $message  Message to display.
+	 */
+	private function set_social_notice( $platform, $type, $message ) {
+		set_transient(
+			'rbco_social_notice_' . $platform . '_' . get_current_user_id(),
+			array(
+				'type'    => $type,
+				'message' => $message,
+			),
+			MINUTE_IN_SECONDS
+		);
+	}
+
+	/**
+	 * Fetch and clear the one-time social notice for the current user.
+	 *
+	 * @param string $platform 'linkedin' or 'instagram'.
+	 * @return array|false { type, message } or false when none.
+	 */
+	public static function pull_social_notice( $platform ) {
+		$key    = 'rbco_social_notice_' . $platform . '_' . get_current_user_id();
+		$notice = get_transient( $key );
+		if ( false !== $notice ) {
+			delete_transient( $key );
+		}
+		return $notice;
+	}
+
+	/**
 	 * Handle LinkedIn OAuth callback (redirect from LinkedIn).
 	 */
 	public function handle_linkedin_callback() {
@@ -1540,6 +1633,7 @@ class RBCO_Admin {
 		if ( ! empty( $_GET['rbco_linkedin_disconnect'] ) ) {
 			check_admin_referer( 'rbco_linkedin_disconnect' );
 			RBCO_LinkedIn::disconnect();
+			$this->set_social_notice( 'linkedin', 'info', __( 'LinkedIn account disconnected.', 'raybogman-ai-content-orchestrator' ) );
 			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
 			exit;
 		}
@@ -1551,22 +1645,35 @@ class RBCO_Admin {
 
 		// Handle OAuth code exchange.
 		if ( empty( $_GET['code'] ) ) {
-			$error = isset( $_GET['error_description'] ) ? sanitize_text_field( wp_unslash( $_GET['error_description'] ) ) : 'Authorization was denied or failed.';
-			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&rbco_linkedin_error=' . rawurlencode( $error ) ) );
+			$error = isset( $_GET['error_description'] ) ? sanitize_text_field( wp_unslash( $_GET['error_description'] ) ) : __( 'Authorization was denied or failed.', 'raybogman-ai-content-orchestrator' );
+			$this->set_social_notice( 'linkedin', 'error', $error );
+			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
 			exit;
 		}
 
 		$code  = sanitize_text_field( wp_unslash( $_GET['code'] ) );
 		$state = isset( $_GET['state'] ) ? sanitize_text_field( wp_unslash( $_GET['state'] ) ) : '';
 
-		$result = RBCO_LinkedIn::handle_callback( $code, $state );
-
-		if ( is_wp_error( $result ) ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&rbco_linkedin_error=' . rawurlencode( $result->get_error_message() ) ) );
+		// CSRF protection for the OAuth round-trip. The `state` value is a WP
+		// nonce generated in RBCO_LinkedIn::get_auth_url() (action
+		// 'rbco_linkedin_oauth'); verify it here before doing any work. It is
+		// re-checked against the stored transient inside handle_callback().
+		if ( ! wp_verify_nonce( $state, 'rbco_linkedin_oauth' ) ) {
+			$this->set_social_notice( 'linkedin', 'error', __( 'Invalid OAuth state. Please try connecting again.', 'raybogman-ai-content-orchestrator' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
 			exit;
 		}
 
-		wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&rbco_linkedin_success=1' ) );
+		$result = RBCO_LinkedIn::handle_callback( $code, $state );
+
+		if ( is_wp_error( $result ) ) {
+			$this->set_social_notice( 'linkedin', 'error', $result->get_error_message() );
+			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
+			exit;
+		}
+
+		$this->set_social_notice( 'linkedin', 'success', __( 'LinkedIn account connected successfully.', 'raybogman-ai-content-orchestrator' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
 		exit;
 	}
 
@@ -2639,18 +2746,33 @@ class RBCO_Admin {
 		// Disconnect.
 		if ( isset( $_GET['rbco_instagram_disconnect'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['rbco_instagram_disconnect'] ) ), 'rbco_instagram_disconnect' ) ) {
 			RBCO_Instagram::disconnect();
-			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram&rbco_instagram_disconnected=1' ) );
+			$this->set_social_notice( 'instagram', 'info', __( 'Instagram disconnected.', 'raybogman-ai-content-orchestrator' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) );
 			exit;
 		}
 
 		// OAuth callback.
 		if ( isset( $_GET['tab'] ) && 'instagram' === $_GET['tab'] && isset( $_GET['code'] ) && isset( $_GET['state'] ) ) {
-			$result = RBCO_Instagram::handle_callback( sanitize_text_field( wp_unslash( $_GET['code'] ) ), sanitize_text_field( wp_unslash( $_GET['state'] ) ) );
-			if ( is_wp_error( $result ) ) {
-				wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram&rbco_instagram_error=' . urlencode( $result->get_error_message() ) ) );
-			} else {
-				wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram&rbco_instagram_success=1' ) );
+			$ig_code  = sanitize_text_field( wp_unslash( $_GET['code'] ) );
+			$ig_state = sanitize_text_field( wp_unslash( $_GET['state'] ) );
+
+			// CSRF protection for the OAuth round-trip. `state` is a WP nonce
+			// created in RBCO_Instagram::get_auth_url() (action
+			// 'rbco_instagram_oauth'); verify it before any work. It is also
+			// re-checked against the stored transient inside handle_callback().
+			if ( ! wp_verify_nonce( $ig_state, 'rbco_instagram_oauth' ) ) {
+				$this->set_social_notice( 'instagram', 'error', __( 'Invalid OAuth state. Please try connecting again.', 'raybogman-ai-content-orchestrator' ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) );
+				exit;
 			}
+
+			$result = RBCO_Instagram::handle_callback( $ig_code, $ig_state );
+			if ( is_wp_error( $result ) ) {
+				$this->set_social_notice( 'instagram', 'error', $result->get_error_message() );
+			} else {
+				$this->set_social_notice( 'instagram', 'success', __( 'Instagram connected successfully!', 'raybogman-ai-content-orchestrator' ) );
+			}
+			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) );
 			exit;
 		}
 	}

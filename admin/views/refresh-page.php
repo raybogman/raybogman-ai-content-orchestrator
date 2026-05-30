@@ -196,8 +196,11 @@ $rbco_active_tab = isset( $_GET['view'] ) /* phpcs:ignore WordPress.Security.Non
 	</div>
 </div>
 
-<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+<?php
+// Inline JS is registered through the proper script API (attached to the
+// already-enqueued 'rbco-admin' handle) instead of printing it inline.
+ob_start();
+?>
 jQuery(document).ready(function($) {
 	var ajaxUrl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
 	var nonce   = '<?php echo esc_js( wp_create_nonce( 'rbco_nonce' ) ); ?>';
@@ -507,5 +510,6 @@ jQuery(document).ready(function($) {
 		});
 	});
 });
-</script>
-<?php } ); ?>
+<?php
+wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+?>

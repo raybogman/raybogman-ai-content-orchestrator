@@ -341,8 +341,11 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 	</div>
 </div>
 
-<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+<?php
+// Inline JS is registered through the proper script API (attached to the
+// already-enqueued 'rbco-admin' handle) instead of printing it inline.
+ob_start();
+?>
 jQuery(document).ready(function($) {
 
 	/**
@@ -817,8 +820,6 @@ jQuery(document).ready(function($) {
 	// Initial count.
 	updateCount();
 });
-</script>
-<?php } ); ?>
-<style>
-@keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-</style>
+<?php
+wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+?>

@@ -37,7 +37,13 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 	</nav>
 
 	<?php if ( ! in_array( $rbco_active_tab, array( 'faq', 'about' ), true ) ) : ?>
-	<?php if ( isset( $_GET['settings-updated'] /* phpcs:ignore WordPress.Security.NonceVerification.Recommended */ ) && 'true' === $_GET['settings-updated'] ) : ?>
+	<?php
+	// Read-only display flag set by RBCO_Settings::handle_save() after its own
+	// nonce + capability check and an internal wp_safe_redirect().
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$rbco_settings_saved = isset( $_GET['settings-updated'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) );
+	?>
+	<?php if ( $rbco_settings_saved ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'raybogman-ai-content-orchestrator' ); ?></p></div>
 	<?php endif; ?>
 	<form method="post" action="">
@@ -83,8 +89,10 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				</p>
 			</div>
 		</div>
-		<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+		<?php
+		// Inline JS registered via the proper script API instead of printing it inline.
+		ob_start();
+		?>
 		jQuery(document).ready(function($) {
 			$('#rbco-test-instagram-btn').on('click', function() {
 				var $btn = $(this);
@@ -116,18 +124,24 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				});
 			});
 		});
-		</script>
-<?php } ); ?>
+		<?php
+		wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+		?>
 		<?php endif; ?>
 
-		<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only URL params. ?>
-		<?php if ( isset( $_GET['rbco_instagram_error'] ) ) : ?>
-			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<div class="notice notice-error"><p><strong><?php esc_html_e( 'Error:', 'raybogman-ai-content-orchestrator' ); ?></strong> <?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['rbco_instagram_error'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p></div>
-		<?php elseif ( isset( $_GET['rbco_instagram_success'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<div class="notice notice-success"><p><?php esc_html_e( 'Instagram connected successfully!', 'raybogman-ai-content-orchestrator' ); ?></p></div>
-		<?php elseif ( isset( $_GET['rbco_instagram_disconnected'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<div class="notice notice-info"><p><?php esc_html_e( 'Instagram disconnected.', 'raybogman-ai-content-orchestrator' ); ?></p></div>
+		<?php
+		$rbco_ig_notice = RBCO_Admin::pull_social_notice( 'instagram' );
+		if ( is_array( $rbco_ig_notice ) ) :
+			$rbco_ig_class = 'error' === $rbco_ig_notice['type'] ? 'notice-error' : ( 'success' === $rbco_ig_notice['type'] ? 'notice-success' : 'notice-info' );
+			?>
+			<div class="notice <?php echo esc_attr( $rbco_ig_class ); ?>">
+				<p>
+					<?php if ( 'error' === $rbco_ig_notice['type'] ) : ?>
+						<strong><?php esc_html_e( 'Error:', 'raybogman-ai-content-orchestrator' ); ?></strong>
+					<?php endif; ?>
+					<?php echo esc_html( $rbco_ig_notice['message'] ); ?>
+				</p>
+			</div>
 		<?php endif; ?>
 
 		<div class="rbco-card" style="margin-bottom:16px;">
@@ -619,6 +633,15 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 
 	<?php if ( 'linkedin' === $rbco_active_tab ) : ?>
 	<!-- LinkedIn Connection -->
+	<?php
+	$rbco_li_notice = RBCO_Admin::pull_social_notice( 'linkedin' );
+	if ( is_array( $rbco_li_notice ) ) :
+		$rbco_li_class = 'error' === $rbco_li_notice['type'] ? 'notice-error' : ( 'success' === $rbco_li_notice['type'] ? 'notice-success' : 'notice-info' );
+		?>
+		<div class="notice <?php echo esc_attr( $rbco_li_class ); ?>" style="max-width: 700px;">
+			<p><?php echo esc_html( $rbco_li_notice['message'] ); ?></p>
+		</div>
+	<?php endif; ?>
 	<div class="rbco-card" style="max-width: 700px; margin-top: 20px;">
 		<div class="rbco-card-header">
 			<h2><?php esc_html_e( 'LinkedIn Connection', 'raybogman-ai-content-orchestrator' ); ?></h2>
@@ -670,13 +693,6 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 					</a>
 				</p>
 			<?php else : ?>
-				<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-				<?php if ( ! empty( $_GET['rbco_linkedin_error'] ) ) : ?>
-					<div class="notice notice-error inline" style="margin-top: 0; margin-bottom: 16px;">
-						<p><?php echo esc_html( sanitize_text_field( wp_unslash( $_GET['rbco_linkedin_error'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p>
-					</div>
-				<?php endif; ?>
-
 				<h3 style="margin-top: 0;"><?php esc_html_e( 'Setup Guide — Follow these steps in order', 'raybogman-ai-content-orchestrator' ); ?></h3>
 
 				<div class="notice notice-warning inline" style="margin: 0 0 16px 0;">
@@ -802,11 +818,6 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				<?php endif; ?>
 			<?php endif; ?>
 
-			<?php if ( ! empty( $_GET['rbco_linkedin_success'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-				<div class="notice notice-success inline" style="margin-top: 12px;">
-					<p><?php esc_html_e( 'LinkedIn account connected successfully!', 'raybogman-ai-content-orchestrator' ); ?></p>
-				</div>
-			<?php endif; ?>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -952,8 +963,10 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 	<?php endif; ?>
 </div>
 
-<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+<?php
+// Inline JS registered via the proper script API instead of printing it inline.
+ob_start();
+?>
 jQuery(document).ready(function($) {
 	$('.rbco-validate-btn').on('click', function() {
 		var $btn    = $(this);
@@ -1080,5 +1093,6 @@ jQuery(document).ready(function($) {
 		});
 	});
 });
-</script>
-<?php } ); ?>
+<?php
+wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+?>

@@ -529,8 +529,11 @@ $rbco_examples = array(
 	<?php endforeach; ?>
 </div>
 
-<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
+<?php
+// Inline JS is registered through the proper script API (attached to the
+// already-enqueued 'rbco-admin' handle) instead of printing it inline.
+ob_start();
+?>
 jQuery(document).ready(function($) {
 	$('.rbco-example-toggle').on('click', function() {
 		var target = $(this).data('target');
@@ -546,5 +549,6 @@ jQuery(document).ready(function($) {
 		}
 	});
 });
-</script>
-<?php } ); ?>
+<?php
+wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+?>
