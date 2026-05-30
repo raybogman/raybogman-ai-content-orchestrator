@@ -928,9 +928,10 @@ class RBCO_Settings {
 		static $media_js_printed = false;
 		if ( ! $media_js_printed ) {
 			$media_js_printed = true;
+			// Registered through the proper script API (attached to the
+			// already-enqueued 'rbco-admin' handle) rather than a raw tag.
+			ob_start();
 			?>
-			<?php add_action( 'admin_footer', function() { ?>
-<script type="text/javascript">
 			jQuery(document).ready(function($) {
 				$('.rbco-media-upload-btn').on('click', function(e) {
 					e.preventDefault();
@@ -971,9 +972,8 @@ class RBCO_Settings {
 					$(this).remove();
 				});
 			});
-			</script>
-<?php } ); ?>
 			<?php
+			wp_add_inline_script( 'rbco-admin', ob_get_clean() );
 		}
 	}
 
@@ -1626,11 +1626,23 @@ class RBCO_Settings {
 		$registered = get_registered_settings();
 
 		foreach ( $tab_options[ $tab ] as $option ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by the registered sanitize_callback on the next line.
-			$value = isset( $_POST[ $option ] ) ? wp_unslash( $_POST[ $option ] ) : '';
+			if ( ! isset( $_POST[ $option ] ) ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Raw value is sanitized below before use; never stored unsanitized.
+			$raw = wp_unslash( $_POST[ $option ] );
 
 			if ( isset( $registered[ $option ]['sanitize_callback'] ) ) {
-				$value = call_user_func( $registered[ $option ]['sanitize_callback'], $value );
+				// Use the option's own registered sanitizer.
+				$value = call_user_func( $registered[ $option ]['sanitize_callback'], $raw );
+			} elseif ( is_array( $raw ) ) {
+				// Fallback: deep-sanitize every array element.
+				$value = map_deep( $raw, 'sanitize_text_field' );
+			} else {
+				// Fallback: textarea-safe sanitization (preserves newlines for
+				// multi-line fields such as the project vision).
+				$value = sanitize_textarea_field( $raw );
 			}
 
 			update_option( $option, $value );

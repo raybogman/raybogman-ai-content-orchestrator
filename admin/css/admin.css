@@ -293,6 +293,16 @@
 	}
 }
 
+/* Used by the Bulk Create progress spinner (previously an inline style block). */
+@keyframes rotation {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 /* ── Style hover preview panel ──────────────────────────────────── */
 
 .rbco-style-preview-panel {

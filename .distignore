@@ -1,0 +1,26 @@
+# Files and directories that must NOT ship in the distributed plugin zip.
+# Used by `wp dist-archive` and mirrored in .github/workflows/deploy.yml.
+
+# Version control / project meta
+.git
+.github
+.gitignore
+.gitattributes
+.distignore
+.editorconfig
+.DS_Store
+__MACOSX
+*.zip
+node_modules
+.env
+
+# Freemius SDK development-only files (not part of plugin functionality)
+vendor/freemius/.example.env
+vendor/freemius/.editorconfig
+vendor/freemius/.gitignore
+vendor/freemius/.gitattributes
+vendor/freemius/.phpstan
+vendor/freemius/.github
+vendor/freemius/CONTRIBUTING.md
+vendor/freemius/composer.lock
+vendor/freemius/patches

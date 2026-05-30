@@ -2,10 +2,10 @@
 Contributors: raybogman
 Donate link: https://raybogman.com
 Tags: ai, content-generator, seo, openai, claude
-Requires at least: 5.8
-Tested up to: 6.9
+Requires at least: 5.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,58 +74,55 @@ Yes. Existing WordPress categories are listed as checkboxes on the creation form
 
 The scanner reads publicly accessible pages from URLs you provide. It is intended for scanning your own website or websites you have permission to scan, to give the AI relevant context. It does not perform automated mass crawling or scraping of third-party sites.
 
-== Third-Party Services ==
+== External services ==
 
-This plugin connects to external services to provide its functionality. No data is sent until the user explicitly configures API keys and initiates an action (e.g., clicking "Create Content").
+This plugin relies on the following third-party / external services. No data
+is sent to any of them until the site administrator explicitly configures the
+relevant API keys/credentials and initiates an action (for example clicking
+"Create Content", connecting an account, or publishing a post). None of these
+services are contacted on the front end for normal site visitors.
 
 = Anthropic (Claude AI) =
-Used for content generation and SEO metadata when Claude is selected as the AI provider.
-* Service: [anthropic.com](https://www.anthropic.com)
-* Terms: [anthropic.com/legal/consumer-terms](https://www.anthropic.com/legal/consumer-terms)
-* Privacy: [anthropic.com/privacy](https://www.anthropic.com/privacy)
-* Data sent: User prompt, website scan context, content type
-* When: Only when the user clicks "Create Content" or "Refresh Post"
+What it is: AI text model API, used for content generation and SEO metadata when Claude is selected as the AI provider.
+Domain(s) contacted: api.anthropic.com
+What data is sent and when: The user prompt, the scanned website context, and the requested content type — sent only when an administrator clicks "Create Content" or "Refresh Post".
+* Terms of service: https://www.anthropic.com/legal/consumer-terms
+* Privacy policy: https://www.anthropic.com/privacy
 
-= OpenAI (GPT & DALL-E) =
-Used for content generation, SEO metadata, and AI image generation when OpenAI is selected.
-* Service: [openai.com](https://openai.com)
-* Terms: [openai.com/policies/terms-of-use](https://openai.com/policies/terms-of-use)
-* Privacy: [openai.com/policies/privacy-policy](https://openai.com/policies/privacy-policy)
-* Data sent: User prompt, website scan context, image generation prompts
-* When: Only when the user clicks "Create Content" or generates images
+= OpenAI (GPT & DALL-E 3) =
+What it is: AI text and image model API, used for content generation, SEO metadata, and AI image generation when OpenAI is selected.
+Domain(s) contacted: api.openai.com (generated images are then downloaded from the temporary URL OpenAI returns).
+What data is sent and when: The user prompt, scanned website context, and image-generation prompts — sent only when an administrator clicks "Create Content" or generates an image.
+* Terms of service: https://openai.com/policies/terms-of-use
+* Privacy policy: https://openai.com/policies/privacy-policy
 
 = Ideogram (Image Generation) =
-Used for AI featured image generation when Ideogram is selected as the image provider (Enterprise only).
-* Service: [ideogram.ai](https://ideogram.ai)
-* Terms: [ideogram.ai/tos](https://ideogram.ai/tos)
-* Privacy: [ideogram.ai/privacy](https://ideogram.ai/privacy)
-* Data sent: Image prompts, brand colors
-* When: Only when the user enables "Generate AI featured image"
+What it is: AI image generation API, used for AI featured images when Ideogram is the selected image provider (Enterprise only).
+Domain(s) contacted: api.ideogram.ai
+What data is sent and when: Image prompts and brand colors — sent only when an administrator enables "Generate AI featured image".
+* Terms of service: https://ideogram.ai/tos
+* Privacy policy: https://ideogram.ai/privacy
 
 = LinkedIn API =
-Used for auto-sharing blog posts to LinkedIn (Enterprise only).
-* Service: [linkedin.com](https://www.linkedin.com)
-* Terms: [linkedin.com/legal/user-agreement](https://www.linkedin.com/legal/user-agreement)
-* Privacy: [linkedin.com/legal/privacy-policy](https://www.linkedin.com/legal/privacy-policy)
-* Data sent: Post title, excerpt, featured image URL, generated commentary
-* When: Only when the user enables "Post to LinkedIn" and the post is published
+What it is: LinkedIn's OAuth and content APIs, used for connecting an account and auto-sharing posts to LinkedIn (Enterprise only).
+Domain(s) contacted: www.linkedin.com (OAuth authorization) and api.linkedin.com (profile + share endpoints).
+What data is sent and when: During connection, the OAuth authorization request; when sharing, the post title, excerpt, featured image URL and generated commentary — sent only when an administrator connects LinkedIn and a post with "Post to LinkedIn" enabled is published.
+* Terms of service: https://www.linkedin.com/legal/user-agreement
+* Privacy policy: https://www.linkedin.com/legal/privacy-policy
 
-= Instagram Graph API (via Meta) =
-Used for auto-sharing blog posts to Instagram and checking publishing quota (Enterprise only).
-* Service: [developers.facebook.com](https://developers.facebook.com)
-* Terms: [facebook.com/legal/terms](https://www.facebook.com/legal/terms)
-* Privacy: [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy)
-* Data sent: Featured image URL, generated caption, access token for publishing and quota checks
-* Endpoints used: media (create post), media_publish (publish post), content_publishing_limit (check daily quota)
-* When: Only when the user enables "Post to Instagram" and the post is published
+= Instagram Graph API (via Meta / Facebook) =
+What it is: Meta's Graph API, used for connecting an Instagram Business account, auto-sharing posts, and checking the daily publishing quota (Enterprise only).
+Domain(s) contacted: www.facebook.com (OAuth authorization) and graph.facebook.com (account lookup, media create, media publish, and content publishing limit checks).
+What data is sent and when: During connection, the OAuth authorization request and the resulting access token; when sharing, the featured image URL and generated caption; when checking limits, the access token. All sent only when an administrator connects Instagram and a post with "Post to Instagram" enabled is published, or when the administrator clicks "Test Connection".
+* Terms of service: https://www.facebook.com/legal/terms
+* Privacy policy: https://www.facebook.com/privacy/policy
 
 = Freemius =
-Used for license management, usage analytics (opt-in), and plugin updates.
-* Service: [freemius.com](https://freemius.com)
-* Terms: [freemius.com/terms](https://freemius.com/terms/)
-* Privacy: [freemius.com/privacy](https://freemius.com/privacy/)
-* Data sent: Site URL, plugin version, license key (if Enterprise)
-* When: On plugin activation (opt-in consent screen shown first)
+What it is: The licensing, software-update and (opt-in) usage-analytics service bundled with the plugin SDK.
+Domain(s) contacted: api.freemius.com
+What data is sent and when: Site URL, plugin version, and (for Enterprise) the license key — sent on plugin activation after the administrator accepts the opt-in consent screen, and for update checks.
+* Terms of service: https://freemius.com/terms/
+* Privacy policy: https://freemius.com/privacy/
 
 == Screenshots ==
 
@@ -139,10 +136,28 @@ Used for license management, usage analytics (opt-in), and plugin updates.
 
 == Upgrade Notice ==
 
+= 3.2.1 =
+WordPress.org plugin review compliance release. Recommended for all users.
+
 = 3.2.0 =
 Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
+
+= 3.2.1 =
+* Fixed: All remaining inline JS/CSS now registered through wp_add_inline_script() / wp_enqueue_style() instead of raw <script>/<style> tags (admin views, settings fields, migration notice).
+* Fixed: Bulk Create spinner keyframes moved into the enqueued admin stylesheet.
+* Fixed: External services section rewritten with the exact API domains contacted (api.anthropic.com, api.openai.com, api.ideogram.ai, api.linkedin.com, www.linkedin.com, graph.facebook.com, www.facebook.com, api.freemius.com) plus what data is sent and when.
+* Fixed: PHP memory/time limit overrides consolidated into a single request-scoped helper that only ever raises limits, never lowers them, and is never run globally.
+* Removed: Plugin no longer programmatically deactivates the legacy AI Content Creator plugin; the migration notice now links to the Plugins screen so the user deactivates it themselves.
+* Security: Instagram and LinkedIn OAuth callbacks now explicitly verify the `state` value as a WordPress nonce before processing, in addition to the existing stored-state transient check.
+* Security: OAuth status/error messages are passed via short-lived per-user transients instead of unauthenticated $_GET parameters.
+* Security: Settings save now always sanitizes every submitted value (registered sanitizer, deep array sanitization, or textarea-safe fallback).
+* Security: PDF upload and chunked-upload handlers now validate is_uploaded_file() and sanitize each $_FILES field before processing.
+* Build: Added .distignore and expanded the GitHub Actions packaging step to exclude Freemius SDK development files (.example.env, patches, CI config) from the distributed zip.
+* Compatibility: "Tested up to" bumped to WordPress 7.0 and "Requires at least" raised to WordPress 5.9 (matches the minimum required for wp_get_global_settings()).
+* Compatibility: Memory limit raises switched from ini_set() to the WordPress API (wp_raise_memory_limit() with a custom 'rbco' context filter) so other plugins and core are never affected.
+* Code quality: Main plugin class renamed from Ray_Bogman_AI_Content_Orchestrator to RBCO_Plugin to match the codebase-wide RBCO_ prefix and clear the Plugin Check NonPrefixedClassFound warning.
 
 = 3.2.0 =
 * Renamed: Plugin rebranded to Ray Bogman AI Content Orchestrator (slug: raybogman-content-orchestrator) to comply with WordPress.org naming guidelines.

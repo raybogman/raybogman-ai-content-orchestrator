@@ -18,7 +18,28 @@ jobs:
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
 
       - name: Create plugin zip
-        run: zip -r raybogman-content-orchestrator.zip . -x '.git/*' '.github/*' '*.DS_Store'
+        run: |
+          zip -r raybogman-content-orchestrator.zip . \
+            -x '.git/*' \
+            -x '.github/*' \
+            -x '*.DS_Store' \
+            -x '__MACOSX/*' \
+            -x '.gitignore' \
+            -x '.gitattributes' \
+            -x '.distignore' \
+            -x '.editorconfig' \
+            -x '.env' \
+            -x 'node_modules/*' \
+            -x '*.zip' \
+            -x 'vendor/freemius/.example.env' \
+            -x 'vendor/freemius/.editorconfig' \
+            -x 'vendor/freemius/.gitignore' \
+            -x 'vendor/freemius/.gitattributes' \
+            -x 'vendor/freemius/.phpstan/*' \
+            -x 'vendor/freemius/.github/*' \
+            -x 'vendor/freemius/CONTRIBUTING.md' \
+            -x 'vendor/freemius/composer.lock' \
+            -x 'vendor/freemius/patches/*'
 
       - name: Deploy to Freemius
         uses: buttonizer/freemius-deploy@v0.1.3
