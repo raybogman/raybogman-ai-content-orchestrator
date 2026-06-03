@@ -532,8 +532,9 @@ $rbco_examples = array(
 <?php
 // Inline JS is registered through the proper script API (attached to the
 // already-enqueued 'rbco-admin' handle) instead of printing it inline.
-ob_start();
-?>
+// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
+rbco_capture_inline_script( 'rbco-admin', function () {
+	?>
 jQuery(document).ready(function($) {
 	$('.rbco-example-toggle').on('click', function() {
 		var target = $(this).data('target');
@@ -549,6 +550,6 @@ jQuery(document).ready(function($) {
 		}
 	});
 });
-<?php
-wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+	<?php
+} );
 ?>

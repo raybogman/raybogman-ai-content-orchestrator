@@ -3,7 +3,7 @@
  * Plugin Name:       Ray Bogman AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-ai-content-orchestrator
  * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
- * Version:           3.2.2
+ * Version:           3.2.3
  * Requires at least: 5.9
  * Tested up to:      7.0
  * Requires PHP:      7.4
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RBCO_VERSION', '3.2.2' );
+define( 'RBCO_VERSION', '3.2.3' );
 define( 'RBCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RBCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RBCO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -68,6 +68,23 @@ if ( ! function_exists( 'rbco_fs' ) ) {
  */
 function rbco_is_pro() {
 	return rbco_fs()->is_plan( 'enterprise', true );
+}
+
+/**
+ * Capture a PHP-generated inline script body and attach it to an already
+ * enqueued/registered script handle through the proper WordPress API.
+ *
+ * The pair of ob_start() and ob_get_clean() lives entirely inside this
+ * single function scope, so static analysers (Plugin Check, WPCS) can
+ * verify the buffer is always closed in the same logical flow.
+ *
+ * @param string   $handle   Registered script handle to attach the inline JS to.
+ * @param callable $callback Closure that echoes the JS body (no <script> tag).
+ */
+function rbco_capture_inline_script( $handle, $callback ) {
+	ob_start();
+	$callback();
+	wp_add_inline_script( $handle, (string) ob_get_clean() );
 }
 
 /**
@@ -219,8 +236,8 @@ final class RBCO_Plugin {
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 			'nonce'   => $nonce,
 		) );
-		ob_start();
-		?>
+		rbco_capture_inline_script( 'rbco-migration-notice', function () {
+			?>
 		jQuery(document).ready(function($) {
 			var ajaxurl = rbcoMigration.ajaxUrl;
 			var nonce = rbcoMigration.nonce;
@@ -250,8 +267,8 @@ final class RBCO_Plugin {
 				$('#rbco-migration-notice').fadeOut();
 			});
 		});
-		<?php
-		wp_add_inline_script( 'rbco-migration-notice', ob_get_clean() );
+			<?php
+		} );
 		?>
 		<?php
 	}

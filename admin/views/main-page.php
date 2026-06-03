@@ -558,8 +558,9 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 <?php
 // Inline JS is registered through the proper script API (attached to the
 // already-enqueued 'rbco-admin' handle) instead of printing it inline.
-ob_start();
-?>
+// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
+rbco_capture_inline_script( 'rbco-admin', function () {
+	?>
 // Toggle Thrive Architect warning based on Output Format selection.
 jQuery(document).ready(function($) {
 	var $format  = $('#rbco-output-format');
@@ -574,6 +575,6 @@ jQuery(document).ready(function($) {
 	$format.on('change', updateWarning);
 	updateWarning();
 });
-<?php
-wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+	<?php
+} );
 ?>

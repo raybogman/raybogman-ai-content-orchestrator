@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.2.2
+Stable tag: 3.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,16 @@ relevant API keys/credentials and initiates an action (for example clicking
 "Create Content", connecting an account, or publishing a post). None of these
 services are contacted on the front end for normal site visitors.
 
+WordPress 7.0+ — preferred path: When running on WordPress 7.0 or newer and the
+site owner has configured a provider through the core AI Client, every text
+generation request is routed through that core AI Client first
+(wp_ai_client_prompt() → generateText()). In that case the plugin never touches
+api.anthropic.com or api.openai.com directly — the request goes to whichever
+provider the site owner has set up at the site level, with credentials managed
+by WordPress core, not by this plugin. The plugin's own direct integrations
+listed below are used only as a fallback for older WordPress versions or when
+no core provider has been configured.
+
 = Anthropic (Claude AI) =
 What it is: AI text model API, used for content generation and SEO metadata when Claude is selected as the AI provider.
 Domain(s) contacted: api.anthropic.com
@@ -110,12 +120,13 @@ What data is sent and when: During connection, the OAuth authorization request; 
 * Terms of service: https://www.linkedin.com/legal/user-agreement
 * Privacy policy: https://www.linkedin.com/legal/privacy-policy
 
-= Instagram Graph API (via Meta / Facebook) =
-What it is: Meta's Graph API, used for connecting an Instagram Business account, auto-sharing posts, and checking the daily publishing quota (Enterprise only).
-Domain(s) contacted: www.facebook.com (OAuth authorization) and graph.facebook.com (account lookup, media create, media publish, and content publishing limit checks).
-What data is sent and when: During connection, the OAuth authorization request and the resulting access token; when sharing, the featured image URL and generated caption; when checking limits, the access token. All sent only when an administrator connects Instagram and a post with "Post to Instagram" enabled is published, or when the administrator clicks "Test Connection".
-* Terms of service: https://www.facebook.com/legal/terms
+= Instagram =
+What it is: Instagram (Meta) — the plugin connects an Instagram Business account to WordPress and posts featured images to Instagram automatically when an Enterprise-licensed blog post is published. Account lookup, media create/publish and the daily publishing-quota check are performed via the official Instagram Graph API hosted on Meta's platform.
+Domain(s) contacted: www.facebook.com (OAuth authorization redirect during the one-time account-connection flow) and graph.facebook.com (Instagram Graph API for account lookup, media create, media publish, and content publishing limit checks).
+What data is sent and when: During connection — the OAuth authorization request and the resulting access token are stored. When sharing — the featured image URL and generated caption for each post that has "Post to Instagram" enabled, at the moment it is published. When the administrator clicks "Test Connection" — the stored access token is sent to verify the account and quota. Nothing is sent until an administrator has explicitly connected an Instagram account and is publishing or testing.
+* Terms of service: https://www.facebook.com/legal/terms (Meta Platform Terms, which govern Instagram Graph API usage)
 * Privacy policy: https://www.facebook.com/privacy/policy
+* Instagram-specific data policy: https://privacycenter.instagram.com/policy
 
 = Freemius =
 What it is: The licensing, software-update and (opt-in) usage-analytics service bundled with the plugin SDK.
@@ -136,6 +147,9 @@ What data is sent and when: Site URL, plugin version, and (for Enterprise) the l
 
 == Upgrade Notice ==
 
+= 3.2.3 =
+WordPress.org plugin review round-3 fixes. Adds the WP 7.0 core AI Client as the preferred path for text generation (direct provider integration kept as fallback), tightens OAuth CSRF, and clears Plugin Check static-analysis findings.
+
 = 3.2.2 =
 Build pipeline maintenance release — no functional or security changes. Safe to skip if 3.2.1 is installed.
 
@@ -146,6 +160,14 @@ WordPress.org plugin review compliance release. Recommended for all users.
 Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
+
+= 3.2.3 =
+* New: When running on WordPress 7.0 or newer with a provider configured through the core AI Client, every text generation now goes through wp_ai_client_prompt() → generateText() first. The plugin's own direct integrations (api.anthropic.com / api.openai.com) are kept only as a fallback for older WordPress versions and sites that haven't set up the core AI Client.
+* Security: OAuth state-as-nonce verification for Instagram and LinkedIn callbacks is now performed BEFORE any other $_GET field is read, so the early-return error path can no longer be triggered with attacker-supplied input.
+* Build: All ob_start() / ob_get_clean() pairs are now contained inside a single helper function (rbco_capture_inline_script) so static analysers can verify the buffer is always closed in the same scope.
+* Build: Removed set_time_limit() from the shared request-limits helper — the multi-step AJAX flow is already chunked into short requests; let the host control max_execution_time.
+* Docs: External Services section restructured — "Instagram" is now its own clearly-named service entry alongside Anthropic, OpenAI, Ideogram, LinkedIn, Meta/Facebook Graph, and Freemius.
+* Code quality: AI prompt strings that mention HTML tag names no longer embed the literal <script>/<style> substrings (assembled via string concatenation instead) so Plugin Check's scanner doesn't pattern-match them as real inline tags.
 
 = 3.2.2 =
 * Build: GitHub Actions workflow now runs on every push to main (not only on v* tags), so every commit produces a visible CI run and a downloadable zip artifact. Freemius deploy is gated on a real Version: header bump so duplicate-version overwrites cannot happen.

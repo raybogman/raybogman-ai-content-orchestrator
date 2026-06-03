@@ -91,8 +91,9 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		</div>
 		<?php
 		// Inline JS registered via the proper script API instead of printing it inline.
-		ob_start();
-		?>
+		// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
+		rbco_capture_inline_script( 'rbco-admin', function () {
+			?>
 		jQuery(document).ready(function($) {
 			$('#rbco-test-instagram-btn').on('click', function() {
 				var $btn = $(this);
@@ -124,8 +125,8 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				});
 			});
 		});
-		<?php
-		wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+			<?php
+		} );
 		?>
 		<?php endif; ?>
 
@@ -965,8 +966,9 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 
 <?php
 // Inline JS registered via the proper script API instead of printing it inline.
-ob_start();
-?>
+// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
+rbco_capture_inline_script( 'rbco-admin', function () {
+	?>
 jQuery(document).ready(function($) {
 	$('.rbco-validate-btn').on('click', function() {
 		var $btn    = $(this);
@@ -1093,6 +1095,6 @@ jQuery(document).ready(function($) {
 		});
 	});
 });
-<?php
-wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+	<?php
+} );
 ?>
