@@ -344,8 +344,9 @@ $rbco_default_format  = RBCO_Settings::get_default_output_format();
 <?php
 // Inline JS is registered through the proper script API (attached to the
 // already-enqueued 'rbco-admin' handle) instead of printing it inline.
-ob_start();
-?>
+// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
+rbco_capture_inline_script( 'rbco-admin', function () {
+	?>
 jQuery(document).ready(function($) {
 
 	/**
@@ -820,6 +821,6 @@ jQuery(document).ready(function($) {
 	// Initial count.
 	updateCount();
 });
-<?php
-wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+	<?php
+} );
 ?>

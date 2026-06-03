@@ -930,8 +930,9 @@ class RBCO_Settings {
 			$media_js_printed = true;
 			// Registered through the proper script API (attached to the
 			// already-enqueued 'rbco-admin' handle) rather than a raw tag.
-			ob_start();
-			?>
+			// ob_start()/ob_get_clean() paired inside rbco_capture_inline_script().
+			rbco_capture_inline_script( 'rbco-admin', function () {
+				?>
 			jQuery(document).ready(function($) {
 				$('.rbco-media-upload-btn').on('click', function(e) {
 					e.preventDefault();
@@ -972,8 +973,8 @@ class RBCO_Settings {
 					$(this).remove();
 				});
 			});
-			<?php
-			wp_add_inline_script( 'rbco-admin', ob_get_clean() );
+				<?php
+			} );
 		}
 	}
 

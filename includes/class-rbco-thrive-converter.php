@@ -219,7 +219,8 @@ class RBCO_Thrive_Converter {
 			$html = $m[1];
 		}
 
-		// Strip any stray <html>, <head>, <title>, <meta>, <link>, <style>, <script> tags.
+		// Strip any stray document-level tags (html, head, title, meta, link,
+		// style, script) the AI might have emitted despite the prompt rules.
 		$html = preg_replace( '/<\/?html\b[^>]*>/i', '', $html );
 		$html = preg_replace( '/<head\b[^>]*>.*?<\/head>/is', '', $html );
 		$html = preg_replace( '/<title\b[^>]*>.*?<\/title>/is', '', $html );

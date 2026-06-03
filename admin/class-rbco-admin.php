@@ -580,15 +580,15 @@ class RBCO_Admin {
 	 * @param string $memory       Target memory limit, e.g. '256M'.
 	 * @param int    $time_seconds Target max execution time in seconds. 0 = skip.
 	 */
-	private function raise_limits_for_request( $memory = '256M', $time_seconds = 120 ) {
-		if ( $time_seconds > 0 && function_exists( 'set_time_limit' ) ) {
-			// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Scoped to this single request only.
-			@set_time_limit( $time_seconds );
-		}
-
-		// Raise memory via the WordPress API rather than the raw PHP setting.
-		// Using a custom context ('rbco') means our filter only fires for this
-		// call and never affects any other plugin or core code path.
+	private function raise_limits_for_request( $memory = '256M' ) {
+		// The multi-step AJAX handler already chunks work into short
+		// requests, so we intentionally do NOT override the host's PHP
+		// execution-time limit here — let max_execution_time stay as the
+		// host configured it.
+		//
+		// We only raise memory, and we do it through the WordPress API rather
+		// than the raw PHP setting. A custom context ('rbco') means our filter
+		// only fires for this call and never affects other plugins or core.
 		$filter = function () use ( $memory ) {
 			return $memory;
 		};
@@ -619,7 +619,7 @@ class RBCO_Admin {
 
 		// Increase limits only for content generation steps (AI API calls can
 		// take 60-120s). Scoped to this AJAX handler only — not set globally.
-		$this->raise_limits_for_request( '256M', 120 );
+		$this->raise_limits_for_request( '256M' );
 
 		$step   = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 1;
 		$job_id = isset( $_POST['job_id'] ) ? sanitize_text_field( wp_unslash( $_POST['job_id'] ) ) : '';
@@ -1324,7 +1324,7 @@ class RBCO_Admin {
 		}
 
 		// Increase memory for large PDF chunk assembly (scoped to this handler only).
-		$this->raise_limits_for_request( '256M', 0 );
+		$this->raise_limits_for_request( '256M' );
 
 		// When the file exceeds post_max_size, PHP silently drops the entire
 		// POST body — $_FILES and $_POST become empty arrays.
@@ -1625,11 +1625,12 @@ class RBCO_Admin {
 	 * Handle LinkedIn OAuth callback (redirect from LinkedIn).
 	 */
 	public function handle_linkedin_callback() {
+		// Capability gate — only administrators can complete account linking.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
-		// Handle disconnect.
+		// Handle disconnect (separate flow, has its own nonce via check_admin_referer).
 		if ( ! empty( $_GET['rbco_linkedin_disconnect'] ) ) {
 			check_admin_referer( 'rbco_linkedin_disconnect' );
 			RBCO_LinkedIn::disconnect();
@@ -1638,12 +1639,25 @@ class RBCO_Admin {
 			exit;
 		}
 
-		// Handle OAuth callback.
+		// Only respond on our own OAuth-return query flag.
 		if ( empty( $_GET['rbco_linkedin_callback'] ) ) {
 			return;
 		}
 
-		// Handle OAuth code exchange.
+		// === CSRF GATE ===
+		// The `state` value is a WordPress nonce generated in
+		// RBCO_LinkedIn::get_auth_url() (action 'rbco_linkedin_oauth'). Verify
+		// it BEFORE reading any other $_GET fields and BEFORE doing any work,
+		// so an attacker who tricks an admin into hitting this URL cannot get
+		// us to link, error-log, or redirect with attacker-supplied input.
+		$state = isset( $_GET['state'] ) ? sanitize_text_field( wp_unslash( $_GET['state'] ) ) : '';
+		if ( ! wp_verify_nonce( $state, 'rbco_linkedin_oauth' ) ) {
+			$this->set_social_notice( 'linkedin', 'error', __( 'Invalid OAuth state. Please try connecting again.', 'raybogman-ai-content-orchestrator' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
+			exit;
+		}
+
+		// State is verified — now safe to look at the other params.
 		if ( empty( $_GET['code'] ) ) {
 			$error = isset( $_GET['error_description'] ) ? sanitize_text_field( wp_unslash( $_GET['error_description'] ) ) : __( 'Authorization was denied or failed.', 'raybogman-ai-content-orchestrator' );
 			$this->set_social_notice( 'linkedin', 'error', $error );
@@ -1651,19 +1665,7 @@ class RBCO_Admin {
 			exit;
 		}
 
-		$code  = sanitize_text_field( wp_unslash( $_GET['code'] ) );
-		$state = isset( $_GET['state'] ) ? sanitize_text_field( wp_unslash( $_GET['state'] ) ) : '';
-
-		// CSRF protection for the OAuth round-trip. The `state` value is a WP
-		// nonce generated in RBCO_LinkedIn::get_auth_url() (action
-		// 'rbco_linkedin_oauth'); verify it here before doing any work. It is
-		// re-checked against the stored transient inside handle_callback().
-		if ( ! wp_verify_nonce( $state, 'rbco_linkedin_oauth' ) ) {
-			$this->set_social_notice( 'linkedin', 'error', __( 'Invalid OAuth state. Please try connecting again.', 'raybogman-ai-content-orchestrator' ) );
-			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings' ) );
-			exit;
-		}
-
+		$code   = sanitize_text_field( wp_unslash( $_GET['code'] ) );
 		$result = RBCO_LinkedIn::handle_callback( $code, $state );
 
 		if ( is_wp_error( $result ) ) {
@@ -2739,11 +2741,12 @@ class RBCO_Admin {
 	}
 
 	public function handle_instagram_callback() {
+		// Capability gate — only administrators can complete account linking.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
-		// Disconnect.
+		// Disconnect (separate flow, carries its own nonce in the query string).
 		if ( isset( $_GET['rbco_instagram_disconnect'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['rbco_instagram_disconnect'] ) ), 'rbco_instagram_disconnect' ) ) {
 			RBCO_Instagram::disconnect();
 			$this->set_social_notice( 'instagram', 'info', __( 'Instagram disconnected.', 'raybogman-ai-content-orchestrator' ) );
@@ -2751,30 +2754,34 @@ class RBCO_Admin {
 			exit;
 		}
 
-		// OAuth callback.
-		if ( isset( $_GET['tab'] ) && 'instagram' === $_GET['tab'] && isset( $_GET['code'] ) && isset( $_GET['state'] ) ) {
-			$ig_code  = sanitize_text_field( wp_unslash( $_GET['code'] ) );
-			$ig_state = sanitize_text_field( wp_unslash( $_GET['state'] ) );
+		// Only respond on our own OAuth-return query flag.
+		if ( ! isset( $_GET['tab'] ) || 'instagram' !== $_GET['tab'] || ! isset( $_GET['code'] ) || ! isset( $_GET['state'] ) ) {
+			return;
+		}
 
-			// CSRF protection for the OAuth round-trip. `state` is a WP nonce
-			// created in RBCO_Instagram::get_auth_url() (action
-			// 'rbco_instagram_oauth'); verify it before any work. It is also
-			// re-checked against the stored transient inside handle_callback().
-			if ( ! wp_verify_nonce( $ig_state, 'rbco_instagram_oauth' ) ) {
-				$this->set_social_notice( 'instagram', 'error', __( 'Invalid OAuth state. Please try connecting again.', 'raybogman-ai-content-orchestrator' ) );
-				wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) );
-				exit;
-			}
-
-			$result = RBCO_Instagram::handle_callback( $ig_code, $ig_state );
-			if ( is_wp_error( $result ) ) {
-				$this->set_social_notice( 'instagram', 'error', $result->get_error_message() );
-			} else {
-				$this->set_social_notice( 'instagram', 'success', __( 'Instagram connected successfully!', 'raybogman-ai-content-orchestrator' ) );
-			}
+		// === CSRF GATE ===
+		// The `state` value is a WordPress nonce generated in
+		// RBCO_Instagram::get_auth_url() (action 'rbco_instagram_oauth').
+		// Verify it BEFORE reading the `code` value and BEFORE any work, so
+		// an attacker cannot trick a logged-in admin into completing a link
+		// they did not initiate.
+		$ig_state = sanitize_text_field( wp_unslash( $_GET['state'] ) );
+		if ( ! wp_verify_nonce( $ig_state, 'rbco_instagram_oauth' ) ) {
+			$this->set_social_notice( 'instagram', 'error', __( 'Invalid OAuth state. Please try connecting again.', 'raybogman-ai-content-orchestrator' ) );
 			wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) );
 			exit;
 		}
+
+		// State is verified — now safe to read the authorization code.
+		$ig_code = sanitize_text_field( wp_unslash( $_GET['code'] ) );
+		$result  = RBCO_Instagram::handle_callback( $ig_code, $ig_state );
+		if ( is_wp_error( $result ) ) {
+			$this->set_social_notice( 'instagram', 'error', $result->get_error_message() );
+		} else {
+			$this->set_social_notice( 'instagram', 'success', __( 'Instagram connected successfully!', 'raybogman-ai-content-orchestrator' ) );
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) );
+		exit;
 	}
 
 	public function maybe_share_to_instagram( $new_status, $old_status, $post ) {
