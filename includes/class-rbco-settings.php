@@ -433,6 +433,30 @@ class RBCO_Settings {
 			)
 		);
 
+		// Link Placement.
+		register_setting( 'rbco_settings_content', 'rbco_link_placement', array(
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+			'default'           => 'both',
+		) );
+
+		add_settings_field(
+			'rbco_link_placement',
+			__( 'Link Placement', 'raybogman-ai-content-orchestrator' ),
+			array( __CLASS__, 'render_select_field' ),
+			self::TAB_CONTENT,
+			'rbco_project_vision_section',
+			array(
+				'id'      => 'rbco_link_placement',
+				'options' => array(
+					'both'   => __( 'Inline + Related Articles section (recommended)', 'raybogman-ai-content-orchestrator' ),
+					'inline' => __( 'Inline only — links spread naturally through paragraphs', 'raybogman-ai-content-orchestrator' ),
+					'footer' => __( 'Related Articles section only — clean list at the bottom', 'raybogman-ai-content-orchestrator' ),
+				),
+				'description' => __( 'Where to place internal links. "Inline" inserts links within your paragraphs. "Related Articles" adds a styled section at the bottom. "Both" combines them.', 'raybogman-ai-content-orchestrator' ),
+			)
+		);
+
 		// ── Scanner Section ─────────────────────────────────────────
 		add_settings_section(
 			'rbco_scanner_section',
@@ -884,6 +908,11 @@ class RBCO_Settings {
 		return (int) get_option( 'rbco_max_internal_links', 5 );
 	}
 
+	public static function get_link_placement() {
+		$placement = get_option( 'rbco_link_placement', 'both' );
+		return in_array( $placement, array( 'inline', 'footer', 'both' ), true ) ? $placement : 'both';
+	}
+
 	public static function get_default_featured_image() {
 		return (int) get_option( 'rbco_default_featured_image', 0 );
 	}
@@ -1081,6 +1110,7 @@ class RBCO_Settings {
 				'rbco_project_vision',
 				'rbco_internal_linking',
 				'rbco_max_internal_links',
+				'rbco_link_placement',
 			),
 			'images' => array(
 				'rbco_image_style',
