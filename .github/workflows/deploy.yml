@@ -1,8 +1,9 @@
-name: Deploy to Freemius
+name: Build plugin zip
 
-# Runs for every push to main (so you see an Action for every commit) and for
-# every v* tag. The Freemius deploy step is gated by a real version change in
-# the plugin header, so duplicate-version overwrites are avoided.
+# Builds a distributable plugin zip for every push to main and every v* tag.
+# The zip is uploaded as a downloadable artifact. (Freemius deployment has been
+# removed — this is the free WordPress.org build. A WordPress.org SVN deploy
+# step can be added here later if desired.)
 on:
   push:
     branches:
@@ -12,60 +13,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    name: Build & deploy
+    name: Build zip
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          # Need the previous commit to detect a Version: header change.
           fetch-depth: 2
 
-      - name: Resolve version + deploy gate
+      - name: Resolve version
         id: version
         run: |
           set -euo pipefail
           PLUGIN_FILE="raybogman-ai-content-orchestrator.php"
-
-          read_header_version() {
-            # $1 = git ref ("HEAD", "HEAD^", or empty for working tree).
-            local ref="$1"
-            if [ -z "$ref" ]; then
-              grep -E '^\s*\*\s*Version:' "$PLUGIN_FILE" | head -1
-            else
-              git show "${ref}:${PLUGIN_FILE}" 2>/dev/null | grep -E '^\s*\*\s*Version:' | head -1
-            fi | sed -E 's/.*Version:[[:space:]]*([0-9.]+).*/\1/'
-          }
-
-          HEADER_VERSION="$(read_header_version '')"
-          echo "Plugin header version: ${HEADER_VERSION}"
-
+          HEADER_VERSION="$(grep -E '^\s*\*\s*Version:' "$PLUGIN_FILE" | head -1 | sed -E 's/.*Version:[[:space:]]*([0-9.]+).*/\1/')"
           if [ "${GITHUB_REF_TYPE:-branch}" = "tag" ]; then
             VERSION="${GITHUB_REF_NAME#v}"
-            DEPLOY="true"
-            REASON="tag push (${GITHUB_REF_NAME})"
           else
             VERSION="${HEADER_VERSION}"
-            PREV_VERSION="$(read_header_version 'HEAD^' || true)"
-            echo "Previous commit header version: ${PREV_VERSION:-<unknown>}"
-            if [ -n "${HEADER_VERSION}" ] && [ "${HEADER_VERSION}" != "${PREV_VERSION}" ]; then
-              DEPLOY="true"
-              REASON="Version header bumped (${PREV_VERSION:-?} → ${HEADER_VERSION})"
-            else
-              DEPLOY="false"
-              REASON="Version header unchanged (${HEADER_VERSION}) — build only, no Freemius deploy"
-            fi
           fi
-
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "DEPLOY=${DEPLOY}"   >> "$GITHUB_OUTPUT"
-          echo "REASON=${REASON}"   >> "$GITHUB_OUTPUT"
-          echo "::notice::Resolved version=${VERSION}, deploy=${DEPLOY} — ${REASON}"
+          echo "::notice::Resolved version=${VERSION}"
 
       - name: Create plugin zip
         run: |
-          zip -r raybogman-content-orchestrator.zip . \
+          zip -r raybogman-ai-content-orchestrator.zip . \
             -x '.git/*' \
             -x '.github/*' \
             -x '*.DS_Store' \
@@ -76,40 +49,11 @@ jobs:
             -x '.editorconfig' \
             -x '.env' \
             -x 'node_modules/*' \
-            -x '*.zip' \
-            -x 'vendor/freemius/.example.env' \
-            -x 'vendor/freemius/.editorconfig' \
-            -x 'vendor/freemius/.gitignore' \
-            -x 'vendor/freemius/.gitattributes' \
-            -x 'vendor/freemius/.phpstan/*' \
-            -x 'vendor/freemius/.github/*' \
-            -x 'vendor/freemius/CONTRIBUTING.md' \
-            -x 'vendor/freemius/composer.lock' \
-            -x 'vendor/freemius/patches/*'
+            -x '*.zip'
 
       - name: Upload zip artifact
         uses: actions/upload-artifact@v7
         with:
-          name: raybogman-content-orchestrator-${{ steps.version.outputs.VERSION }}-${{ github.sha }}
-          path: raybogman-content-orchestrator.zip
+          name: raybogman-ai-content-orchestrator-${{ steps.version.outputs.VERSION }}-${{ github.sha }}
+          path: raybogman-ai-content-orchestrator.zip
           retention-days: 90
-
-      - name: Deploy to Freemius
-        if: steps.version.outputs.DEPLOY == 'true'
-        uses: buttonizer/freemius-deploy@v0.1.3
-        env:
-          DEV_ID: '33246'
-          PLUGIN_ID: '28680'
-          PLUGIN_SLUG: 'raybogman-ai-content-orchestrator'
-          PUBLIC_KEY: ${{ secrets.FREEMIUS_PUBLIC_KEY }}
-          SECRET_KEY: ${{ secrets.FREEMIUS_SECRET_KEY }}
-        with:
-          file_name: 'raybogman-content-orchestrator.zip'
-          version: ${{ steps.version.outputs.VERSION }}
-          release_mode: 'released'
-
-      - name: Skipped deploy notice
-        if: steps.version.outputs.DEPLOY != 'true'
-        run: |
-          echo "::notice::Freemius deploy skipped — ${{ steps.version.outputs.REASON }}."
-          echo "::notice::To ship a new release: bump the Version: header in raybogman-ai-content-orchestrator.php and merge to main, or push a v* tag."

@@ -23,7 +23,6 @@ class RBCO_Generator {
 	const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
 	const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 	const OPENAI_IMAGE_URL = 'https://api.openai.com/v1/images/generations';
-	const IDEOGRAM_IMAGE_URL = 'https://api.ideogram.ai/v1/ideogram-v3/generate';
 	const ANTHROPIC_VERSION = '2023-06-01';
 	const MAX_RETRIES = 5;
 
@@ -224,7 +223,7 @@ class RBCO_Generator {
 		$system_prompt .= "\n\n" . implode( "\n", array(
 			'CRITICAL OUTPUT RULES (apply to ALL content types):',
 			'- Output ONLY body-level HTML fragments. Do NOT include ' . $tag_list . ' tags.',
-			'- Do NOT generate a Table of Contents section. WordPress themes and page builders (like Thrive Architect) render their own TOC automatically from heading IDs.',
+			'- Do NOT generate a Table of Contents section. WordPress themes and page builders render their own TOC automatically from heading IDs.',
 			'- Do NOT include "Table of Contents" / "Inhoudsopgave" / "Contents" / "Índice" as an H2 heading.',
 			'- Start directly with the first content heading or introduction paragraph — no document preamble.',
 		) );
@@ -258,81 +257,10 @@ class RBCO_Generator {
 	}
 
 	/**
-	 * Generate a LinkedIn post summary from blog content.
-	 *
-	 * Creates a well-formatted LinkedIn post (1000-1300 chars) that summarizes
-	 * the blog in the style of a native LinkedIn post — with hook, insights,
-	 * bullet points, hashtags, and a call to action.
-	 *
-	 * @param string $blog_html  The generated blog HTML content.
-	 * @param array  $meta       The SEO metadata (title, keyphrase, description).
-	 * @param string $style_key  The blog style key (how-to, listicle, etc.).
-	 * @param string $blog_url   Optional URL of the blog post (used as CTA link).
-	 * @return string LinkedIn post commentary (plain text).
-	 * @throws Exception If the API call fails.
-	 */
-	public function generate_linkedin_post( $blog_html, $meta, $style_key = 'standard', $blog_url = '' ) {
-		// Strip HTML tags to get clean text for the AI to summarize.
-		$blog_text = wp_strip_all_tags( $blog_html );
-		// Truncate to keep the prompt reasonable.
-		if ( mb_strlen( $blog_text ) > 6000 ) {
-			$blog_text = mb_substr( $blog_text, 0, 6000 ) . '...';
-		}
-
-		$style_hint = '';
-		$style      = RBCO_Styles::get_style( $style_key );
-		if ( $style ) {
-			$style_hint = sprintf( 'The original blog is a %s. Match that tone and angle.', $style['name'] );
-		}
-
-		$system_prompt = implode( "\n", array(
-			'You are an expert LinkedIn content strategist who writes engaging, high-performing native LinkedIn posts.',
-			'Your task: create a LinkedIn post that summarizes a blog article to drive clicks and engagement.',
-			'',
-			'Rules:',
-			'- Output ONLY the LinkedIn post text — no explanation, no quotes, no markdown fences',
-			'- Target length: 900-1300 characters (LinkedIn\'s sweet spot for engagement)',
-			'- First line MUST be a strong hook (question, bold statement, or surprising stat) — this is the "scroll stopper"',
-			'- Use short paragraphs (1-2 lines each) with line breaks between for scannability',
-			'- Include 3-5 bullet points (use → or • or ✔) for key takeaways',
-			'- Use emojis sparingly and professionally (🚀 📊 💡 ✅ 🎯 — not 😂 😎)',
-			'- End with a clear call-to-action pointing to the full article',
-			'- Include 3-5 relevant hashtags at the very bottom on their own line (e.g. #SEO #ContentMarketing)',
-			'- Write in the same language as the blog content',
-			'- Do NOT include the blog URL — it will be attached automatically as a link preview',
-			'- Do NOT repeat the title verbatim — rephrase it as a hook',
-			$style_hint,
-		) );
-
-		$user_message = sprintf(
-			"Blog title: %s\nFocus keyphrase: %s\nMeta description: %s\n\nBlog content:\n%s\n\nNow write the LinkedIn post.",
-			$meta['seo_title'] ?? '',
-			$meta['focus_keyphrase'] ?? '',
-			$meta['meta_description'] ?? '',
-			$blog_text
-		);
-
-		$result = $this->call_ai( $system_prompt, $user_message, 1024 );
-		$commentary = trim( $result );
-
-		// Strip markdown fences if present.
-		$commentary = preg_replace( '/^```[a-z]*\s*/s', '', $commentary );
-		$commentary = preg_replace( '/\s*```$/s', '', $commentary );
-		$commentary = trim( $commentary );
-
-		// Safety: LinkedIn allows up to 3000 chars, but truncate at 2900 to be safe.
-		if ( mb_strlen( $commentary ) > 2900 ) {
-			$commentary = mb_substr( $commentary, 0, 2900 ) . '...';
-		}
-
-		return $commentary;
-	}
-
-	/**
 	 * Blog-style-to-visual-style mapping.
 	 *
-	 * Returns the Ideogram style_type and visual direction hint for image
-	 * prompt generation based on the blog writing style.
+	 * Returns a visual direction hint for image prompt generation based on
+	 * the blog writing style.
 	 *
 	 * @param string $style_key Blog style key.
 	 * @return array { 'style_type' => string, 'visual_hint' => string }
@@ -508,25 +436,15 @@ class RBCO_Generator {
 	}
 
 	/**
-	 * Generate an image using the configured image provider.
-	 *
-	 * Routes to OpenAI (DALL-E 3) or Ideogram based on settings.
-	 * Accepts an optional style_key to determine the Ideogram style_type.
+	 * Generate an image via OpenAI (DALL-E 3).
 	 *
 	 * @param string $prompt    Image generation prompt.
-	 * @param string $style_key Blog style key for visual style mapping (default: 'standard').
+	 * @param string $style_key Blog style key (kept for signature compatibility).
 	 * @return array { 'url' => string, 'revised_prompt' => string }
 	 * @throws Exception If the API call fails.
 	 */
 	public function generate_image( $prompt, $style_key = 'standard' ) {
-		$provider = RBCO_Settings::get_image_provider();
-
-		switch ( $provider ) {
-			case 'ideogram':
-				return $this->generate_image_ideogram( $prompt, $style_key );
-			default:
-				return $this->generate_image_openai( $prompt );
-		}
+		return $this->generate_image_openai( $prompt );
 	}
 
 	/**
@@ -600,120 +518,6 @@ class RBCO_Generator {
 		return array(
 			'url'            => $data['data'][0]['url'],
 			'revised_prompt' => isset( $data['data'][0]['revised_prompt'] ) ? $data['data'][0]['revised_prompt'] : $prompt,
-		);
-	}
-
-	/**
-	 * Generate an image via Ideogram v3 API.
-	 *
-	 * Uses multipart/form-data as required by the v3 endpoint.
-	 * Produces 16:9 landscape images. Supports style_type mapping from blog
-	 * style, brand color palettes, and negative prompts natively.
-	 *
-	 * @param string $prompt    Image generation prompt.
-	 * @param string $style_key Blog style key for visual style mapping (default: 'standard').
-	 * @return array { 'url' => string, 'revised_prompt' => string }
-	 * @throws Exception If the API call fails.
-	 */
-	private function generate_image_ideogram( $prompt, $style_key = 'standard' ) {
-		$api_key = RBCO_Settings::get_ideogram_api_key();
-		if ( empty( $api_key ) ) {
-   // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( __( 'Ideogram API key is required for image generation. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ) );
-		}
-
-		// Determine style_type: user override or auto-mapped from blog style.
-		$style_setting = RBCO_Settings::get_image_style();
-		if ( 'auto' !== $style_setting ) {
-			$style_type = $style_setting;
-		} else {
-			$visual_style = self::get_visual_style_for_blog( $style_key );
-			$style_type   = $visual_style['style_type'];
-		}
-
-		// Build multipart/form-data boundary and body.
-		$boundary = wp_generate_password( 24, false );
-		$body     = '';
-
-		$fields = array(
-			'prompt'          => $prompt,
-			'aspect_ratio'    => '16x9',
-			'rendering_speed' => 'DEFAULT',
-			'style_type'      => $style_type,
-			'magic_prompt'    => 'ON',
-			'num_images'      => '1',
-		);
-
-		// Add negative prompt if configured.
-		$negative = RBCO_Settings::get_image_negative_prompt();
-		if ( ! empty( $negative ) ) {
-			$fields['negative_prompt'] = $negative;
-		}
-
-		foreach ( $fields as $name => $value ) {
-			$body .= '--' . $boundary . "\r\n";
-			$body .= 'Content-Disposition: form-data; name="' . $name . '"' . "\r\n\r\n";
-			$body .= $value . "\r\n";
-		}
-
-		// Add brand color palette if configured (Ideogram allows max 4 colors).
-		$brand_colors = RBCO_Settings::get_brand_colors();
-		if ( ! empty( $brand_colors ) ) {
-			$brand_colors  = array_slice( $brand_colors, 0, 4 );
-			$color_members = array();
-			foreach ( $brand_colors as $hex ) {
-				$clean = ltrim( trim( $hex ), '#' );
-				$color_members[] = array( 'color_hex' => '#' . $clean );
-			}
-			$palette_json = wp_json_encode( array( 'members' => $color_members ) );
-
-			$body .= '--' . $boundary . "\r\n";
-			$body .= 'Content-Disposition: form-data; name="color_palette"' . "\r\n";
-			$body .= 'Content-Type: application/json' . "\r\n\r\n";
-			$body .= $palette_json . "\r\n";
-		}
-
-		$body .= '--' . $boundary . '--' . "\r\n";
-
-		$response = wp_remote_post( self::IDEOGRAM_IMAGE_URL, array(
-			'timeout' => 120,
-			'headers' => array(
-				'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
-				'Api-Key'      => $api_key,
-			),
-			'body'    => $body,
-		) );
-
-		if ( is_wp_error( $response ) ) {
-   // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( sprintf( 'Ideogram API request failed: %s', esc_html( $response->get_error_message( ) ) ) );
-		}
-
-		$code      = wp_remote_retrieve_response_code( $response );
-		$resp_body = wp_remote_retrieve_body( $response );
-		$data      = json_decode( $resp_body, true );
-
-		if ( $code < 200 || $code >= 300 ) {
-			$msg = '';
-			if ( is_array( $data ) && isset( $data['message'] ) ) {
-				$msg = $data['message'];
-			} elseif ( is_array( $data ) && isset( $data['error'] ) ) {
-				$msg = is_string( $data['error'] ) ? $data['error'] : wp_json_encode( $data['error'] );
-			} else {
-				$msg = mb_substr( $resp_body, 0, 500 );
-			}
-   // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( sprintf( 'Ideogram API error (HTTP %d): %s', esc_html( $code, $msg  ) ) );
-		}
-
-		if ( empty( $data['data'][0]['url'] ) ) {
-   // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new Exception( 'Ideogram API returned no image URL.' );
-		}
-
-		return array(
-			'url'            => $data['data'][0]['url'],
-			'revised_prompt' => isset( $data['data'][0]['prompt'] ) ? $data['data'][0]['prompt'] : $prompt,
 		);
 	}
 

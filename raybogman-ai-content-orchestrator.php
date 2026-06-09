@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Ray Bogman AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-ai-content-orchestrator
- * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
- * Version:           3.2.3
+ * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO metadata, AI-generated articles, featured images (DALL-E 3), internal linking, and Yoast integration. Supports Claude and OpenAI.
+ * Version:           1.0.0
  * Requires at least: 5.9
  * Tested up to:      7.0
  * Requires PHP:      7.4
@@ -19,56 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RBCO_VERSION', '3.2.3' );
+define( 'RBCO_VERSION', '1.0.0' );
 define( 'RBCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RBCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RBCO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-
-/**
- * Initialize Freemius SDK.
- */
-if ( ! function_exists( 'rbco_fs' ) ) {
-	function rbco_fs() {
-		global $rbco_fs;
-
-		if ( ! isset( $rbco_fs ) ) {
-			require_once dirname( __FILE__ ) . '/vendor/freemius/start.php';
-
-			$rbco_fs = fs_dynamic_init( array(
-				'id'                  => '28680',
-				'slug'                => 'raybogman-ai-content-orchestrator',
-				'type'                => 'plugin',
-				'public_key'          => 'pk_cbfd6cc1050eaf4acbcb63111d9b5',
-				'is_premium'          => false,
-				'has_premium_version' => true,
-				'premium_suffix'      => 'Enterprise',
-				'has_addons'          => false,
-				'has_paid_plans'      => true,
-				'is_org_compliant'    => true,
-				'menu'                => array(
-					'slug'    => 'raybogman-ai-content-orchestrator',
-					'support' => false,
-					'account' => true,
-					'pricing' => true,
-				),
-			) );
-		}
-
-		return $rbco_fs;
-	}
-
-	rbco_fs();
-	do_action( 'rbco_fs_loaded' );
-}
-
-/**
- * Helper: check if Pro plan is active.
- *
- * @return bool
- */
-function rbco_is_pro() {
-	return rbco_fs()->is_plan( 'enterprise', true );
-}
 
 /**
  * Capture a PHP-generated inline script body and attach it to an already
@@ -126,18 +80,12 @@ final class RBCO_Plugin {
 	private function load_dependencies() {
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-settings.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-styles.php';
-		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-pdf-extractor.php';
-		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-pdf-library.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-scanner.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-generator.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-publisher.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-internal-linker.php';
-		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-repurposer.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-gutenberg-converter.php';
-		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-thrive-converter.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-image-overlay.php';
-		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-linkedin.php';
-		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-instagram.php';
 		require_once RBCO_PLUGIN_DIR . 'admin/class-rbco-admin.php';
 	}
 
@@ -157,26 +105,8 @@ final class RBCO_Plugin {
 		// Allow TTF/OTF font uploads for the image overlay feature.
 		add_filter( 'upload_mimes', array( $this, 'allow_font_uploads' ) );
 		add_filter( 'wp_check_filetype_and_ext', array( $this, 'fix_font_filetype' ), 10, 4 );
-
-		// Custom 1-minute cron interval.
-		add_filter( 'cron_schedules', array( $this, 'add_cron_interval' ) );
-
-		// On every admin/frontend request, run rate-limited catch-up.
-		// This is the primary mechanism — runs whenever anyone visits.
-		add_action( 'admin_init', array( $this, 'maybe_catch_up_scheduled' ) );
-		add_action( 'init', array( $this, 'maybe_catch_up_scheduled' ) );
-
-		// Dedicated cron event — runs catch-up directly with NO rate limit,
-		// so manual triggers from WP Crontrol always actually execute.
-		add_action( 'rbco_catch_up_scheduled', array( $this, 'run_catch_up_now' ) );
 	}
 
-	/**
-	 * Register a custom 1-minute cron interval.
-	 *
-	 * @param array $schedules Existing cron schedules.
-	 * @return array Modified schedules.
-	 */
 	/**
 	 * Show migration notice if AI Content Creator is still active.
 	 */
@@ -303,9 +233,6 @@ final class RBCO_Plugin {
 		$pv = get_option( 'rbco_project_vision', '' );
 		$settings['Project Vision'] = ! empty( $pv ) ? substr( $pv, 0, 50 ) . ( strlen( $pv ) > 50 ? '...' : '' ) : '—';
 
-		$li = get_option( 'rbco_linkedin_client_id', '' );
-		$settings['LinkedIn'] = ! empty( $li ) ? 'Configured' : '—';
-
 		$urls = get_option( 'rbco_saved_urls', array() );
 		$settings['Saved URLs'] = is_array( $urls ) ? count( $urls ) . ' URL(s)' : '—';
 
@@ -333,43 +260,6 @@ final class RBCO_Plugin {
 		return $data;
 	}
 
-	public function add_cron_interval( $schedules ) {
-		if ( ! isset( $schedules['rbco_every_minute'] ) ) {
-			$schedules['rbco_every_minute'] = array(
-				'interval' => 60,
-				'display'  => __( 'Every Minute (Ray Bogman AI Content Orchestrator)', 'raybogman-ai-content-orchestrator' ),
-			);
-		}
-		return $schedules;
-	}
-
-	/**
-	 * Rate-limited catch-up. Used for admin_init and init hooks (fires on every
-	 * request). Limited to once per minute via transient.
-	 */
-	public function maybe_catch_up_scheduled() {
-		$last_run = (int) get_transient( 'rbco_catch_up_last_run' );
-		if ( $last_run && ( time() - $last_run ) < 60 ) {
-			return;
-		}
-		set_transient( 'rbco_catch_up_last_run', time(), 300 );
-
-		$this->run_catch_up_now();
-	}
-
-	/**
-	 * Unconditional catch-up. Used for the WP cron event directly so manual
-	 * triggers from WP Crontrol always execute regardless of recent runs.
-	 */
-	public function run_catch_up_now() {
-		if ( ! class_exists( 'RBCO_Publisher' ) ) {
-			return;
-		}
-		$count = RBCO_Publisher::catch_up_overdue();
-		update_option( 'rbco_last_catchup_run', time(), false );
-		update_option( 'rbco_last_catchup_count', (int) $count, false );
-	}
-
 	/**
 	 * Plugin activation.
 	 */
@@ -391,16 +281,8 @@ final class RBCO_Plugin {
 			}
 		}
 
-		// Ensure custom interval filter is registered before scheduling.
-		add_filter( 'cron_schedules', array( $this, 'add_cron_interval' ) );
-
-		// Clear any pre-existing event (previously registered as hourly) and
-		// re-schedule using the 1-minute interval.
-		$timestamp = wp_next_scheduled( 'rbco_catch_up_scheduled' );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, 'rbco_catch_up_scheduled' );
-		}
-		wp_schedule_event( time() + 60, 'rbco_every_minute', 'rbco_catch_up_scheduled' );
+		// Clean up any scheduling event left over from an earlier version.
+		wp_clear_scheduled_hook( 'rbco_catch_up_scheduled' );
 
 		flush_rewrite_rules();
 	}
@@ -421,18 +303,9 @@ final class RBCO_Plugin {
 			RBCO_Admin::get_instance();
 		}
 
-		// Ensure the 1-minute cron event is registered. If an old hourly event
-		// exists from a previous version, upgrade it to 1-minute.
-		$next = wp_next_scheduled( 'rbco_catch_up_scheduled' );
-		if ( ! $next ) {
-			wp_schedule_event( time() + 60, 'rbco_every_minute', 'rbco_catch_up_scheduled' );
-		} else {
-			// Check if the schedule is still 'hourly' from an old version.
-			$event = wp_get_scheduled_event( 'rbco_catch_up_scheduled' );
-			if ( $event && isset( $event->schedule ) && 'hourly' === $event->schedule ) {
-				wp_clear_scheduled_hook( 'rbco_catch_up_scheduled' );
-				wp_schedule_event( time() + 60, 'rbco_every_minute', 'rbco_catch_up_scheduled' );
-			}
+		// Remove any scheduling event left over from an earlier version.
+		if ( wp_next_scheduled( 'rbco_catch_up_scheduled' ) ) {
+			wp_clear_scheduled_hook( 'rbco_catch_up_scheduled' );
 		}
 	}
 }

@@ -15,7 +15,6 @@ $rbco_model          = RBCO_Settings::get_active_model();
 $rbco_has_yoast      = defined( 'WPSEO_VERSION' );
 $rbco_categories     = RBCO_Publisher::get_categories();
 $rbco_saved_urls     = RBCO_Settings::get_saved_urls();
-$rbco_pdf_library    = RBCO_PDF_Library::get_for_js();
 $rbco_project_vision = RBCO_Settings::get_project_vision();
 ?>
 <div class="wrap rbco-wrap">
@@ -98,14 +97,9 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 								<label for="rbco-url"><?php esc_html_e( 'Website URL', 'raybogman-ai-content-orchestrator' ); ?></label>
 							</th>
 							<td>
-								<input type="<?php echo rbco_is_pro() ? 'text' : 'url'; ?>" id="rbco-url" class="large-text" placeholder="https://example.com" />
+								<input type="url" id="rbco-url" class="large-text" placeholder="https://example.com" />
 								<p class="description">
-									<?php if ( rbco_is_pro() ) : ?>
-										<?php esc_html_e( 'Separate multiple URLs with commas. Leave empty to skip scanning.', 'raybogman-ai-content-orchestrator' ); ?>
-									<?php else : ?>
-										<?php esc_html_e( 'Enter one website URL to scan for context. Leave empty to skip scanning.', 'raybogman-ai-content-orchestrator' ); ?>
-										<span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;">ENT</span> <?php esc_html_e( 'Multiple URLs', 'raybogman-ai-content-orchestrator' ); ?>
-									<?php endif; ?>
+									<?php esc_html_e( 'Enter one website URL to scan for context. Leave empty to skip scanning.', 'raybogman-ai-content-orchestrator' ); ?>
 								</p>
 								<p style="margin-top: 10px;">
 									<label>
@@ -134,61 +128,6 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 								</p>
 							</td>
 						</tr>
-					</tbody>
-						<!-- PDF Sources (Enterprise) -->
-						<?php if ( rbco_is_pro() ) : ?>
-						<tr>
-							<th scope="row">
-								<?php esc_html_e( 'PDF Sources', 'raybogman-ai-content-orchestrator' ); ?>
-							</th>
-							<td>
-								<div class="rbco-pdf-upload-area">
-									<input type="file" id="rbco-pdf-file" accept=".pdf" style="display:none;" />
-									<button type="button" id="rbco-pdf-upload-btn" class="button">
-										<span class="dashicons dashicons-pdf" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; margin-right: 4px;"></span>
-										<?php esc_html_e( 'Upload PDF', 'raybogman-ai-content-orchestrator' ); ?>
-									</button>
-									<span id="rbco-pdf-upload-status" style="margin-left: 12px;"></span>
-								</div>
-								<p class="description" style="margin-top: 6px;">
-									<?php
-									printf(
-										/* translators: %s: max upload size */
-										esc_html__( 'Upload a PDF to use as context for content generation. Max file size: %s. Text will be extracted automatically.', 'raybogman-ai-content-orchestrator' ),
-										esc_html( RBCO_PDF_Library::get_max_upload_size_formatted() )
-									);
-									?>
-								</p>
-
-								<?php if ( ! empty( $rbco_pdf_library ) ) : ?>
-								<div id="rbco-pdf-library" class="rbco-pdf-library" style="margin-top: 12px;">
-									<p class="description" style="margin-bottom: 8px;">
-										<strong><?php esc_html_e( 'Saved PDFs — check to use as source:', 'raybogman-ai-content-orchestrator' ); ?></strong>
-									</p>
-									<?php foreach ( $rbco_pdf_library as $rbco_pdf ) : ?>
-										<div class="rbco-pdf-item" data-pdf-id="<?php echo esc_attr( $rbco_pdf['id'] ); ?>">
-											<label class="rbco-pdf-label">
-												<input type="checkbox" name="rbco-pdf-ids[]" value="<?php echo esc_attr( $rbco_pdf['id'] ); ?>" class="rbco-pdf-checkbox" />
-												<span class="dashicons dashicons-pdf" style="color: #d63638; vertical-align: text-bottom;"></span>
-												<strong><?php echo esc_html( $rbco_pdf['name'] ); ?></strong>
-												<span class="description">
-													&mdash; <?php echo esc_html( $rbco_pdf['upload_date'] ); ?>
-													&middot; <?php echo esc_html( number_format( $rbco_pdf['text_length'] ) ); ?> chars
-												</span>
-											</label>
-											<button type="button" class="rbco-pdf-delete-btn" data-pdf-id="<?php echo esc_attr( $rbco_pdf['id'] ); ?>" title="<?php esc_attr_e( 'Delete', 'raybogman-ai-content-orchestrator' ); ?>">
-												<span class="dashicons dashicons-trash" style="color: #d63638; font-size: 14px; width: 14px; height: 14px;"></span>
-											</button>
-											<div class="rbco-pdf-preview description"><?php echo esc_html( $rbco_pdf['text_preview'] ); ?></div>
-										</div>
-									<?php endforeach; ?>
-								</div>
-								<?php else : ?>
-								<div id="rbco-pdf-library" class="rbco-pdf-library" style="margin-top: 12px; display: none;"></div>
-								<?php endif; ?>
-							</td>
-						</tr>
-						<?php endif; ?>
 					</tbody>
 				</table>
 			</div>
@@ -287,99 +226,14 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 									<label>
 										<input type="radio" name="rbco-status" value="publish" />
 										<strong><?php esc_html_e( 'Publish', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										<span class="description">&mdash; <?php esc_html_e( 'publish immediately (or at scheduled time)', 'raybogman-ai-content-orchestrator' ); ?></span>
+										<span class="description">&mdash; <?php esc_html_e( 'publish immediately', 'raybogman-ai-content-orchestrator' ); ?></span>
 									</label>
 								</fieldset>
 							</td>
 						</tr>
-
-						<tr>
-							<th scope="row"><?php esc_html_e( 'Schedule', 'raybogman-ai-content-orchestrator' ); ?></th>
-							<td>
-								<fieldset>
-									<label>
-										<input type="checkbox" id="rbco-schedule-enabled" />
-										<strong><?php esc_html_e( 'Schedule for later', 'raybogman-ai-content-orchestrator' ); ?></strong>
-									</label>
-									<div id="rbco-schedule-fields" style="display:none; margin-top: 10px;">
-										<input type="datetime-local" id="rbco-schedule-at" class="regular-text" min="<?php echo esc_attr( wp_date( 'Y-m-d\TH:i', time() + 300 ) ); ?>" />
-										<p class="description">
-											<?php esc_html_e( 'Site time zone:', 'raybogman-ai-content-orchestrator' ); ?>
-											<code><?php echo esc_html( wp_timezone_string() ); ?></code>
-											&middot;
-											<?php esc_html_e( 'Current time:', 'raybogman-ai-content-orchestrator' ); ?>
-											<code><?php echo esc_html( wp_date( 'Y-m-d H:i' ) ); ?></code>
-										</p>
-										<p class="description" id="rbco-schedule-help-draft">
-											<span class="dashicons dashicons-info" style="color:#2271b1;"></span>
-											<?php esc_html_e( 'Draft + Schedule = Review before publishing. The post will appear in your Scheduled list for you to approve first.', 'raybogman-ai-content-orchestrator' ); ?>
-										</p>
-										<p class="description" id="rbco-schedule-help-publish" style="display:none;">
-											<span class="dashicons dashicons-info" style="color:#2271b1;"></span>
-											<?php esc_html_e( 'Publish + Schedule = Direct scheduled publication. WordPress will publish it automatically at the scheduled time.', 'raybogman-ai-content-orchestrator' ); ?>
-										</p>
-									</div>
-								</fieldset>
-							</td>
-						</tr>
-
-						<!-- LinkedIn (Enterprise) -->
-						<?php if ( rbco_is_pro() && RBCO_LinkedIn::is_connected() ) : ?>
-							<?php $rbco_li_profile = RBCO_LinkedIn::get_profile(); ?>
-							<tr>
-								<th scope="row"><?php esc_html_e( 'LinkedIn', 'raybogman-ai-content-orchestrator' ); ?></th>
-								<td>
-									<fieldset>
-										<label>
-											<input type="checkbox" id="rbco-linkedin" />
-											<strong><?php esc_html_e( 'Post to LinkedIn when published', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										</label>
-										<p class="description">
-											<?php
-											printf(
-												/* translators: %s: LinkedIn account name */
-												esc_html__( 'Will share to LinkedIn as %s when the content is published (immediately or after approval).', 'raybogman-ai-content-orchestrator' ),
-												'<strong>' . esc_html( $rbco_li_profile['name'] ) . '</strong>'
-											);
-											?>
-										</p>
-									</fieldset>
-								</td>
-							</tr>
-						<?php endif; ?>
-
-						<!-- Instagram (Enterprise) -->
-						<?php if ( rbco_is_pro() && RBCO_Instagram::is_connected() ) : ?>
-							<?php $rbco_ig_profile = RBCO_Instagram::get_profile(); ?>
-							<tr>
-								<th scope="row"><?php esc_html_e( 'Instagram', 'raybogman-ai-content-orchestrator' ); ?></th>
-								<td>
-									<fieldset>
-										<label>
-											<input type="checkbox" id="rbco-instagram" />
-											<strong><?php esc_html_e( 'Post to Instagram when published', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										</label>
-										<p class="description">
-											<?php
-											printf(
-            /* translators: %s: dynamic value */
-												esc_html__( 'Will share to Instagram as @%s with the featured image and an AI-generated caption.', 'raybogman-ai-content-orchestrator' ),
-												esc_html( $rbco_ig_profile['username'] ?? '' )
-											);
-											?>
-										</p>
-									</fieldset>
-								</td>
-							</tr>
-						<?php endif; ?>
 
 						<!-- Featured Image -->
-						<?php
-						$rbco_image_configured = RBCO_Settings::is_image_configured();
-						$rbco_image_provider   = RBCO_Settings::get_image_provider();
-						$rbco_image_labels     = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
-						$rbco_image_label      = isset( $rbco_image_labels[ $rbco_image_provider ] ) ? $rbco_image_labels[ $rbco_image_provider ] : $rbco_image_provider;
-						?>
+						<?php $rbco_image_configured = RBCO_Settings::is_image_configured(); ?>
 						<tr>
 							<th scope="row"><?php esc_html_e( 'Featured Image', 'raybogman-ai-content-orchestrator' ); ?></th>
 							<td>
@@ -390,22 +244,10 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 									</label>
 									<p class="description">
 										<?php if ( $rbco_image_configured ) : ?>
-											<?php
-											printf(
-												/* translators: %s: image provider name (e.g. "OpenAI (DALL-E 3)" or "Ideogram") */
-												esc_html__( 'Uses %s to generate a landscape image based on the blog topic. Set as the featured image — LinkedIn will automatically show this image when sharing.', 'raybogman-ai-content-orchestrator' ),
-												'<strong>' . esc_html( $rbco_image_label ) . '</strong>'
-											);
-											?>
+											<?php esc_html_e( 'Uses OpenAI (DALL-E 3) to generate a landscape image based on the blog topic, then sets it as the featured image.', 'raybogman-ai-content-orchestrator' ); ?>
 										<?php else : ?>
 											<span class="dashicons dashicons-warning" style="color: #dba617; vertical-align: text-bottom;"></span>
-											<?php
-											printf(
-												/* translators: %s: image provider name */
-												'<em>' . esc_html__( 'Requires an API key for %s. Configure it in Settings → Featured Image Provider section.', 'raybogman-ai-content-orchestrator' ) . '</em>',
-												esc_html( $rbco_image_label )
-											);
-											?>
+											<em><?php esc_html_e( 'Requires an OpenAI API key. Configure it in Settings → General.', 'raybogman-ai-content-orchestrator' ); ?></em>
 										<?php endif; ?>
 									</p>
 								</fieldset>
@@ -422,45 +264,6 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 										<strong><?php esc_html_e( 'Auto-add internal links', 'raybogman-ai-content-orchestrator' ); ?></strong>
 										<span class="description"> — <?php esc_html_e( 'links to your existing published posts for better SEO', 'raybogman-ai-content-orchestrator' ); ?></span>
 									</label>
-									<?php if ( rbco_is_pro() ) : ?>
-									<label style="display:block;">
-										<input type="checkbox" id="rbco-competitor-analysis" <?php echo RBCO_Settings::get_competitor_analysis_enabled() ? 'checked' : ''; ?> />
-										<strong><?php esc_html_e( 'Analyze competitors first', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										<span class="description"> — <?php esc_html_e( 'scans top Google results for your keyword and writes content that covers more topics', 'raybogman-ai-content-orchestrator' ); ?></span>
-									</label>
-									<?php else : ?>
-									<label style="display:block; opacity:0.5;">
-										<input type="checkbox" disabled />
-										<strong><?php esc_html_e( 'Analyze competitors first', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										<span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;">ENT</span>
-									</label>
-									<?php endif; ?>
-								</fieldset>
-							</td>
-						</tr>
-
-						<!-- Output Format -->
-						<tr>
-							<th scope="row"><?php esc_html_e( 'Output Format', 'raybogman-ai-content-orchestrator' ); ?></th>
-							<td>
-								<fieldset>
-									<?php $rbco_default_format = RBCO_Settings::get_default_output_format(); ?>
-									<select id="rbco-output-format" style="min-width:260px;">
-										<option value="wordpress" <?php selected( $rbco_default_format, 'wordpress' ); ?>><?php esc_html_e( 'WordPress (Standard)', 'raybogman-ai-content-orchestrator' ); ?></option>
-										<?php if ( rbco_is_pro() ) : ?>
-										<option value="thrive" <?php selected( $rbco_default_format, 'thrive' ); ?>><?php esc_html_e( 'Thrive Architect (compatible)', 'raybogman-ai-content-orchestrator' ); ?></option>
-									<?php else : ?>
-										<option value="thrive" disabled><?php esc_html_e( 'Thrive Architect (Enterprise)', 'raybogman-ai-content-orchestrator' ); ?></option>
-									<?php endif; ?>
-									</select>
-									<p class="description" id="rbco-output-format-desc">
-										<?php esc_html_e( 'Choose how the content is formatted. WordPress (Standard) works with any theme. Thrive Architect creates content that\'s fully editable in Thrive\'s visual editor.', 'raybogman-ai-content-orchestrator' ); ?>
-									</p>
-									<p class="description" id="rbco-thrive-warning" style="display:none; color:#b26200; background:#fff8e5; padding:8px 12px; border-left:3px solid #dba617; margin-top:8px;">
-										<span class="dashicons dashicons-info-outline" style="vertical-align:text-bottom;"></span>
-										<strong><?php esc_html_e( 'About Thrive Architect mode:', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										<?php esc_html_e( 'Each heading, paragraph, and list becomes its own editable block in Thrive. The first time you open the post in Thrive Architect, the editor may rearrange things slightly — this is normal. Advanced Thrive elements (buttons, forms, timers) need to be added manually inside Thrive\'s editor.', 'raybogman-ai-content-orchestrator' ); ?>
-									</p>
 								</fieldset>
 							</td>
 						</tr>
@@ -531,10 +334,6 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 				</table>
 
 				<div id="rbco-result-actions" style="margin-top: 16px;">
-					<a id="rbco-view-scheduled" href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-scheduled' ) ); ?>" class="button button-primary" style="display:none;">
-						<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; margin-right: 4px;"></span>
-						<?php esc_html_e( 'View Scheduled', 'raybogman-ai-content-orchestrator' ); ?>
-					</a>
 					<a id="rbco-view-post" href="#" class="button button-primary" target="_blank">
 						<span class="dashicons dashicons-external" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; margin-right: 4px;"></span>
 						<?php esc_html_e( 'View Post', 'raybogman-ai-content-orchestrator' ); ?>
@@ -554,27 +353,3 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 		</div>
 	</div>
 </div>
-
-<?php
-// Inline JS is registered through the proper script API (attached to the
-// already-enqueued 'rbco-admin' handle) instead of printing it inline.
-// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
-rbco_capture_inline_script( 'rbco-admin', function () {
-	?>
-// Toggle Thrive Architect warning based on Output Format selection.
-jQuery(document).ready(function($) {
-	var $format  = $('#rbco-output-format');
-	var $warning = $('#rbco-thrive-warning');
-	function updateWarning() {
-		if ($format.val() === 'thrive') {
-			$warning.show();
-		} else {
-			$warning.hide();
-		}
-	}
-	$format.on('change', updateWarning);
-	updateWarning();
-});
-	<?php
-} );
-?>

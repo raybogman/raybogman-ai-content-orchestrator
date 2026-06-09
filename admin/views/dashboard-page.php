@@ -28,13 +28,13 @@ $rbco_month_posts = (int) $wpdb->get_var( $wpdb->prepare(
 	$rbco_month_start
 ) );
 
-// Scheduled / pending review.
+// Draft AI posts.
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-$rbco_scheduled_count = (int) $wpdb->get_var(
+$rbco_draft_count = (int) $wpdb->get_var(
 	"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
 	 WHERE pm.meta_key = '_rbco_generated' AND pm.meta_value = '1'
-	   AND p.post_status IN ('draft', 'future')"
+	   AND p.post_status = 'draft'"
 );
 
 // Top performing posts (by comment count as a proxy; pageviews need analytics).
@@ -82,8 +82,8 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'This Month', 'raybogman-ai-content-orchestrator' ); ?></div>
 		</div>
 		<div class="rbco-card" style="text-align: center; padding: 20px;">
-			<div style="font-size: 36px; font-weight: 700; color: #dba617;"><?php echo esc_html( $rbco_scheduled_count ); ?></div>
-			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Scheduled / Pending', 'raybogman-ai-content-orchestrator' ); ?></div>
+			<div style="font-size: 36px; font-weight: 700; color: #dba617;"><?php echo esc_html( $rbco_draft_count ); ?></div>
+			<div style="color: #50575e; margin-top: 4px;"><?php esc_html_e( 'Drafts', 'raybogman-ai-content-orchestrator' ); ?></div>
 		</div>
 	</div>
 
@@ -169,18 +169,6 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-create' ) ); ?>" class="button button-primary button-large">
 				<span class="dashicons dashicons-edit-large" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
 				<?php esc_html_e( 'Create Content', 'raybogman-ai-content-orchestrator' ); ?>
-			</a>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-bulk-create' ) ); ?>" class="button button-large">
-				<span class="dashicons dashicons-admin-page" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Bulk Create', 'raybogman-ai-content-orchestrator' ); ?>
-			</a>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-refresh' ) ); ?>" class="button button-large">
-				<span class="dashicons dashicons-update" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Refresh Content', 'raybogman-ai-content-orchestrator' ); ?>
-			</a>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-scheduled' ) ); ?>" class="button button-large">
-				<span class="dashicons dashicons-calendar-alt" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-				<?php esc_html_e( 'Scheduled', 'raybogman-ai-content-orchestrator' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-settings' ) ); ?>" class="button button-large">
 				<span class="dashicons dashicons-admin-generic" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>

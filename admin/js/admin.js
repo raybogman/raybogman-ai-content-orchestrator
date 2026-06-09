@@ -812,7 +812,6 @@
 
 		// Step 1 POST data — includes all form fields.
 		var blogStyle = ('blog' === contentType) ? $('#rbco-blog-style').val() : 'standard';
-		var pdfIds    = getSelectedPdfIds();
 
 		var step1Data = {
 			action:       'rbco_create_content',
@@ -822,17 +821,11 @@
 			url:          url,
 			prompt:       prompt,
 			status:       status,
-			schedule_at:  scheduleAt,
 			blog_style:   blogStyle,
 			save_url:     $('#rbco-save-url').is(':checked') ? '1' : '0',
-			linkedin:     $('#rbco-linkedin').is(':checked') ? '1' : '0',
-			instagram:    $('#rbco-instagram').is(':checked') ? '1' : '0',
-			generate_image:      $('#rbco-generate-image').is(':checked') ? '1' : '0',
-			internal_linking:    $('#rbco-internal-linking').is(':checked') ? '1' : '0',
-			competitor_analysis: $('#rbco-competitor-analysis').is(':checked') ? '1' : '0',
-			output_format:       $('#rbco-output-format').val() || 'wordpress',
+			generate_image:   $('#rbco-generate-image').is(':checked') ? '1' : '0',
+			internal_linking: $('#rbco-internal-linking').is(':checked') ? '1' : '0',
 			'categories[]': categories,
-			'pdf_ids[]':    pdfIds,
 		};
 
 		// If URL was saved, update chips after step 1 succeeds.
@@ -1053,60 +1046,6 @@
 				addRow('Featured Image', overlayHtml);
 			}
 
-			// LinkedIn.
-			if (wp.linkedin) {
-				addRow('LinkedIn', '<span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span> ' + escHtml(wp.linkedin));
-			} else if (ai.linkedin_requested) {
-				addRow('LinkedIn', '<em>Will be shared when published</em>');
-			}
-
-			// LinkedIn post preview with Edit/Regenerate buttons.
-			if (ai.linkedin_commentary) {
-				var liLen     = ai.linkedin_commentary.length;
-				var liPostId  = wp.id;
-				var hasButtons = !!liPostId;
-
-				var html = '<div id="rbco-result-li-preview" data-post-id="' + escAttr(String(liPostId || '')) + '">' +
-					// View mode
-					'<div class="rbco-li-preview-view">' +
-						'<div class="rbco-li-preview-text" style="background: #f6f7f7; border-left: 3px solid #0a66c2; padding: 12px; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; max-width: 600px; border-radius: 2px;">' + escHtml(ai.linkedin_commentary) + '</div>' +
-						'<p style="margin: 6px 0 0; font-size: 11px; color: #646970;">' +
-							'<span class="rbco-li-char-count">' + liLen + ' characters</span>' +
-						'</p>';
-
-				if (hasButtons) {
-					html += '<p style="margin: 8px 0 0;">' +
-						'<button type="button" class="button button-small rbco-li-edit-btn" data-post-id="' + escAttr(String(liPostId)) + '">' +
-							'<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span> Edit' +
-						'</button> ' +
-						'<button type="button" class="button button-small rbco-li-regen-btn" data-post-id="' + escAttr(String(liPostId)) + '">' +
-							'<span class="dashicons dashicons-update" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;"></span> Regenerate' +
-						'</button>' +
-					'</p>';
-				}
-
-				html += '</div>';
-
-				if (hasButtons) {
-					// Edit mode (hidden by default)
-					html += '<div class="rbco-li-preview-edit" style="display: none;">' +
-						'<textarea class="rbco-li-edit-textarea" rows="10" maxlength="2900" style="width: 100%; max-width: 600px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; line-height: 1.5; border-left: 3px solid #0a66c2;">' + escHtml(ai.linkedin_commentary) + '</textarea>' +
-						'<p style="margin: 4px 0 0; font-size: 11px; color: #646970;">' +
-							'<span class="rbco-li-edit-count">' + liLen + ' / 2900 characters</span>' +
-						'</p>' +
-						'<p style="margin: 8px 0 0;">' +
-							'<button type="button" class="button button-primary button-small rbco-li-save-btn" data-post-id="' + escAttr(String(liPostId)) + '">Save</button> ' +
-							'<button type="button" class="button button-small rbco-li-cancel-btn" data-post-id="' + escAttr(String(liPostId)) + '">Cancel</button>' +
-						'</p>' +
-					'</div>';
-				}
-
-				html += '</div>';
-
-				addRow('LinkedIn Post Preview', html);
-			}
-
-			// Repurpose content — tabs for Email, X, Instagram, Pinterest.
 			// Internal links added.
 			if (ai.linked_posts && ai.linked_posts.length > 0) {
 				var linksHtml = '<ul style="margin:0;list-style:none;padding:0;">';
@@ -1120,46 +1059,10 @@
 				addRow('Internal Links Added (' + ai.linked_posts.length + ')', linksHtml);
 			}
 
-			// Repurpose content.
-			if (wp.id) {
-				var repurposeHtml = '<div id="rbco-repurpose" data-post-id="' + wp.id + '" style="max-width:700px;">';
-				repurposeHtml += '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">';
-				var formats = [
-					{ key: 'email', label: 'Email Newsletter', icon: 'dashicons-email-alt' },
-					{ key: 'twitter', label: 'X / Twitter', icon: 'dashicons-twitter' },
-					{ key: 'instagram', label: 'Instagram', icon: 'dashicons-camera' },
-					{ key: 'pinterest', label: 'Pinterest', icon: 'dashicons-share' }
-				];
-				for (var f = 0; f < formats.length; f++) {
-					repurposeHtml += '<button type="button" class="button rbco-repurpose-btn" data-format="' + formats[f].key + '">' +
-						'<span class="dashicons ' + formats[f].icon + '" style="vertical-align:text-bottom;font-size:16px;width:16px;height:16px;margin-right:4px;"></span>' +
-						formats[f].label + '</button>';
-				}
-				repurposeHtml += '</div>';
-				repurposeHtml += '<div id="rbco-repurpose-result" style="display:none;">';
-				repurposeHtml += '<div style="background:#f6f7f7;border-left:3px solid #2271b1;padding:12px;white-space:pre-wrap;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;border-radius:2px;max-height:400px;overflow:auto;" id="rbco-repurpose-text"></div>';
-				repurposeHtml += '<div style="margin-top:8px;">';
-				repurposeHtml += '<button type="button" class="button" id="rbco-repurpose-copy">Copy to Clipboard</button>';
-				repurposeHtml += ' <span id="rbco-repurpose-status" style="margin-left:8px;"></span>';
-				repurposeHtml += '</div></div></div>';
-
-				addRow('Repurpose This Content', repurposeHtml);
-			}
-
 			// Set action links.
 			$('#rbco-view-post').attr('href', wp.url);
 			if (wp.edit_url) {
 				$('#rbco-edit-post').attr('href', wp.edit_url).show();
-			}
-
-			// Show "View Scheduled" button when:
-			//  - the item is a draft awaiting human-in-the-loop approval, or
-			//  - it was saved as 'future' (scheduled), or
-			//  - LinkedIn sharing was requested (so user can manage LinkedIn share status)
-			if (wp.needs_review || 'future' === wp.status || ai.linkedin_requested) {
-				$('#rbco-view-scheduled').show();
-			} else {
-				$('#rbco-view-scheduled').hide();
 			}
 		} else {
 			addRow(rbco.i18n.error, escHtml(wp.error || 'Unknown error'));

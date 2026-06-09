@@ -14,10 +14,6 @@ $rbco_provider           = RBCO_Settings::get_ai_provider();
 $rbco_image_provider     = RBCO_Settings::get_image_provider();
 $rbco_claude_set         = ! empty( RBCO_Settings::get_anthropic_api_key() );
 $rbco_openai_set         = ! empty( RBCO_Settings::get_openai_api_key() );
-$rbco_ideogram_set       = ! empty( RBCO_Settings::get_ideogram_api_key() );
-$rbco_linkedin_connected = RBCO_LinkedIn::is_connected();
-$rbco_linkedin_profile   = RBCO_LinkedIn::get_profile();
-$rbco_linkedin_client_id = get_option( 'rbco_linkedin_client_id', '' );
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only tab/param check.
 $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
 ?>
@@ -56,150 +52,6 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 	</form>
 	<?php endif; ?>
 
-	<?php if ( 'instagram' === $rbco_active_tab ) : ?>
-	<!-- Instagram Tab -->
-	<div style="max-width: 900px;">
-		<?php
-		$rbco_ig_connected = RBCO_Instagram::is_connected();
-		$rbco_ig_profile   = RBCO_Instagram::get_profile();
-		$rbco_ig_app_id    = RBCO_Instagram::get_client_id();
-		?>
-
-		<?php if ( $rbco_ig_connected && ! empty( $rbco_ig_profile ) ) : ?>
-		<div class="rbco-card" style="margin-bottom:16px;">
-			<div class="rbco-card-header"><h2><span class="dashicons dashicons-camera" style="margin-right:6px; color:#E4405F;"></span><?php esc_html_e( 'Connected Account', 'raybogman-ai-content-orchestrator' ); ?></h2></div>
-			<div class="rbco-card-body">
-				<table class="widefat striped"><tbody>
-					<tr><td style="width:180px;"><strong><?php esc_html_e( 'Status', 'raybogman-ai-content-orchestrator' ); ?></strong></td><td><span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span> <strong style="color:#00a32a;"><?php esc_html_e( 'Connected', 'raybogman-ai-content-orchestrator' ); ?></strong></td></tr>
-					<tr><td><strong><?php esc_html_e( 'Username', 'raybogman-ai-content-orchestrator' ); ?></strong></td><td>@<?php echo esc_html( $rbco_ig_profile['username'] ?? '' ); ?></td></tr>
-					<?php if ( ! empty( $rbco_ig_profile['name'] ) ) : ?>
-					<tr><td><strong><?php esc_html_e( 'Name', 'raybogman-ai-content-orchestrator' ); ?></strong></td><td><?php echo esc_html( $rbco_ig_profile['name'] ); ?></td></tr>
-					<?php endif; ?>
-					<tr><td><strong><?php esc_html_e( 'Meta App ID', 'raybogman-ai-content-orchestrator' ); ?></strong></td><td><?php echo esc_html( $rbco_ig_app_id ); ?></td></tr>
-					<tr id="rbco-ig-test-row" style="display:none;"><td><strong><?php esc_html_e( 'Test Results', 'raybogman-ai-content-orchestrator' ); ?></strong></td><td id="rbco-ig-test-results"></td></tr>
-				</tbody></table>
-				<p style="margin-top:12px;">
-					<button type="button" class="button button-primary" id="rbco-test-instagram-btn" style="margin-right:8px;">
-						<span class="dashicons dashicons-yes" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; margin-right:4px;"></span>
-						<?php esc_html_e( 'Test Connection', 'raybogman-ai-content-orchestrator' ); ?>
-					</button>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=rbco-settings&tab=instagram&rbco_instagram_disconnect=1' ), 'rbco_instagram_disconnect', 'rbco_instagram_disconnect' ) ); ?>" class="button" onclick="return confirm('<?php echo esc_js( __( 'Disconnect Instagram?', 'raybogman-ai-content-orchestrator' ) ); ?>');">
-						<span class="dashicons dashicons-dismiss" style="vertical-align:text-bottom; color:#d63638; margin-right:4px;"></span><?php esc_html_e( 'Disconnect', 'raybogman-ai-content-orchestrator' ); ?>
-					</a>
-				</p>
-			</div>
-		</div>
-		<?php
-		// Inline JS registered via the proper script API instead of printing it inline.
-		// ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
-		rbco_capture_inline_script( 'rbco-admin', function () {
-			?>
-		jQuery(document).ready(function($) {
-			$('#rbco-test-instagram-btn').on('click', function() {
-				var $btn = $(this);
-				$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> <?php echo esc_js( __( 'Testing...', 'raybogman-ai-content-orchestrator' ) ); ?>');
-				$.post('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
-					action: 'rbco_test_instagram',
-					nonce: '<?php echo esc_js( wp_create_nonce( 'rbco_nonce' ) ); ?>'
-				}).done(function(res) {
-					var $results = $('#rbco-ig-test-results');
-					$('#rbco-ig-test-row').show();
-					if (res.success) {
-						var d = res.data;
-						var html = '<div style="line-height:2;">';
-						html += '<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span> <strong style="color:#00a32a;"><?php echo esc_js( __( 'All tests passed', 'raybogman-ai-content-orchestrator' ) ); ?></strong><br>';
-						if (d.app) html += '<strong><?php echo esc_js( __( 'Meta App:', 'raybogman-ai-content-orchestrator' ) ); ?></strong> ' + d.app.name + ' (ID: ' + d.app.id + ')<br>';
-						if (d.account) html += '<strong><?php echo esc_js( __( 'Account:', 'raybogman-ai-content-orchestrator' ) ); ?></strong> @' + d.account.username + ' — ' + d.account.followers + ' <?php echo esc_js( __( 'followers', 'raybogman-ai-content-orchestrator' ) ); ?>, ' + d.account.posts + ' <?php echo esc_js( __( 'posts', 'raybogman-ai-content-orchestrator' ) ); ?><br>';
-						if (d.token) html += '<strong><?php echo esc_js( __( 'Token expires:', 'raybogman-ai-content-orchestrator' ) ); ?></strong> ' + d.token.expires_at + ' (' + d.token.days_left + ' <?php echo esc_js( __( 'days left', 'raybogman-ai-content-orchestrator' ) ); ?>)<br>';
-						if (d.publishing) html += '<strong><?php echo esc_js( __( 'Publish quota:', 'raybogman-ai-content-orchestrator' ) ); ?></strong> ' + d.publishing.quota_usage + '/25 <?php echo esc_js( __( 'used today', 'raybogman-ai-content-orchestrator' ) ); ?>';
-						html += '</div>';
-						$results.html(html);
-					} else {
-						$results.html('<span class="dashicons dashicons-warning" style="color:#d63638; vertical-align:text-bottom;"></span> <strong style="color:#d63638;">' + (res.data.message || 'Test failed') + '</strong>');
-					}
-				}).fail(function() {
-					$('#rbco-ig-test-row').show();
-					$('#rbco-ig-test-results').html('<span style="color:#d63638;"><?php echo esc_js( __( 'Request failed.', 'raybogman-ai-content-orchestrator' ) ); ?></span>');
-				}).always(function() {
-					$btn.prop('disabled', false).html('<span class="dashicons dashicons-yes" style="vertical-align:text-bottom; font-size:16px; width:16px; height:16px; margin-right:4px;"></span> <?php echo esc_js( __( 'Test Connection', 'raybogman-ai-content-orchestrator' ) ); ?>');
-				});
-			});
-		});
-			<?php
-		} );
-		?>
-		<?php endif; ?>
-
-		<?php
-		$rbco_ig_notice = RBCO_Admin::pull_social_notice( 'instagram' );
-		if ( is_array( $rbco_ig_notice ) ) :
-			$rbco_ig_class = 'error' === $rbco_ig_notice['type'] ? 'notice-error' : ( 'success' === $rbco_ig_notice['type'] ? 'notice-success' : 'notice-info' );
-			?>
-			<div class="notice <?php echo esc_attr( $rbco_ig_class ); ?>">
-				<p>
-					<?php if ( 'error' === $rbco_ig_notice['type'] ) : ?>
-						<strong><?php esc_html_e( 'Error:', 'raybogman-ai-content-orchestrator' ); ?></strong>
-					<?php endif; ?>
-					<?php echo esc_html( $rbco_ig_notice['message'] ); ?>
-				</p>
-			</div>
-		<?php endif; ?>
-
-		<div class="rbco-card" style="margin-bottom:16px;">
-			<div class="rbco-card-header"><h2><?php esc_html_e( 'Setup Guide', 'raybogman-ai-content-orchestrator' ); ?></h2></div>
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'Prerequisites', 'raybogman-ai-content-orchestrator' ); ?></h3>
-			<ul style="list-style:disc; padding-left:20px; line-height:2;">
-				<li><?php esc_html_e( 'An Instagram Business or Creator account (not personal). To switch: Instagram app > Settings > Account > Switch to Professional Account.', 'raybogman-ai-content-orchestrator' ); ?></li>
-				<li><?php esc_html_e( 'A Facebook Page connected to that Instagram account. To link: Facebook Page > Settings > Linked Accounts > Instagram.', 'raybogman-ai-content-orchestrator' ); ?></li>
-			</ul>
-			<p style="display:none;"><?php esc_html_e( 'To connect Instagram, you need:', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<ul style="list-style:disc; padding-left:20px; line-height:2;">
-					<li><?php esc_html_e( 'An Instagram Business or Creator account (not personal)', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'A Facebook Page connected to that Instagram account', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'A Meta App at developers.facebook.com', 'raybogman-ai-content-orchestrator' ); ?></li>
-				</ul>
-				<h3><?php esc_html_e( 'Step 1: Create a Meta App', 'raybogman-ai-content-orchestrator' ); ?></h3>
-			<ol style="line-height:2.2;">
-				<li><?php esc_html_e( 'Go to', 'raybogman-ai-content-orchestrator' ); ?> <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a></li>
-				<li><?php esc_html_e( 'Click "Create App" > "Other" > "Business" type > name it (e.g., "Ray Bogman AI Content Orchestrator")', 'raybogman-ai-content-orchestrator' ); ?></li>
-			</ol>
-			<h3><?php esc_html_e( 'Step 2: Add products', 'raybogman-ai-content-orchestrator' ); ?></h3>
-			<ol style="line-height:2.2;">
-				<li><?php esc_html_e( 'In the App dashboard, scroll to "Add products" > click "Set up" on "Instagram Graph API"', 'raybogman-ai-content-orchestrator' ); ?></li>
-				<li><?php esc_html_e( 'Also "Set up" on "Facebook Login for Business" (needed for OAuth)', 'raybogman-ai-content-orchestrator' ); ?></li>
-			</ol>
-			<h3><?php esc_html_e( 'Steps 3-5:', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<ol style="line-height:2;">
-					<li><?php esc_html_e( 'Go to developers.facebook.com and create a new App (type: "Business")', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Add the "Instagram Graph API" product to your App', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Go to App Settings > Basic — copy the App ID and App Secret', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'In the left sidebar under Products, expand "Facebook Login for Business" > click "Settings" > paste this URL in "Valid OAuth Redirect URIs". If you don\'t see Facebook Login, click "Add Product" first and add it. Alternative: you can also paste the URL in App Settings > Advanced > "Authorize callback URL".', 'raybogman-ai-content-orchestrator' ); ?>
-						<br><code style="display:inline-block; background:#f0f0f1; padding:6px 12px; border-radius:3px; margin:4px 0; font-size:13px; user-select:all;"><?php echo esc_html( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) ); ?></code>
-					<button type="button" class="button button-small" style="margin-left:4px; vertical-align:middle;" onclick="navigator.clipboard.writeText('<?php echo esc_js( admin_url( 'admin.php?page=rbco-settings&tab=instagram' ) ); ?>'); this.textContent='Copied!'; var b=this; setTimeout(function(){b.textContent='Copy URL';}, 2000);">Copy URL</button>
-					</li>
-					<li><?php esc_html_e( 'Paste App ID and App Secret in the fields below, click "Save Changes", then click "Connect Instagram"', 'raybogman-ai-content-orchestrator' ); ?></li>
-				</ol>
-				<div style="margin-top:12px; padding:12px 16px; background:#fff8e5; border-left:3px solid #dba617; border-radius:3px;">
-					<strong><?php esc_html_e( 'Important:', 'raybogman-ai-content-orchestrator' ); ?></strong>
-					<?php esc_html_e( 'Your Meta App must be in "Live" mode for publishing to work. In the App dashboard top bar, toggle from "In development" to "Live". You may need to complete App Review for the instagram_content_publish permission.', 'raybogman-ai-content-orchestrator' ); ?>
-				</div>
-			</div>
-		</div>
-
-		<?php if ( ! $rbco_ig_connected && ! empty( $rbco_ig_app_id ) ) : ?>
-		<p style="margin-bottom:16px;">
-			<a href="<?php echo esc_url( RBCO_Instagram::get_auth_url() ); ?>" class="button button-primary button-hero">
-				<span class="dashicons dashicons-camera" style="vertical-align:text-bottom; font-size:20px; width:20px; height:20px; margin-right:6px;"></span>
-				<?php esc_html_e( 'Connect Instagram', 'raybogman-ai-content-orchestrator' ); ?>
-			</a>
-		</p>
-		<?php elseif ( ! $rbco_ig_connected ) : ?>
-		<div class="notice notice-warning inline"><p><?php esc_html_e( 'Enter your Meta App ID and App Secret above, then Save Changes to enable the Connect button.', 'raybogman-ai-content-orchestrator' ); ?></p></div>
-		<?php endif; ?>
-	</div>
-	<?php endif; ?>
-
 	<?php if ( 'faq' === $rbco_active_tab ) : ?>
 	<!-- FAQ Tab -->
 	<div style="max-width: 900px;">
@@ -212,24 +64,11 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			'cost'                 => __( 'How much does it cost to generate a blog post?', 'raybogman-ai-content-orchestrator' ),
 			'website-scanner'      => __( 'What is the "Website Scanner" and do I need it?', 'raybogman-ai-content-orchestrator' ),
 			'internal-linking'     => __( 'How does the automatic internal linking work?', 'raybogman-ai-content-orchestrator' ),
-			'competitor-analysis'  => __( 'What does "Analyze competitors first" do?', 'raybogman-ai-content-orchestrator' ),
-			'thrive-broken'        => __( 'Thrive Architect: my post looks broken on first preview', 'raybogman-ai-content-orchestrator' ),
-			'thrive-toc'           => __( 'Thrive Architect: why does my Table of Contents look different after saving?', 'raybogman-ai-content-orchestrator' ),
-			'without-thrive'       => __( 'Can I use this plugin without Thrive Architect?', 'raybogman-ai-content-orchestrator' ),
 			'image-overlay'        => __( 'How does the featured image overlay work?', 'raybogman-ai-content-orchestrator' ),
 			'shared-hosting'       => __( 'Does this plugin work on shared hosting?', 'raybogman-ai-content-orchestrator' ),
-			'scheduling'           => __( 'Can I schedule posts for later?', 'raybogman-ai-content-orchestrator' ),
-			'repurposing'          => __( 'What is the "Content Repurposing" feature?', 'raybogman-ai-content-orchestrator' ),
 			'curl-timeout'         => __( 'I get a "cURL error 28: Operation timed out" — what does this mean?', 'raybogman-ai-content-orchestrator' ),
 			'scan-pages'           => __( 'How many pages should I scan for best results?', 'raybogman-ai-content-orchestrator' ),
-			'ideogram-colors'      => __( 'Why did my Ideogram images fail with "color_palette" error?', 'raybogman-ai-content-orchestrator' ),
-			'bulk-create'          => __( 'How does Bulk Create work?', 'raybogman-ai-content-orchestrator' ),
-			'refresh-content'      => __( 'How does "Refresh Content" work?', 'raybogman-ai-content-orchestrator' ),
-			'publish-schedule'     => __( 'How does the publishing schedule work?', 'raybogman-ai-content-orchestrator' ),
-			'navigate-away'        => __( 'What happens if I navigate away during Bulk Create?', 'raybogman-ai-content-orchestrator' ),
-			'link-placement'       => __( 'How does internal link placement work?', 'raybogman-ai-content-orchestrator' ),
 			'save-log'             => __( 'How can I save the progress log for debugging?', 'raybogman-ai-content-orchestrator' ),
-			'free-vs-enterprise'   => __( 'What is the difference between Free and Enterprise?', 'raybogman-ai-content-orchestrator' ),
 		);
 		?>
 		<div class="rbco-card" style="margin-bottom:20px;">
@@ -246,7 +85,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-what-does-it-do">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'What does this plugin do?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Ray Bogman AI Content Orchestrator writes full blog posts for your WordPress website using AI (Claude or OpenAI). You give it a topic, it scans a website for background information, then writes an SEO-optimized article with headings, paragraphs, lists, and a FAQ section. It also generates a featured image, shares to LinkedIn, and integrates with Thrive Architect.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'Ray Bogman AI Content Orchestrator writes full blog posts for your WordPress website using AI (Claude or OpenAI). You give it a topic, it scans a website for background information, then writes an SEO-optimized article with headings, paragraphs, lists, and a FAQ section. It also generates a featured image, adds internal links, and fills in your Yoast SEO fields.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -260,7 +99,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-cost">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'How much does it cost to generate a blog post?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'The plugin itself is free to use. You pay for the AI usage through your provider\'s API. A typical blog post costs roughly $0.02–$0.10 with Claude Sonnet or GPT-4o. Featured images add about $0.04 per image (DALL-E 3) or vary with Ideogram. LinkedIn sharing is free.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'The plugin itself is free to use. You pay for the AI usage through your provider\'s API. A typical blog post costs roughly $0.02–$0.10 with Claude Sonnet or GPT-4o. Featured images add about $0.04 per image with DALL-E 3.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -278,45 +117,6 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			</div>
 		</div>
 
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-competitor-analysis">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'What does "Analyze competitors first" do?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'When enabled, the AI analyzes what topics and questions the top-ranking articles typically cover for your keyword. It then identifies gaps — things competitors miss — and includes those in your article. This helps your content be more comprehensive than what\'s already ranking, giving you a better chance at higher search positions.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-thrive-broken">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;">
-					<?php esc_html_e( 'Thrive Architect: my post looks broken on first preview', 'raybogman-ai-content-orchestrator' ); ?>
-					<span style="background:#dba617;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:8px;vertical-align:middle;">BETA</span>
-				</h3>
-				<p><?php esc_html_e( 'This is a known issue with the Thrive Architect integration (currently in Beta). When you generate a new post in Thrive mode, the first time you preview it the page may look broken — you might see raw HTML, misaligned elements, or unstyled text.', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<p><strong><?php esc_html_e( 'Workaround:', 'raybogman-ai-content-orchestrator' ); ?></strong></p>
-				<ol>
-					<li><?php esc_html_e( 'After creating the post, open it in Thrive Architect (click "Edit with Thrive Architect" on the post).', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Don\'t change anything — just click the Save button (green button, bottom left).', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Close Thrive Architect and go back to WordPress.', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Now preview the post — it will look correct.', 'raybogman-ai-content-orchestrator' ); ?></li>
-				</ol>
-				<p><?php esc_html_e( 'This "open and save" step is needed because Thrive Architect processes the content and applies its internal styling on the first save. After that initial save, the post works perfectly — previews, front-end display, and further editing all work as expected.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-thrive-toc">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'Thrive Architect: why does my Table of Contents look different after saving?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Thrive\'s Table of Contents widget is dynamic — it automatically rebuilds its entries from the actual headings in your post every time you open and save in Thrive Architect. The first time you save, Thrive replaces the initial entries with ones it generates from your article\'s H2 and H3 headings. This is normal behavior and the final result is correct.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-without-thrive">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'Can I use this plugin without Thrive Architect?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Yes! Thrive Architect is completely optional. The default output format is "WordPress (Standard)" which works with any theme and page builder. The Thrive integration is only for users who specifically use Thrive Architect as their content editor.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-image-overlay">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'How does the featured image overlay work?', 'raybogman-ai-content-orchestrator' ); ?></h3>
@@ -328,20 +128,6 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'Does this plugin work on shared hosting?', 'raybogman-ai-content-orchestrator' ); ?></h3>
 				<p><?php esc_html_e( 'Yes. The content creation pipeline is split into 4 small steps, each completing within typical server timeouts (30-60 seconds). This avoids the "504 Gateway Timeout" errors that other AI plugins suffer from on shared hosting with strict time limits.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-scheduling">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'Can I schedule posts for later?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Yes. Choose a date and time on the Create Content page. If you select "Draft + Schedule", the post goes to a review queue where you approve it before it\'s scheduled. If you select "Publish + Schedule", WordPress schedules it directly. There\'s also a Bulk Create page where you can queue multiple posts with different dates.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-repurposing">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'What is the "Content Repurposing" feature?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'After creating a blog post, you can click buttons to instantly generate versions of your content for other platforms: Email Newsletter, X/Twitter thread, Instagram caption, and Pinterest pin description. Each version is optimized for that platform\'s format and best practices. Copy to clipboard with one click.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -358,9 +144,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				<p><strong><?php esc_html_e( 'How to fix:', 'raybogman-ai-content-orchestrator' ); ?></strong></p>
 				<ol style="padding-left:20px;">
 					<li><?php esc_html_e( 'Reduce "Max Pages to Scan" in Settings → Scanner from 25 to 10-15. Fewer pages = smaller context = faster AI response.', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Disable "Analyze competitors first" to skip the extra AI call that adds processing time.', 'raybogman-ai-content-orchestrator' ); ?></li>
 					<li><?php esc_html_e( 'Try again — the plugin automatically retries once after a 5-second pause. Temporary API slowdowns often resolve on the second attempt.', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'If using Bulk Create, failed posts can be retried individually via Create Content.', 'raybogman-ai-content-orchestrator' ); ?></li>
 				</ol>
 			</div>
 		</div>
@@ -378,69 +162,10 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			</div>
 		</div>
 
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-ideogram-colors">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'Why did my Ideogram images fail with "color_palette" error?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Ideogram\'s API accepts a maximum of 4 brand colors. If your theme has more colors configured (from the "Scan Theme Colors" button), only the first 4 selected colors are sent to Ideogram. Go to Settings → Images → Brand Colors and make sure you have 4 or fewer colors selected. Click colors to select/deselect them.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-bulk-create">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'How does Bulk Create work?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Bulk Create lets you generate multiple blog posts at once. Enter a seed keyword and click "Suggest Topics" — the AI generates topic ideas and recommends the best blog style for each. You can add rows, set publish dates (manually or with the auto-fill schedule), and click "Generate All" to process them one by one. Each post goes through the same 4-step pipeline as single Create Content. Results appear live in a table with Details, View, and Edit buttons.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-refresh-content">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'How does "Refresh Content" work?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'The Refresh Content page has two tabs:', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<ul style="list-style:disc; padding-left:20px;">
-					<li><?php esc_html_e( 'Content Health Overview — click "Analyze All Posts" to scan every published post for issues (thin content, missing FAQ, few internal links, outdated). Click the filter cards to narrow down by issue type. Use "Fix" per post or "Fix Selected" / "Fix All Filtered" to refresh multiple posts with AI.', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Refresh Individual Post — select a specific post, analyze it, choose which issues to fix, and let the AI rewrite and improve the content while keeping your URL and SEO value.', 'raybogman-ai-content-orchestrator' ); ?></li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-publish-schedule">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'How does the publishing schedule work?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'In Settings → Content, you can set a default publishing frequency (daily, every 2-3 days, weekly, bi-weekly, or monthly), a default publish time, and whether to skip weekends. On the Bulk Create page, click "Fill Dates" to auto-fill all checked rows with dates based on this schedule. You can still override individual dates. When posts are published, you\'ll receive email notifications if configured in the "Publish Notification" setting.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-navigate-away">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'What happens if I navigate away during Bulk Create?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'The plugin shows a warning before you leave: "Bulk generation is still running. If you leave, remaining posts won\'t be created." Posts already completed are saved, but the remaining queue is lost. There is no background processing — all generation runs in your browser session.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-link-placement">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'How does internal link placement work?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'In Settings → Content → Link Placement, you can choose:', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<ul style="list-style:disc; padding-left:20px;">
-					<li><?php esc_html_e( 'Inline only — links are placed naturally within paragraphs using relevant anchor text (best for SEO)', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Related Articles only — a styled "Related Articles" section at the bottom of the post (best for readers)', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Both (recommended) — the plugin uses an adaptive algorithm: short posts get fewer inline links with more in the footer, longer posts get more inline. Max 1 link per 4 paragraphs to avoid spam. Footer always gets at least 2 links.', 'raybogman-ai-content-orchestrator' ); ?></li>
-				</ul>
-			</div>
-		</div>
-
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-save-log">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'How can I save the progress log for debugging?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Both the Create Content and Bulk Create pages have a "Save Log" button in the top-right corner of the progress window. Click it to download a timestamped .txt file with all log lines, the date, and the page URL. This is useful for sharing with support or debugging issues.', 'raybogman-ai-content-orchestrator' ); ?></p>
-			</div>
-		</div>
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-free-vs-enterprise">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'What is the difference between Free and Enterprise?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'The free version includes single content creation with 4 blog styles, DALL-E 3 images, basic internal linking (inline, max 3), content repurposing, scheduling, and Yoast SEO integration — everything you need to create great content.', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<p><?php esc_html_e( 'Enterprise unlocks power features for teams and agencies: Bulk Create (batch posts with AI topic suggestions), Refresh Content (analyze and fix all posts), all 13 blog styles, Ideogram images, competitor gap analysis, LinkedIn and Instagram auto-sharing, Thrive Architect output, PDF sources, adaptive internal linking (max 15), multiple URL scanning, auto-fill publish dates, and email notifications.', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<p><?php esc_html_e( 'See the full comparison table in the About tab.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'The Create Content page has a "Save Log" button in the top-right corner of the progress window. Click it to download a timestamped .txt file with all log lines, the date, and the page URL. This is useful for sharing with support or debugging issues.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 	</div>
@@ -459,63 +184,15 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 					<?php esc_html_e( 'Ray Bogman AI Content Orchestrator is a complete content pipeline for WordPress. It\'s not just another "AI writer" — it orchestrates the entire journey from research to publication.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
-					<?php esc_html_e( 'Here\'s what it does: you give it a topic and optionally a website to scan for background information. The AI then writes a full, SEO-optimized blog post with proper headings, paragraphs, lists, and a FAQ section. It generates a custom featured image, adds internal links to your existing posts, creates a LinkedIn summary, and publishes everything to WordPress with Yoast SEO fields filled in — all in about 2 minutes.', 'raybogman-ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Here\'s what it does: you give it a topic and optionally a website to scan for background information. The AI then writes a full, SEO-optimized blog post with proper headings, paragraphs, lists, and a FAQ section. It generates a custom featured image, adds internal links to your existing posts, and publishes everything to WordPress with Yoast SEO fields filled in — all in about 2 minutes.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
-					<?php esc_html_e( 'The plugin supports two AI providers (Claude by Anthropic and OpenAI\'s GPT models), two image generators (DALL-E 3 and Ideogram), 12 different blog writing styles, LinkedIn auto-sharing, Thrive Architect integration, scheduling with a review queue, and content repurposing for Email, Twitter, Instagram, and Pinterest.', 'raybogman-ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'The plugin supports two AI providers (Claude by Anthropic and OpenAI\'s GPT models), featured image generation with DALL-E 3, four blog writing styles, automatic internal linking, and an optional branded title overlay for featured images.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
 					<?php esc_html_e( 'Everything is designed to work on any hosting — including shared hosting with strict timeouts — thanks to a 4-step pipeline that breaks the work into manageable chunks.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 
-				<h3><?php esc_html_e( 'Free vs Enterprise', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static HTML with dashicons.
-				$rbco_check = '<span class="dashicons dashicons-yes-alt" style="color:#00a32a; vertical-align:text-bottom;"></span>';
-				$rbco_cross = '<span class="dashicons dashicons-minus" style="color:#c3c4c7; vertical-align:text-bottom;"></span>';
-				$rbco_ent   = '<span style="background:#E4405F;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;">ENT</span>';
-				?>
-				<?php // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- Static dashicon HTML in comparison table. ?>
-				<table class="widefat striped" style="max-width:700px;">
-					<thead>
-						<tr>
-							<th style="width:50%;"><?php esc_html_e( 'Feature', 'raybogman-ai-content-orchestrator' ); ?></th>
-							<th style="width:25%; text-align:center;"><?php esc_html_e( 'Free', 'raybogman-ai-content-orchestrator' ); ?></th>
-							<th style="width:25%; text-align:center;"><?php echo esc_html__( 'Enterprise', 'raybogman-ai-content-orchestrator' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr><td><?php esc_html_e( 'AI Content Creation', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Blog Styles', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;">4</td><td style="text-align:center;"><?php esc_html_e( 'All 13', 'raybogman-ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'SEO Metadata + Yoast', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Website Scanning', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( '1 URL', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Unlimited', 'raybogman-ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Featured Images (DALL-E 3)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Featured Images (Ideogram)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Image Title Overlay', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Internal Linking', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Inline, max 3', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Inline + Footer, max 15', 'raybogman-ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Competitor Gap Analysis', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Content Repurposing', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Bulk Create', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Refresh Content (Analyze + Fix)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'PDF Sources', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'LinkedIn Auto-Share', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Instagram Auto-Share', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Thrive Architect Output', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Beta', 'raybogman-ai-content-orchestrator' ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Publishing Schedule (Auto-fill)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Publish Notifications (Email)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Scheduling + Review Queue', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-						<tr><td><?php esc_html_e( 'Dashboard + Progress Log', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
-					</tbody>
-				</table>
-				<?php // phpcs:enable ?>
-				<?php if ( ! rbco_is_pro() ) : ?>
-				<p style="margin-top:16px; text-align:center;">
-					<a href="<?php echo esc_url( rbco_fs()->get_upgrade_url() ); ?>" class="button button-primary button-hero" style="background:#E4405F; border-color:#E4405F;">
-						<span class="dashicons dashicons-star-filled" style="vertical-align:text-bottom; font-size:20px; width:20px; height:20px; margin-right:6px;"></span>
-						<?php esc_html_e( 'Upgrade to Enterprise', 'raybogman-ai-content-orchestrator' ); ?>
-					</a>
-				</p>
-				<?php endif; ?>
 			</div>
 		</div>
 
@@ -614,211 +291,8 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 							<span class="rbco-validate-result" data-provider="openai" style="margin-left: 12px;"></span>
 						</td>
 					</tr>
-					<tr>
-						<td style="font-weight: 600;"><?php esc_html_e( 'Ideogram', 'raybogman-ai-content-orchestrator' ); ?></td>
-						<td>
-							<button type="button" class="button rbco-validate-btn" data-provider="ideogram" <?php echo $rbco_ideogram_set ? '' : 'disabled'; ?>>
-								<?php esc_html_e( 'Test Ideogram Connection', 'raybogman-ai-content-orchestrator' ); ?>
-							</button>
-							<?php if ( ! $rbco_ideogram_set ) : ?>
-								<span class="description" style="margin-left: 8px;"><?php esc_html_e( 'No key saved yet.', 'raybogman-ai-content-orchestrator' ); ?></span>
-							<?php endif; ?>
-							<span class="rbco-validate-result" data-provider="ideogram" style="margin-left: 12px;"></span>
-						</td>
-					</tr>
 				</tbody>
 			</table>
-		</div>
-	</div>
-	<?php endif; ?>
-
-	<?php if ( 'linkedin' === $rbco_active_tab ) : ?>
-	<!-- LinkedIn Connection -->
-	<?php
-	$rbco_li_notice = RBCO_Admin::pull_social_notice( 'linkedin' );
-	if ( is_array( $rbco_li_notice ) ) :
-		$rbco_li_class = 'error' === $rbco_li_notice['type'] ? 'notice-error' : ( 'success' === $rbco_li_notice['type'] ? 'notice-success' : 'notice-info' );
-		?>
-		<div class="notice <?php echo esc_attr( $rbco_li_class ); ?>" style="max-width: 700px;">
-			<p><?php echo esc_html( $rbco_li_notice['message'] ); ?></p>
-		</div>
-	<?php endif; ?>
-	<div class="rbco-card" style="max-width: 700px; margin-top: 20px;">
-		<div class="rbco-card-header">
-			<h2><?php esc_html_e( 'LinkedIn Connection', 'raybogman-ai-content-orchestrator' ); ?></h2>
-		</div>
-		<div class="rbco-card-body">
-			<?php if ( $rbco_linkedin_connected && ! empty( $rbco_linkedin_profile['name'] ) ) : ?>
-				<table class="widefat striped">
-					<tbody>
-						<tr>
-							<td style="width: 200px; font-weight: 600;"><?php esc_html_e( 'Status', 'raybogman-ai-content-orchestrator' ); ?></td>
-							<td>
-								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
-								<?php esc_html_e( 'Connected', 'raybogman-ai-content-orchestrator' ); ?>
-							</td>
-						</tr>
-						<tr>
-							<td style="font-weight: 600;"><?php esc_html_e( 'Account', 'raybogman-ai-content-orchestrator' ); ?></td>
-							<td>
-								<?php if ( ! empty( $rbco_linkedin_profile['picture'] ) ) : ?>
-									<img src="<?php echo esc_url( $rbco_linkedin_profile['picture'] ); ?>" alt="" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 6px;" />
-								<?php endif; ?>
-								<strong><?php echo esc_html( $rbco_linkedin_profile['name'] ); ?></strong>
-								<?php if ( ! empty( $rbco_linkedin_profile['email'] ) ) : ?>
-									<span class="description">(<?php echo esc_html( $rbco_linkedin_profile['email'] ); ?>)</span>
-								<?php endif; ?>
-							</td>
-						</tr>
-						<tr>
-							<td style="font-weight: 600;"><?php esc_html_e( 'Granted Scopes', 'raybogman-ai-content-orchestrator' ); ?></td>
-							<td>
-								<?php $rbco_granted = get_option( 'rbco_linkedin_scopes', '' ); ?>
-								<?php if ( ! empty( $rbco_granted ) ) : ?>
-									<code style="font-size: 12px;"><?php echo esc_html( $rbco_granted ); ?></code>
-									<?php if ( false === strpos( $rbco_granted, 'w_member_social' ) ) : ?>
-										<br><span class="dashicons dashicons-warning" style="color: #d63638;"></span>
-										<strong style="color: #d63638;"><?php esc_html_e( 'w_member_social is MISSING — you cannot post to LinkedIn!', 'raybogman-ai-content-orchestrator' ); ?></strong>
-										<br><em class="description"><?php esc_html_e( 'Disconnect and reconnect to request the correct scopes. Make sure "Share on LinkedIn" product is added to your LinkedIn App.', 'raybogman-ai-content-orchestrator' ); ?></em>
-									<?php endif; ?>
-								<?php else : ?>
-									<em class="description"><?php esc_html_e( 'Not recorded (reconnect to capture).', 'raybogman-ai-content-orchestrator' ); ?></em>
-								<?php endif; ?>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p style="margin-top: 12px;">
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=rbco-settings&rbco_linkedin_disconnect=1' ), 'rbco_linkedin_disconnect' ) ); ?>" class="button" onclick="return confirm('<?php esc_attr_e( 'Disconnect LinkedIn account?', 'raybogman-ai-content-orchestrator' ); ?>');">
-						<?php esc_html_e( 'Disconnect LinkedIn', 'raybogman-ai-content-orchestrator' ); ?>
-					</a>
-				</p>
-			<?php else : ?>
-				<h3 style="margin-top: 0;"><?php esc_html_e( 'Setup Guide — Follow these steps in order', 'raybogman-ai-content-orchestrator' ); ?></h3>
-
-				<div class="notice notice-warning inline" style="margin: 0 0 16px 0;">
-					<p style="margin: 8px 0;">
-						<strong><?php esc_html_e( 'Important — about the "LinkedIn Company Page" requirement:', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'LinkedIn requires every developer app to be linked to a Company Page, even if you only want to post to your personal profile. This is a LinkedIn rule — there is no way around it. However, your posts will still go to your PERSONAL profile, not the Company Page. The Company Page is only an administrative link to the app.', 'raybogman-ai-content-orchestrator' ); ?><br>
-						<em><?php esc_html_e( 'Tip: Create a simple placeholder Company Page (e.g. with your name) — it takes 30 seconds and is free.', 'raybogman-ai-content-orchestrator' ); ?>
-						<a href="https://www.linkedin.com/company/setup/new/" target="_blank" rel="noopener"><?php esc_html_e( 'Create a Company Page →', 'raybogman-ai-content-orchestrator' ); ?></a></em>
-					</p>
-				</div>
-
-				<ol style="margin-left: 20px; line-height: 1.8;">
-					<li>
-						<strong><?php esc_html_e( 'Create a placeholder Company Page (if you don\'t already have one)', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php
-						printf(
-							/* translators: %s: link to LinkedIn Company setup */
-							esc_html__( 'Go to %s. Choose "Self-employed", enter your name or brand, and click Create page. Required only because LinkedIn forces apps to be linked to a Company Page.', 'raybogman-ai-content-orchestrator' ),
-							'<a href="https://www.linkedin.com/company/setup/new/" target="_blank" rel="noopener">https://www.linkedin.com/company/setup/new/</a>'
-						);
-						?>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Create a LinkedIn App', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php
-						printf(
-							/* translators: %s: link to LinkedIn Developer Portal */
-							esc_html__( 'Go to %s and click "Create app". When asked for "LinkedIn Page", select the Company Page you just created. Posts will still go to your personal profile.', 'raybogman-ai-content-orchestrator' ),
-							'<a href="https://www.linkedin.com/developers/apps/new" target="_blank" rel="noopener">https://www.linkedin.com/developers/apps/new</a>'
-						);
-						?>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Verify your app (one-time required step)', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'In your app, click the "Settings" tab. Find the "App Verification" or "Verify" section and click "Generate URL". Open the generated URL in a new tab — you must be logged in as the admin of the linked Company Page (which is you). Click "Verify" on that page. This is mandatory before any product can be added.', 'raybogman-ai-content-orchestrator' ); ?>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Add the required products', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'Go to the "Products" tab. Under "Available products", click "Request access" / "Add" on BOTH of these:', 'raybogman-ai-content-orchestrator' ); ?>
-						<ul style="margin: 6px 0 6px 20px; list-style: disc;">
-							<li><strong><?php esc_html_e( 'Sign In with LinkedIn using OpenID Connect', 'raybogman-ai-content-orchestrator' ); ?></strong> <?php esc_html_e( '(Standard Tier) — grants openid, profile, email scopes', 'raybogman-ai-content-orchestrator' ); ?></li>
-							<li><strong><?php esc_html_e( 'Share on LinkedIn', 'raybogman-ai-content-orchestrator' ); ?></strong> <?php esc_html_e( '(Default Tier) — grants the w_member_social scope (required to post)', 'raybogman-ai-content-orchestrator' ); ?></li>
-						</ul>
-						<em class="description"><?php esc_html_e( 'Both products are auto-approved instantly after app verification — no waiting required. After adding, scroll to "Added products" at the bottom of the page to confirm both are listed there.', 'raybogman-ai-content-orchestrator' ); ?>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Verify the OAuth scopes appeared', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'Go to the "Auth" tab and scroll to "OAuth 2.0 scopes". You MUST see these 4 scopes listed:', 'raybogman-ai-content-orchestrator' ); ?>
-						<ul style="margin: 6px 0 6px 20px; list-style: disc; font-family: monospace;">
-							<li>openid</li>
-							<li>profile</li>
-							<li>email</li>
-							<li>w_member_social</li>
-						</ul>
-						<em class="description"><?php esc_html_e( 'If "OAuth 2.0 scopes" says "No permissions added", the products are not added correctly — go back to the Products tab and add them again.', 'raybogman-ai-content-orchestrator' ); ?></em>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Add the Redirect URL', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'In your app, go to the "Auth" tab. Under "OAuth 2.0 settings → Authorized redirect URLs for your app", click "+ Add redirect URL" and paste this exact URL:', 'raybogman-ai-content-orchestrator' ); ?>
-						<div style="background: #f0f0f1; padding: 8px 12px; border-radius: 4px; margin: 8px 0; font-family: monospace; word-break: break-all; user-select: all;">
-							<?php echo esc_html( RBCO_LinkedIn::get_redirect_uri() ); ?>
-						</div>
-						<em class="description"><?php esc_html_e( 'Click anywhere in the box above to select the URL, then copy it.', 'raybogman-ai-content-orchestrator' ); ?></em>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Copy your Client ID and Client Secret', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'Still in the "Auth" tab, copy the Client ID and Client Secret. Paste them into the fields above on this page and click "Save Changes".', 'raybogman-ai-content-orchestrator' ); ?>
-					</li>
-					<li>
-						<strong><?php esc_html_e( 'Connect your account', 'raybogman-ai-content-orchestrator' ); ?></strong><br>
-						<?php esc_html_e( 'After saving, a "Connect LinkedIn Account" button will appear here. Click it to authorize the plugin to post to your personal profile.', 'raybogman-ai-content-orchestrator' ); ?>
-					</li>
-				</ol>
-
-				<?php if ( ! empty( $rbco_linkedin_client_id ) ) : ?>
-					<hr style="margin: 20px 0;">
-					<p style="margin-bottom: 8px;">
-						<strong><?php esc_html_e( 'Ready to connect!', 'raybogman-ai-content-orchestrator' ); ?></strong>
-						<?php esc_html_e( 'Your Client ID and Secret are saved. Click below to authorize:', 'raybogman-ai-content-orchestrator' ); ?>
-					</p>
-					<?php
-					$rbco_auth_url = RBCO_LinkedIn::get_auth_url();
-					if ( $rbco_auth_url ) : ?>
-						<a href="<?php echo esc_url( $rbco_auth_url ); ?>" class="button button-primary button-hero">
-							<span class="dashicons dashicons-linkedin" style="vertical-align: text-bottom; font-size: 18px; width: 18px; height: 18px; margin-right: 4px;"></span>
-							<?php esc_html_e( 'Connect LinkedIn Account', 'raybogman-ai-content-orchestrator' ); ?>
-						</a>
-					<?php endif; ?>
-
-					<div style="margin-top: 20px; padding: 12px; background: #fff8e5; border-left: 4px solid #dba617;">
-						<p style="margin: 0 0 8px 0;">
-							<strong><?php esc_html_e( 'Getting "permission scope is not valid" error?', 'raybogman-ai-content-orchestrator' ); ?></strong>
-						</p>
-						<p style="margin: 0 0 8px 0;">
-							<?php esc_html_e( 'This means a required product is not added to your LinkedIn App. Use these diagnostic buttons to find which one:', 'raybogman-ai-content-orchestrator' ); ?>
-						</p>
-						<?php
-						$rbco_auth_signin_only = RBCO_LinkedIn::get_auth_url( RBCO_LinkedIn::SCOPES_SIGNIN_ONLY );
-						$rbco_auth_share_only  = RBCO_LinkedIn::get_auth_url( RBCO_LinkedIn::SCOPES_SHARE_ONLY );
-						?>
-						<p style="margin: 8px 0;">
-							<a href="<?php echo esc_url( $rbco_auth_signin_only ); ?>" class="button">
-								<?php esc_html_e( 'Test 1: Sign In only (openid profile email)', 'raybogman-ai-content-orchestrator' ); ?>
-							</a>
-							<span class="description"><?php esc_html_e( 'If this fails: "Sign In with LinkedIn using OpenID Connect" product is missing.', 'raybogman-ai-content-orchestrator' ); ?></span>
-						</p>
-						<p style="margin: 8px 0;">
-							<a href="<?php echo esc_url( $rbco_auth_share_only ); ?>" class="button">
-								<?php esc_html_e( 'Test 2: Share only (w_member_social)', 'raybogman-ai-content-orchestrator' ); ?>
-							</a>
-							<span class="description"><?php esc_html_e( 'If this fails: "Share on LinkedIn" product is missing.', 'raybogman-ai-content-orchestrator' ); ?></span>
-						</p>
-						<p style="margin: 8px 0 0 0;">
-							<em><?php esc_html_e( 'If both tests work individually but the main "Connect" button fails, try refreshing this page and trying again. LinkedIn sometimes caches OAuth state.', 'raybogman-ai-content-orchestrator' ); ?></em>
-						</p>
-					</div>
-				<?php else : ?>
-					<hr style="margin: 20px 0;">
-					<p>
-						<span class="dashicons dashicons-info" style="color: #2271b1; vertical-align: text-bottom;"></span>
-						<em><?php esc_html_e( 'Enter your Client ID and Client Secret in the fields above and click "Save Changes" to enable the Connect button.', 'raybogman-ai-content-orchestrator' ); ?></em>
-					</p>
-				<?php endif; ?>
-			<?php endif; ?>
-
 		</div>
 	</div>
 	<?php endif; ?>
@@ -867,25 +341,12 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'Image Provider', 'raybogman-ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php
-							$rbco_image_labels = array( 'openai' => 'OpenAI (DALL-E 3)', 'ideogram' => 'Ideogram' );
-							echo esc_html( isset( $rbco_image_labels[ $rbco_image_provider ] ) ? $rbco_image_labels[ $rbco_image_provider ] : $rbco_image_provider );
-							?>
+							<?php echo esc_html( 'OpenAI (DALL-E 3)' ); ?>
 							<?php if ( RBCO_Settings::is_image_configured() ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
 							<?php else : ?>
 								<span class="dashicons dashicons-warning" style="color: #d63638;"></span>
 								<em><?php esc_html_e( 'API key missing', 'raybogman-ai-content-orchestrator' ); ?></em>
-							<?php endif; ?>
-						</td>
-					</tr>
-					<tr>
-						<td style="font-weight: 600;"><?php esc_html_e( 'Ideogram API Key', 'raybogman-ai-content-orchestrator' ); ?></td>
-						<td>
-							<?php if ( $rbco_ideogram_set ) : ?>
-								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span> <?php esc_html_e( 'Configured', 'raybogman-ai-content-orchestrator' ); ?>
-							<?php else : ?>
-								<span class="dashicons dashicons-minus" style="color: #646970;"></span> <?php esc_html_e( 'Not set', 'raybogman-ai-content-orchestrator' ); ?>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -904,24 +365,6 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 							<?php else : ?>
 								<span class="dashicons dashicons-info-outline" style="color: #dba617;"></span>
 								<?php esc_html_e( 'Not detected. Install Yoast SEO for automatic SEO field population.', 'raybogman-ai-content-orchestrator' ); ?>
-							<?php endif; ?>
-						</td>
-					</tr>
-					<tr>
-						<td style="font-weight: 600;"><?php esc_html_e( 'LinkedIn', 'raybogman-ai-content-orchestrator' ); ?></td>
-						<td>
-							<?php if ( $rbco_linkedin_connected && ! empty( $rbco_linkedin_profile['name'] ) ) : ?>
-								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
-								<?php
-								printf(
-									/* translators: %s: LinkedIn account name */
-									esc_html__( 'Connected (%s)', 'raybogman-ai-content-orchestrator' ),
-									esc_html( $rbco_linkedin_profile['name'] )
-								);
-								?>
-							<?php else : ?>
-								<span class="dashicons dashicons-minus" style="color: #646970;"></span>
-								<?php esc_html_e( 'Not connected', 'raybogman-ai-content-orchestrator' ); ?>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -1000,7 +443,7 @@ jQuery(document).ready(function($) {
 						'<strong style="color:#d63638;">' + msg + '</strong>'
 					);
 				}
-				var labels = { claude: 'Test Claude Connection', openai: 'Test OpenAI Connection', ideogram: 'Test Ideogram Connection' };
+				var labels = { claude: 'Test Claude Connection', openai: 'Test OpenAI Connection' };
 				$btn.prop('disabled', false).text(labels[provider] || 'Test');
 			},
 			error: function(xhr, textStatus, errorThrown) {
@@ -1008,7 +451,7 @@ jQuery(document).ready(function($) {
 					'<span class="dashicons dashicons-dismiss" style="color:#d63638; vertical-align:text-bottom;"></span> ' +
 					'<strong style="color:#d63638;">Request failed: ' + (errorThrown || textStatus) + '</strong>'
 				);
-				var labels = { claude: 'Test Claude Connection', openai: 'Test OpenAI Connection', ideogram: 'Test Ideogram Connection' };
+				var labels = { claude: 'Test Claude Connection', openai: 'Test OpenAI Connection' };
 				$btn.prop('disabled', false).text(labels[provider] || 'Test');
 			},
 			timeout: 30000,
