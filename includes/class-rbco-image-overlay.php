@@ -19,14 +19,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Renders a branded featured image by overlaying the post title onto a base
+ * image using the GD library, with configurable fonts, colors, and layout.
+ */
 class RBCO_Image_Overlay {
 
 	/**
 	 * Create a featured image with title overlay.
 	 *
 	 * @param int    $base_attachment_id WordPress attachment ID of the base image.
-	 * @param string $title             The text to overlay (typically the SEO title).
+	 * @param string $title              The text to overlay (typically the SEO title).
 	 * @param array  $options {
+	 *     Optional. Overlay rendering options.
+	 *
 	 *     @type string $color       Hex color for line 1 (default: #0d5e50).
 	 *     @type string $color_line2 Hex color for line 2 (default: same as $color).
 	 *     @type string $font_bold   Absolute path to bold TTF font file.
@@ -50,7 +56,7 @@ class RBCO_Image_Overlay {
 			'font_size'   => 0,
 			'lines'       => array(),
 		);
-		$opts = wp_parse_args( $options, $defaults );
+		$opts     = wp_parse_args( $options, $defaults );
 
 		if ( empty( $opts['color_line2'] ) ) {
 			$opts['color_line2'] = $opts['color'];
@@ -103,7 +109,7 @@ class RBCO_Image_Overlay {
 		// Font files.
 		$font_bold = $opts['font_bold'];
 		if ( empty( $font_bold ) || ! file_exists( $font_bold ) ) {
-			imagedestroy( $img );
+			unset( $img );
 			return new \WP_Error( 'no_font', __( 'Bold font file (.ttf) not found. Upload a TTF font and configure it in Settings → Featured Image Provider.', 'raybogman-ai-content-orchestrator' ) );
 		}
 		$font_italic = ( ! empty( $opts['font_italic'] ) && file_exists( $opts['font_italic'] ) )
@@ -151,7 +157,7 @@ class RBCO_Image_Overlay {
 			$bbox2           = imagettfbbox( $font_size_line2, 0, $font_italic, $line2 );
 			$text_width2     = abs( $bbox2[4] - $bbox2[0] );
 			$text_height2    = abs( $bbox2[5] - $bbox2[1] );
-			$shrink_count++;
+			++$shrink_count;
 		}
 
 		// Calculate center-center positioning.
@@ -178,7 +184,7 @@ class RBCO_Image_Overlay {
 		$filepath = trailingslashit( $upload_dir['path'] ) . $filename;
 
 		imagejpeg( $img, $filepath, 92 );
-		imagedestroy( $img );
+		unset( $img );
 
 		return $filepath;
 	}

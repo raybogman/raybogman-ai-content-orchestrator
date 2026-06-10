@@ -9,13 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$rbco_has_yoast          = defined( 'WPSEO_VERSION' );
-$rbco_provider           = RBCO_Settings::get_ai_provider();
-$rbco_image_provider     = RBCO_Settings::get_image_provider();
-$rbco_claude_set         = ! empty( RBCO_Settings::get_anthropic_api_key() );
-$rbco_openai_set         = ! empty( RBCO_Settings::get_openai_api_key() );
+$rbco_has_yoast  = defined( 'WPSEO_VERSION' );
+$rbco_provider   = RBCO_Settings::get_ai_provider();
+$rbco_claude_set = ! empty( RBCO_Settings::get_anthropic_api_key() );
+$rbco_openai_set = ! empty( RBCO_Settings::get_openai_api_key() );
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only tab/param check.
-$rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
+$rbco_active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
 ?>
 <div class="wrap">
 	<h1>
@@ -26,20 +25,20 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 	<nav class="nav-tab-wrapper" style="margin-bottom: 20px;">
 		<?php foreach ( RBCO_Settings::get_tabs() as $rbco_slug => $rbco_label ) : ?>
 			<a href="<?php echo esc_url( add_query_arg( 'tab', $rbco_slug, admin_url( 'admin.php?page=rbco-settings' ) ) ); ?>"
-			   class="nav-tab <?php echo $rbco_active_tab === $rbco_slug ? 'nav-tab-active' : ''; ?>">
+				class="nav-tab <?php echo $rbco_active_tab === $rbco_slug ? 'nav-tab-active' : ''; ?>">
 				<?php echo esc_html( $rbco_label ); ?>
 			</a>
 		<?php endforeach; ?>
 	</nav>
 
 	<?php if ( ! in_array( $rbco_active_tab, array( 'faq', 'about' ), true ) ) : ?>
-	<?php
-	// Read-only display flag set by RBCO_Settings::handle_save() after its own
-	// nonce + capability check and an internal wp_safe_redirect().
+		<?php
+		// Read-only display flag set by RBCO_Settings::handle_save() after its own
+		// nonce + capability check and an internal wp_safe_redirect().
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$rbco_settings_saved = isset( $_GET['settings-updated'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) );
-	?>
-	<?php if ( $rbco_settings_saved ) : ?>
+		$rbco_settings_saved = isset( $_GET['settings-updated'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) );
+		?>
+		<?php if ( $rbco_settings_saved ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'raybogman-ai-content-orchestrator' ); ?></p></div>
 	<?php endif; ?>
 	<form method="post" action="">
@@ -59,24 +58,23 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 
 		<?php
 		$rbco_faq_items = array(
-			'what-does-it-do'      => __( 'What does this plugin do?', 'raybogman-ai-content-orchestrator' ),
-			'ai-providers'         => __( 'Do I need both a Claude and OpenAI account?', 'raybogman-ai-content-orchestrator' ),
-			'cost'                 => __( 'How much does it cost to generate a blog post?', 'raybogman-ai-content-orchestrator' ),
-			'website-scanner'      => __( 'What is the "Website Scanner" and do I need it?', 'raybogman-ai-content-orchestrator' ),
-			'internal-linking'     => __( 'How does the automatic internal linking work?', 'raybogman-ai-content-orchestrator' ),
-			'image-overlay'        => __( 'How does the featured image overlay work?', 'raybogman-ai-content-orchestrator' ),
-			'shared-hosting'       => __( 'Does this plugin work on shared hosting?', 'raybogman-ai-content-orchestrator' ),
-			'curl-timeout'         => __( 'I get a "cURL error 28: Operation timed out" — what does this mean?', 'raybogman-ai-content-orchestrator' ),
-			'scan-pages'           => __( 'How many pages should I scan for best results?', 'raybogman-ai-content-orchestrator' ),
-			'save-log'             => __( 'How can I save the progress log for debugging?', 'raybogman-ai-content-orchestrator' ),
+			'what-does-it-do'  => __( 'What does this plugin do?', 'raybogman-ai-content-orchestrator' ),
+			'ai-providers'     => __( 'Do I need both a Claude and OpenAI account?', 'raybogman-ai-content-orchestrator' ),
+			'cost'             => __( 'How much does it cost to generate a blog post?', 'raybogman-ai-content-orchestrator' ),
+			'website-scanner'  => __( 'What is the "Website Scanner" and do I need it?', 'raybogman-ai-content-orchestrator' ),
+			'internal-linking' => __( 'How does the automatic internal linking work?', 'raybogman-ai-content-orchestrator' ),
+			'image-overlay'    => __( 'How does the featured image overlay work?', 'raybogman-ai-content-orchestrator' ),
+			'shared-hosting'   => __( 'Does this plugin work on shared hosting?', 'raybogman-ai-content-orchestrator' ),
+			'curl-timeout'     => __( 'I get a "cURL error 28: Operation timed out" — what does this mean?', 'raybogman-ai-content-orchestrator' ),
+			'save-log'         => __( 'How can I save the progress log for debugging?', 'raybogman-ai-content-orchestrator' ),
 		);
 		?>
 		<div class="rbco-card" style="margin-bottom:20px;">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'Table of Contents', 'raybogman-ai-content-orchestrator' ); ?></h3>
 				<ol style="column-count:2; column-gap:24px; line-height:2;">
-					<?php foreach ( $rbco_faq_items as $id => $rbco_label ) : ?>
-						<li><a href="#faq-<?php echo esc_attr( $id ); ?>" style="text-decoration:none;"><?php echo esc_html( $rbco_label ); ?></a></li>
+					<?php foreach ( $rbco_faq_items as $rbco_id => $rbco_label ) : ?>
+						<li><a href="#faq-<?php echo esc_attr( $rbco_id ); ?>" style="text-decoration:none;"><?php echo esc_html( $rbco_label ); ?></a></li>
 					<?php endforeach; ?>
 				</ol>
 			</div>
@@ -85,7 +83,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-what-does-it-do">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'What does this plugin do?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'Ray Bogman AI Content Orchestrator writes full blog posts for your WordPress website using AI (Claude or OpenAI). You give it a topic, it scans a website for background information, then writes an SEO-optimized article with headings, paragraphs, lists, and a FAQ section. It also generates a featured image, adds internal links, and fills in your Yoast SEO fields.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'Ray Bogman AI Content Orchestrator writes full blog posts for your WordPress website using AI (Claude or OpenAI). You give it a topic, it optionally reads a single page you choose for background information, then writes an SEO-optimized article with headings, paragraphs, lists, and a FAQ section. It also generates a featured image, adds internal links, and fills in your Yoast SEO fields.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -99,14 +97,14 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-cost">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'How much does it cost to generate a blog post?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'The plugin itself is free to use. You pay for the AI usage through your provider\'s API. A typical blog post costs roughly $0.02–$0.10 with Claude Sonnet or GPT-4o. Featured images add about $0.04 per image with DALL-E 3.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'The plugin itself is free to use. You pay for the AI usage through your provider\'s API. A typical blog post costs roughly $0.02–$0.10 with Claude Sonnet or GPT-4o. Featured images add roughly $0.06 per image with gpt-image-1 (medium quality).', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-website-scanner">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'What is the "Website Scanner" and do I need it?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'The scanner reads pages from a website you specify and gives that information to the AI as background context. This helps the AI write content that matches your brand, uses the right terminology, and references real information. It\'s optional — you can skip it and just give the AI a prompt instead.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'The scanner reads the single page you specify and gives that information to the AI as background context. This helps the AI write content that matches your brand, uses the right terminology, and references real information. It\'s optional — you can skip it and just give the AI a prompt instead.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -136,29 +134,16 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 				<h3 style="margin-top:0;"><?php esc_html_e( 'I get a "cURL error 28: Operation timed out" — what does this mean?', 'raybogman-ai-content-orchestrator' ); ?></h3>
 				<p><?php esc_html_e( 'This means your server waited too long (120 seconds) for the AI provider to respond and gave up. The AI request was sent but the response didn\'t arrive in time. This is usually caused by:', 'raybogman-ai-content-orchestrator' ); ?></p>
 				<ul style="list-style:disc; padding-left:20px;">
-					<li><?php esc_html_e( 'Large context — scanning many pages creates a big prompt that takes the AI longer to process', 'raybogman-ai-content-orchestrator' ); ?></li>
+					<li><?php esc_html_e( 'Large context — reading a very long page creates a big prompt that takes the AI longer to process', 'raybogman-ai-content-orchestrator' ); ?></li>
 					<li><?php esc_html_e( 'Server firewall or proxy throttling outbound HTTPS connections', 'raybogman-ai-content-orchestrator' ); ?></li>
 					<li><?php esc_html_e( 'PHP max_execution_time set too low on your hosting (check with your host)', 'raybogman-ai-content-orchestrator' ); ?></li>
 					<li><?php esc_html_e( 'AI provider experiencing high load (temporary — try again later)', 'raybogman-ai-content-orchestrator' ); ?></li>
 				</ul>
 				<p><strong><?php esc_html_e( 'How to fix:', 'raybogman-ai-content-orchestrator' ); ?></strong></p>
 				<ol style="padding-left:20px;">
-					<li><?php esc_html_e( 'Reduce "Max Pages to Scan" in Settings → Scanner from 25 to 10-15. Fewer pages = smaller context = faster AI response.', 'raybogman-ai-content-orchestrator' ); ?></li>
+					<li><?php esc_html_e( 'Reduce "Max Context Characters" in Settings → Scanner so a long page sends less text to the AI. Smaller context = faster AI response.', 'raybogman-ai-content-orchestrator' ); ?></li>
 					<li><?php esc_html_e( 'Try again — the plugin automatically retries once after a 5-second pause. Temporary API slowdowns often resolve on the second attempt.', 'raybogman-ai-content-orchestrator' ); ?></li>
 				</ol>
-			</div>
-		</div>
-
-		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-scan-pages">
-			<div class="rbco-card-body">
-				<h3 style="margin-top:0;"><?php esc_html_e( 'How many pages should I scan for best results?', 'raybogman-ai-content-orchestrator' ); ?></h3>
-				<p><?php esc_html_e( 'For most websites, 8-15 pages provides a good balance between context quality and speed. Scanning too many pages (25+) creates a very large prompt that:', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<ul style="list-style:disc; padding-left:20px;">
-					<li><?php esc_html_e( 'Takes longer for the AI to process (increasing timeout risk)', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'Uses more API tokens (higher cost per post)', 'raybogman-ai-content-orchestrator' ); ?></li>
-					<li><?php esc_html_e( 'May dilute the focus — the AI has more information but less clarity on what matters', 'raybogman-ai-content-orchestrator' ); ?></li>
-				</ul>
-				<p><?php esc_html_e( 'The scanner automatically picks the most relevant pages based on your prompt, so even 10 pages usually captures the key information. You can adjust this in Settings → Scanner → "Max Pages to Scan".', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -187,7 +172,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 					<?php esc_html_e( 'Here\'s what it does: you give it a topic and optionally a website to scan for background information. The AI then writes a full, SEO-optimized blog post with proper headings, paragraphs, lists, and a FAQ section. It generates a custom featured image, adds internal links to your existing posts, and publishes everything to WordPress with Yoast SEO fields filled in — all in about 2 minutes.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
-					<?php esc_html_e( 'The plugin supports two AI providers (Claude by Anthropic and OpenAI\'s GPT models), featured image generation with DALL-E 3, four blog writing styles, automatic internal linking, and an optional branded title overlay for featured images.', 'raybogman-ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'The plugin supports two AI providers (Claude by Anthropic and OpenAI\'s GPT models), featured image generation with gpt-image-1, four blog writing styles, automatic internal linking, and an optional branded title overlay for featured images.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
 					<?php esc_html_e( 'Everything is designed to work on any hosting — including shared hosting with strict timeouts — thanks to a 4-step pipeline that breaks the work into manageable chunks.', 'raybogman-ai-content-orchestrator' ); ?>
@@ -341,7 +326,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 					<tr>
 						<td style="font-weight: 600;"><?php esc_html_e( 'Image Provider', 'raybogman-ai-content-orchestrator' ); ?></td>
 						<td>
-							<?php echo esc_html( 'OpenAI (DALL-E 3)' ); ?>
+							<?php echo esc_html( 'OpenAI (gpt-image-1)' ); ?>
 							<?php if ( RBCO_Settings::is_image_configured() ) : ?>
 								<span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
 							<?php else : ?>
@@ -410,8 +395,10 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 <?php
 // Inline JS registered via the proper script API instead of printing it inline.
 // ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
-rbco_capture_inline_script( 'rbco-admin', function () {
-	?>
+rbco_capture_inline_script(
+	'rbco-admin',
+	function () {
+		?>
 jQuery(document).ready(function($) {
 	$('.rbco-validate-btn').on('click', function() {
 		var $btn    = $(this);
@@ -538,6 +525,7 @@ jQuery(document).ready(function($) {
 		});
 	});
 });
-	<?php
-} );
+		<?php
+	}
+);
 ?>

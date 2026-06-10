@@ -15,7 +15,7 @@ $rbco_styles = RBCO_Styles::get_styles();
 // and format the AI will generate when that style is selected.
 $rbco_examples = array(
 
-	'standard' => '
+	'standard'        => '
 <p>In today\'s competitive digital landscape, understanding <strong>content marketing fundamentals</strong> is essential for any business looking to grow online. This guide explores the core strategies that drive real results.</p>
 
 <h2>Table of Contents</h2>
@@ -44,7 +44,7 @@ $rbco_examples = array(
 
 <p><strong>Ready to transform your content strategy?</strong> Start by auditing your existing content and identifying gaps in your audience\'s journey.</p>',
 
-	'how-to' => '
+	'how-to'          => '
 <p>Want to <strong>improve your website\'s loading speed</strong>? A fast website isn\'t just a nice-to-have — it directly impacts your search rankings and conversion rates. Let\'s walk through it step by step.</p>
 
 <h2>What You Will Need</h2>
@@ -86,7 +86,7 @@ $rbco_examples = array(
 
 <p><strong>Start with Step 1 today</strong> — knowing your baseline is the first step to a faster website.</p>',
 
-	'listicle' => '
+	'listicle'        => '
 <p>Looking for the <strong>best productivity tools</strong> to supercharge your workflow? We\'ve tested dozens of options and narrowed it down to the top picks that actually deliver results.</p>
 
 <h2>Table of Contents</h2>
@@ -199,8 +199,10 @@ $rbco_examples = array(
 // Inline JS is registered through the proper script API (attached to the
 // already-enqueued 'rbco-admin' handle) instead of printing it inline.
 // ob_start() and ob_get_clean() are paired inside rbco_capture_inline_script().
-rbco_capture_inline_script( 'rbco-admin', function () {
-	?>
+rbco_capture_inline_script(
+	'rbco-admin',
+	function () {
+		?>
 jQuery(document).ready(function($) {
 	$('.rbco-example-toggle').on('click', function() {
 		var target = $(this).data('target');
@@ -216,6 +218,7 @@ jQuery(document).ready(function($) {
 		}
 	});
 });
-	<?php
-} );
+		<?php
+	}
+);
 ?>

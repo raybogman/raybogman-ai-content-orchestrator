@@ -9,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Inserts contextual internal links into AI-generated content by matching
+ * keywords against the site's existing published posts and pages.
+ */
 class RBCO_Internal_Linker {
 
 	/**
@@ -17,14 +21,15 @@ class RBCO_Internal_Linker {
 	 * Links are spread evenly across paragraphs (max one link per paragraph).
 	 * The first paragraph (intro) is skipped to keep the opening clean.
 	 *
-	 * @param string $html          AI-generated HTML content.
-	 * @param array  $meta          SEO metadata (seo_title, focus_keyphrase, meta_description).
-	 * @param int    $max_links     Maximum number of internal links to insert (default: 5).
-	 * @param int    $exclude_id    Post ID to exclude (the post being created).
+	 * @param string        $html         AI-generated HTML content.
+	 * @param array         $meta         SEO metadata (seo_title, focus_keyphrase, meta_description).
+	 * @param int           $max_links    Maximum number of internal links to insert (default: 5).
+	 * @param int           $exclude_id   Post ID to exclude (the post being created).
+	 * @param callable|null $log_callback Optional callback invoked with progress messages.
 	 * @return array { 'html' => string, 'links_added' => int, 'linked_posts' => array }
 	 */
 	public static function add_links( $html, $meta, $max_links = 5, $exclude_id = 0, $log_callback = null ) {
-		$log = function( $msg ) use ( $log_callback ) {
+		$log = function ( $msg ) use ( $log_callback ) {
 			if ( is_callable( $log_callback ) ) {
 				call_user_func( $log_callback, '  [linker] ' . $msg );
 			}
@@ -97,10 +102,10 @@ class RBCO_Internal_Linker {
 			$max_inline = 0;
 		}
 
-		$linked_p_indices = array();
-		$inline_added     = 0;
-		$links_added      = 0;
-		$linked_posts     = array();
+		$linked_p_indices  = array();
+		$inline_added      = 0;
+		$links_added       = 0;
+		$linked_posts      = array();
 		$footer_candidates = array();
 
 		// Phase 1: Inline links.
@@ -112,10 +117,10 @@ class RBCO_Internal_Linker {
 
 				$result = self::insert_link_distributed( $html, $candidate, $paragraphs, $linked_p_indices );
 				if ( null !== $result ) {
-					$html                                = $result['html'];
+					$html                                 = $result['html'];
 					$linked_p_indices[ $result['p_idx'] ] = true;
-					$inline_added++;
-					$links_added++;
+					++$inline_added;
+					++$links_added;
 					$linked_posts[] = array(
 						'id'    => $candidate['id'],
 						'title' => $candidate['title'],
@@ -162,8 +167,8 @@ class RBCO_Internal_Linker {
 					esc_url( $r['url'] ),
 					esc_html( $r['title'] )
 				);
-				$footer_added++;
-				$links_added++;
+				++$footer_added;
+				++$links_added;
 				$linked_posts[] = array(
 					'id'    => $r['id'],
 					'title' => $r['title'],
@@ -196,7 +201,7 @@ class RBCO_Internal_Linker {
 		$paragraphs = array();
 		if ( preg_match_all( '/<p\b[^>]*>.*?<\/p>/is', $html, $matches, PREG_OFFSET_CAPTURE ) ) {
 			foreach ( $matches[0] as $m ) {
-				$p_html = $m[0];
+				$p_html       = $m[0];
 				$paragraphs[] = array(
 					'html'     => $p_html,
 					'offset'   => $m[1],
@@ -229,12 +234,12 @@ class RBCO_Internal_Linker {
 		// Strategy 1: Find anchor text literally in an available paragraph.
 		foreach ( $candidate['anchor_words'] as $anchor ) {
 			$escaped_anchor = preg_quote( $anchor, '/' );
-			$pattern = '/(<p[^>]*>(?:(?!<\/p>).)*?)(' . $escaped_anchor . ')((?:(?!<\/p>).)*?<\/p>)/ius';
+			$pattern        = '/(<p[^>]*>(?:(?!<\/p>).)*?)(' . $escaped_anchor . ')((?:(?!<\/p>).)*?<\/p>)/ius';
 
 			if ( preg_match_all( $pattern, $html, $all_matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
 				foreach ( $all_matches as $m ) {
 					$match_offset = $m[0][1];
-					$p_idx = self::find_paragraph_index( $paragraphs, $match_offset );
+					$p_idx        = self::find_paragraph_index( $paragraphs, $match_offset );
 
 					// Skip first paragraph (intro).
 					if ( $p_idx <= 0 ) {
@@ -267,7 +272,10 @@ class RBCO_Internal_Linker {
 					);
 
 					$new_html = substr_replace( $html, $before . $link . $after, $m[0][1], strlen( $m[0][0] ) );
-					return array( 'html' => $new_html, 'p_idx' => $p_idx );
+					return array(
+						'html'  => $new_html,
+						'p_idx' => $p_idx,
+					);
 				}
 			}
 		}
@@ -291,12 +299,21 @@ class RBCO_Internal_Linker {
 
 		$match_phrases = array();
 		// Try 2-word combinations from consecutive meaningful words.
-		for ( $j = 0; $j < count( $meaningful ) - 1; $j++ ) {
+		$meaningful_count = count( $meaningful );
+		for ( $j = 0; $j < $meaningful_count - 1; $j++ ) {
 			$match_phrases[] = $meaningful[ $j ] . ' ' . $meaningful[ $j + 1 ];
 		}
 		// Then individual words (5+ chars, sorted longest first for specificity).
-		$single_words = array_filter( $meaningful, function( $w ) { return mb_strlen( $w ) >= 5; } );
-		usort( $single_words, function( $a, $b ) { return mb_strlen( $b ) - mb_strlen( $a ); } );
+		$single_words = array_filter(
+			$meaningful,
+			function ( $w ) {
+				return mb_strlen( $w ) >= 5; }
+		);
+		usort(
+			$single_words,
+			function ( $a, $b ) {
+				return mb_strlen( $b ) - mb_strlen( $a ); }
+		);
 		$match_phrases = array_merge( $match_phrases, $single_words );
 
 		if ( empty( $match_phrases ) ) {
@@ -336,7 +353,10 @@ class RBCO_Internal_Linker {
 				$link     = sprintf( '<a href="%s">%s</a>', esc_url( $candidate['url'] ), $matched );
 				$new_p    = $before . $link . $after;
 				$new_html = substr_replace( $html, $new_p, $p_offset, strlen( $p_html ) );
-				return array( 'html' => $new_html, 'p_idx' => $i );
+				return array(
+					'html'  => $new_html,
+					'p_idx' => $i,
+				);
 			}
 		}
 
@@ -413,17 +433,19 @@ class RBCO_Internal_Linker {
 	 * @return array Scored candidates sorted by relevance.
 	 */
 	private static function find_relevant_posts( $keywords, $exclude, $limit ) {
-		$query = new \WP_Query( array(
-			'post_type'        => array( 'post', 'page' ),
-			'post_status'      => 'publish',
-			'posts_per_page'   => 200,
-			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
-			'post__not_in'     => $exclude > 0 ? array( $exclude ) : array(),
-			'orderby'          => 'date',
-			'order'            => 'DESC',
-			'no_found_rows'    => true,
-			'suppress_filters' => false,
-		) );
+		$query = new \WP_Query(
+			array(
+				'post_type'        => array( 'post', 'page' ),
+				'post_status'      => 'publish',
+				'posts_per_page'   => 100,
+				// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+				'post__not_in'     => $exclude > 0 ? array( $exclude ) : array(),
+				'orderby'          => 'date',
+				'order'            => 'DESC',
+				'no_found_rows'    => true,
+				'suppress_filters' => false,
+			)
+		);
 
 		if ( ! $query->have_posts() ) {
 			return array();
@@ -443,7 +465,7 @@ class RBCO_Internal_Linker {
 
 			foreach ( $keywords as $kw ) {
 				if ( false !== mb_strpos( $content_lower, $kw ) ) {
-					$score += 1;
+					++$score;
 				}
 			}
 
@@ -458,9 +480,12 @@ class RBCO_Internal_Linker {
 			}
 		}
 
-		usort( $candidates, function ( $a, $b ) {
-			return $b['score'] - $a['score'];
-		} );
+		usort(
+			$candidates,
+			function ( $a, $b ) {
+				return $b['score'] - $a['score'];
+			}
+		);
 
 		return array_slice( $candidates, 0, $limit );
 	}
@@ -518,22 +543,147 @@ class RBCO_Internal_Linker {
 
 		$list = array(
 			// English.
-			'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'her', 'was', 'one',
-			'our', 'out', 'has', 'have', 'had', 'this', 'that', 'with', 'from', 'they', 'been',
-			'will', 'would', 'could', 'should', 'what', 'when', 'where', 'which', 'their', 'there',
-			'about', 'into', 'more', 'your', 'also', 'how', 'its', 'than', 'them', 'each', 'does',
+			'the',
+			'and',
+			'for',
+			'are',
+			'but',
+			'not',
+			'you',
+			'all',
+			'can',
+			'her',
+			'was',
+			'one',
+			'our',
+			'out',
+			'has',
+			'have',
+			'had',
+			'this',
+			'that',
+			'with',
+			'from',
+			'they',
+			'been',
+			'will',
+			'would',
+			'could',
+			'should',
+			'what',
+			'when',
+			'where',
+			'which',
+			'their',
+			'there',
+			'about',
+			'into',
+			'more',
+			'your',
+			'also',
+			'how',
+			'its',
+			'than',
+			'them',
+			'each',
+			'does',
 			// Dutch.
-			'het', 'een', 'van', 'dat', 'die', 'niet', 'zijn', 'aan', 'met', 'als', 'ook', 'maar',
-			'nog', 'wel', 'door', 'voor', 'dan', 'naar', 'bij', 'uit', 'dit', 'deze', 'wat', 'hoe',
-			'haar', 'hun', 'werd', 'zou', 'worden', 'heeft', 'over', 'veel', 'jouw', 'jij', 'wij',
+			'het',
+			'een',
+			'van',
+			'dat',
+			'die',
+			'niet',
+			'zijn',
+			'aan',
+			'met',
+			'als',
+			'ook',
+			'maar',
+			'nog',
+			'wel',
+			'door',
+			'voor',
+			'dan',
+			'naar',
+			'bij',
+			'uit',
+			'dit',
+			'deze',
+			'wat',
+			'hoe',
+			'haar',
+			'hun',
+			'werd',
+			'zou',
+			'worden',
+			'heeft',
+			'over',
+			'veel',
+			'jouw',
+			'jij',
+			'wij',
 			// German.
-			'der', 'die', 'das', 'und', 'ist', 'ein', 'eine', 'nicht', 'mit', 'auf', 'den', 'von',
-			'sich', 'des', 'dem', 'dass', 'auch', 'als', 'wird', 'bei', 'nach', 'wie', 'oder',
+			'der',
+			'die',
+			'das',
+			'und',
+			'ist',
+			'ein',
+			'eine',
+			'nicht',
+			'mit',
+			'auf',
+			'den',
+			'von',
+			'sich',
+			'des',
+			'dem',
+			'dass',
+			'auch',
+			'als',
+			'wird',
+			'bei',
+			'nach',
+			'wie',
+			'oder',
 			// French.
-			'les', 'des', 'une', 'est', 'pas', 'que', 'dans', 'qui', 'par', 'sur', 'pour', 'avec',
-			'son', 'sont', 'mais', 'ont', 'aux', 'ses', 'ces', 'tout', 'elle', 'nous', 'vous',
+			'les',
+			'des',
+			'une',
+			'est',
+			'pas',
+			'que',
+			'dans',
+			'qui',
+			'par',
+			'sur',
+			'pour',
+			'avec',
+			'son',
+			'sont',
+			'mais',
+			'ont',
+			'aux',
+			'ses',
+			'ces',
+			'tout',
+			'elle',
+			'nous',
+			'vous',
 			// Spanish.
-			'los', 'las', 'del', 'por', 'con', 'una', 'como', 'sus', 'que', 'pero', 'son', 'todo',
+			'los',
+			'las',
+			'del',
+			'por',
+			'con',
+			'una',
+			'como',
+			'sus',
+			'que',
+			'pero',
+			'son',
+			'todo',
 		);
 
 		$stopwords = array();
@@ -557,25 +707,127 @@ class RBCO_Internal_Linker {
 
 		$list = array(
 			// English generic.
-			'best', 'complete', 'guide', 'simple', 'easy', 'good', 'great', 'right',
-			'find', 'make', 'take', 'need', 'help', 'know', 'just', 'look', 'come',
-			'work', 'want', 'give', 'tell', 'call', 'keep', 'let', 'begin', 'show',
-			'start', 'turn', 'move', 'play', 'real', 'full', 'free', 'open', 'must',
-			'part', 'long', 'very', 'much', 'next', 'last', 'back', 'only', 'most',
-			'new', 'first', 'every', 'modern', 'business', 'company', 'companies',
-			'today', 'world', 'things', 'years', 'people', 'time', 'ways', 'many',
-			'most', 'important', 'different', 'better', 'biggest', 'small', 'large',
-			'top', 'key', 'main', 'common', 'future', 'ultimate', 'essential',
-			'comprehensive', 'definitive', 'effective', 'powerful', 'step', 'steps',
-			'tips', 'tricks', 'signs', 'reasons', 'benefits', 'challenges',
+			'best',
+			'complete',
+			'guide',
+			'simple',
+			'easy',
+			'good',
+			'great',
+			'right',
+			'find',
+			'make',
+			'take',
+			'need',
+			'help',
+			'know',
+			'just',
+			'look',
+			'come',
+			'work',
+			'want',
+			'give',
+			'tell',
+			'call',
+			'keep',
+			'let',
+			'begin',
+			'show',
+			'start',
+			'turn',
+			'move',
+			'play',
+			'real',
+			'full',
+			'free',
+			'open',
+			'must',
+			'part',
+			'long',
+			'very',
+			'much',
+			'next',
+			'last',
+			'back',
+			'only',
+			'most',
+			'new',
+			'first',
+			'every',
+			'modern',
+			'business',
+			'company',
+			'companies',
+			'today',
+			'world',
+			'things',
+			'years',
+			'people',
+			'time',
+			'ways',
+			'many',
+			'most',
+			'important',
+			'different',
+			'better',
+			'biggest',
+			'small',
+			'large',
+			'top',
+			'key',
+			'main',
+			'common',
+			'future',
+			'ultimate',
+			'essential',
+			'comprehensive',
+			'definitive',
+			'effective',
+			'powerful',
+			'step',
+			'steps',
+			'tips',
+			'tricks',
+			'signs',
+			'reasons',
+			'benefits',
+			'challenges',
 			// Dutch generic.
-			'beste', 'gids', 'compleet', 'complete', 'goed', 'goede', 'groot', 'grote',
-			'nieuw', 'nieuwe', 'belangrijk', 'belangrijke', 'eerste', 'laatste',
-			'verschillende', 'andere', 'mogelijk', 'mogelijk', 'bedrijf', 'bedrijven',
-			'stappen', 'redenen', 'voordelen', 'tips',
+			'beste',
+			'gids',
+			'compleet',
+			'complete',
+			'goed',
+			'goede',
+			'groot',
+			'grote',
+			'nieuw',
+			'nieuwe',
+			'belangrijk',
+			'belangrijke',
+			'eerste',
+			'laatste',
+			'verschillende',
+			'andere',
+			'mogelijk',
+			'mogelijk',
+			'bedrijf',
+			'bedrijven',
+			'stappen',
+			'redenen',
+			'voordelen',
+			'tips',
 			// German generic.
-			'beste', 'wichtig', 'wichtige', 'groß', 'große', 'klein', 'kleine',
-			'unternehmen', 'schritte', 'tipps',
+			'beste',
+			'wichtig',
+			'wichtige',
+			'groß',
+			'große',
+			'klein',
+			'kleine',
+			'unternehmen',
+			'schritte',
+			'tipps',
 		);
 
 		$weak = array();

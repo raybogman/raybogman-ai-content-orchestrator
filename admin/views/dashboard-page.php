@@ -20,13 +20,15 @@ $rbco_total_posts = (int) $wpdb->get_var(
 // Count posts this month.
 $rbco_month_start = gmdate( 'Y-m-01 00:00:00' );
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-$rbco_month_posts = (int) $wpdb->get_var( $wpdb->prepare(
-	"SELECT COUNT(*) FROM {$wpdb->posts} p
+$rbco_month_posts = (int) $wpdb->get_var(
+	$wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
 	 WHERE pm.meta_key = '_rbco_generated' AND pm.meta_value = '1'
 	   AND p.post_date >= %s",
-	$rbco_month_start
-) );
+		$rbco_month_start
+	)
+);
 
 // Draft AI posts.
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -52,8 +54,9 @@ $rbco_top_posts = $wpdb->get_results(
 // Posts needing refresh (published more than 6 months ago).
 $rbco_six_months_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-6 months' ) );
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-$rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
-	"SELECT p.ID, p.post_title, p.post_date, p.post_modified,
+$rbco_stale_posts = $wpdb->get_results(
+	$wpdb->prepare(
+		"SELECT p.ID, p.post_title, p.post_date, p.post_modified,
 	        CHAR_LENGTH(p.post_content) AS content_length
 	 FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
@@ -62,8 +65,9 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 	   AND p.post_modified < %s
 	 ORDER BY p.post_modified ASC
 	 LIMIT 10",
-	$rbco_six_months_ago
-) );
+		$rbco_six_months_ago
+	)
+);
 ?>
 <div class="wrap">
 	<h1>
@@ -103,14 +107,14 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $rbco_top_posts as $post ) : ?>
+							<?php foreach ( $rbco_top_posts as $rbco_post ) : ?>
 								<tr>
 									<td>
-										<a href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>" target="_blank">
-											<?php echo esc_html( $post->post_title ); ?>
+										<a href="<?php echo esc_url( get_permalink( $rbco_post->ID ) ); ?>" target="_blank">
+											<?php echo esc_html( $rbco_post->post_title ); ?>
 										</a>
 									</td>
-									<td><?php echo esc_html( wp_date( 'M j', strtotime( $post->post_date ) ) ); ?></td>
+									<td><?php echo esc_html( wp_date( 'M j', strtotime( $rbco_post->post_date ) ) ); ?></td>
 								</tr>
 							<?php endforeach; ?>
 						</tbody>
@@ -140,15 +144,15 @@ $rbco_stale_posts = $wpdb->get_results( $wpdb->prepare(
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $rbco_stale_posts as $post ) : ?>
+							<?php foreach ( $rbco_stale_posts as $rbco_post ) : ?>
 								<tr>
 									<td>
-										<a href="<?php echo esc_url( get_edit_post_link( $post->ID ) ); ?>">
-											<?php echo esc_html( $post->post_title ); ?>
+										<a href="<?php echo esc_url( get_edit_post_link( $rbco_post->ID ) ); ?>">
+											<?php echo esc_html( $rbco_post->post_title ); ?>
 										</a>
 									</td>
-									<td><?php echo esc_html( human_time_diff( strtotime( $post->post_modified ), time() ) ); ?> <?php esc_html_e( 'ago', 'raybogman-ai-content-orchestrator' ); ?></td>
-									<td style="text-align: center;"><?php echo esc_html( (int) ( $post->content_length / 6 ) ); ?></td>
+									<td><?php echo esc_html( human_time_diff( strtotime( $rbco_post->post_modified ), time() ) ); ?> <?php esc_html_e( 'ago', 'raybogman-ai-content-orchestrator' ); ?></td>
+									<td style="text-align: center;"><?php echo esc_html( (int) ( $rbco_post->content_length / 6 ) ); ?></td>
 								</tr>
 							<?php endforeach; ?>
 						</tbody>

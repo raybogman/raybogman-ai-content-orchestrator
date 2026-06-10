@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Ray Bogman AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-ai-content-orchestrator
- * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO metadata, AI-generated articles, featured images (DALL-E 3), internal linking, and Yoast integration. Supports Claude and OpenAI.
- * Version:           1.0.0
+ * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO metadata, AI-generated articles, featured images (gpt-image-1), internal linking, and Yoast integration. Supports Claude and OpenAI.
+ * Version:           1.0.1
  * Requires at least: 5.9
  * Tested up to:      7.0
  * Requires PHP:      7.4
@@ -13,13 +13,15 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       raybogman-ai-content-orchestrator
  * Domain Path:       /languages
+ *
+ * @package Raybogman_Content_Orchestrator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RBCO_VERSION', '1.0.0' );
+define( 'RBCO_VERSION', '1.0.1' );
 define( 'RBCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RBCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RBCO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -104,7 +106,7 @@ final class RBCO_Plugin {
 
 		// Allow TTF/OTF font uploads for the image overlay feature.
 		add_filter( 'upload_mimes', array( $this, 'allow_font_uploads' ) );
-		add_filter( 'wp_check_filetype_and_ext', array( $this, 'fix_font_filetype' ), 10, 4 );
+		add_filter( 'wp_check_filetype_and_ext', array( $this, 'fix_font_filetype' ), 10, 3 );
 	}
 
 	/**
@@ -120,7 +122,7 @@ final class RBCO_Plugin {
 			return;
 		}
 
-		$old_active = is_plugin_active( 'ai-content-creator/ai-content-creator.php' );
+		$old_active   = is_plugin_active( 'ai-content-creator/ai-content-creator.php' );
 		$has_settings = '' !== get_option( 'rbco_ai_provider', '' );
 
 		if ( ! $has_settings && ! $old_active ) {
@@ -162,12 +164,18 @@ final class RBCO_Plugin {
 		// through the proper script API instead of printing it inline.
 		wp_register_script( 'rbco-migration-notice', false, array( 'jquery' ), RBCO_VERSION, true );
 		wp_enqueue_script( 'rbco-migration-notice' );
-		wp_localize_script( 'rbco-migration-notice', 'rbcoMigration', array(
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-			'nonce'   => $nonce,
-		) );
-		rbco_capture_inline_script( 'rbco-migration-notice', function () {
-			?>
+		wp_localize_script(
+			'rbco-migration-notice',
+			'rbcoMigration',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => $nonce,
+			)
+		);
+		rbco_capture_inline_script(
+			'rbco-migration-notice',
+			function () {
+				?>
 		jQuery(document).ready(function($) {
 			var ajaxurl = rbcoMigration.ajaxUrl;
 			var nonce = rbcoMigration.nonce;
@@ -197,8 +205,9 @@ final class RBCO_Plugin {
 				$('#rbco-migration-notice').fadeOut();
 			});
 		});
-			<?php
-		} );
+				<?php
+			}
+		);
 		?>
 		<?php
 	}
@@ -217,33 +226,41 @@ final class RBCO_Plugin {
 			return;
 		}
 
-		$settings = array();
-		$provider = get_option( 'rbco_ai_provider', '' );
+		$settings                = array();
+		$provider                = get_option( 'rbco_ai_provider', '' );
 		$settings['AI Provider'] = $provider ? ucfirst( $provider ) : '—';
 
-		$ck = get_option( 'rbco_anthropic_api_key', '' );
+		$ck                         = get_option( 'rbco_anthropic_api_key', '' );
 		$settings['Claude API Key'] = $ck ? '****' . substr( $ck, -4 ) : '—';
 
-		$ok = get_option( 'rbco_openai_api_key', '' );
+		$ok                         = get_option( 'rbco_openai_api_key', '' );
 		$settings['OpenAI API Key'] = $ok ? '****' . substr( $ok, -4 ) : '—';
 
-		$ip = get_option( 'rbco_image_provider', '' );
+		$ip                         = get_option( 'rbco_image_provider', '' );
 		$settings['Image Provider'] = $ip ? ucfirst( $ip ) : '—';
 
-		$pv = get_option( 'rbco_project_vision', '' );
+		$pv                         = get_option( 'rbco_project_vision', '' );
 		$settings['Project Vision'] = ! empty( $pv ) ? substr( $pv, 0, 50 ) . ( strlen( $pv ) > 50 ? '...' : '' ) : '—';
 
-		$urls = get_option( 'rbco_saved_urls', array() );
+		$urls                   = get_option( 'rbco_saved_urls', array() );
 		$settings['Saved URLs'] = is_array( $urls ) ? count( $urls ) . ' URL(s)' : '—';
 
 		update_option( 'rbco_migration_verified', true );
 
-		wp_send_json_success( array(
-			'message'  => __( 'All settings verified! Your configuration is fully active in Ray Bogman AI Content Orchestrator.', 'raybogman-ai-content-orchestrator' ),
-			'settings' => $settings,
-		) );
+		wp_send_json_success(
+			array(
+				'message'  => __( 'All settings verified! Your configuration is fully active in Ray Bogman AI Content Orchestrator.', 'raybogman-ai-content-orchestrator' ),
+				'settings' => $settings,
+			)
+		);
 	}
 
+	/**
+	 * Allow TTF/OTF/WOFF font uploads (used by the image-overlay feature).
+	 *
+	 * @param array $mimes Allowed MIME types keyed by file extension.
+	 * @return array Filtered MIME types.
+	 */
 	public function allow_font_uploads( $mimes ) {
 		$mimes['ttf']  = 'font/ttf';
 		$mimes['otf']  = 'font/otf';
@@ -251,7 +268,15 @@ final class RBCO_Plugin {
 		return $mimes;
 	}
 
-	public function fix_font_filetype( $data, $file, $filename, $mimes ) {
+	/**
+	 * Correct the detected file type for uploaded font files.
+	 *
+	 * @param array  $data     File data array (ext, type, proper_filename).
+	 * @param string $file     Full path to the uploaded file.
+	 * @param string $filename The name of the uploaded file.
+	 * @return array Filtered file data.
+	 */
+	public function fix_font_filetype( $data, $file, $filename ) {
 		$ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
 		if ( in_array( $ext, array( 'ttf', 'otf', 'woff' ), true ) ) {
 			$data['ext']  = $ext;
@@ -265,14 +290,13 @@ final class RBCO_Plugin {
 	 */
 	public function activate() {
 		$defaults = array(
-			'ai_provider'        => 'claude',
-			'anthropic_api_key'  => '',
-			'claude_model'       => 'claude-sonnet-4-6',
-			'openai_api_key'     => '',
-			'openai_model'       => 'gpt-4o',
-			'max_pages_to_crawl' => 25,
-			'max_context_chars'  => 18000,
-			'request_timeout'    => 15,
+			'ai_provider'       => 'claude',
+			'anthropic_api_key' => '',
+			'claude_model'      => 'claude-sonnet-4-6',
+			'openai_api_key'    => '',
+			'openai_model'      => 'gpt-4o',
+			'max_context_chars' => 18000,
+			'request_timeout'   => 15,
 		);
 
 		foreach ( $defaults as $key => $value ) {

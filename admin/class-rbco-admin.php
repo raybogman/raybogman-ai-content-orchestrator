@@ -156,30 +156,34 @@ class RBCO_Admin {
 		$provider    = RBCO_Settings::get_ai_provider();
 		$blog_styles = RBCO_Styles::get_styles_for_js();
 
-		wp_localize_script( 'rbco-admin', 'rbco', array(
-			'ajax_url'   => admin_url( 'admin-ajax.php' ),
-			'nonce'      => wp_create_nonce( 'rbco_nonce' ),
-			'provider'   => $provider,
-			'model'      => RBCO_Settings::get_active_model(),
-			'configured' => RBCO_Settings::is_configured(),
-			'categories' => $categories,
-			'saved_urls'  => RBCO_Settings::get_saved_urls(),
-			'blog_styles'  => $blog_styles,
-			'has_yoast'           => defined( 'WPSEO_VERSION' ),
-			'i18n'       => array(
-				'working'          => __( 'Working...', 'raybogman-ai-content-orchestrator' ),
-				'create_content'   => __( 'Create Content', 'raybogman-ai-content-orchestrator' ),
-				'prompt_required'  => __( 'Please enter a prompt.', 'raybogman-ai-content-orchestrator' ),
-				'not_configured'   => __( 'Please configure your AI provider API key in Settings first.', 'raybogman-ai-content-orchestrator' ),
-				'error'            => __( 'Error', 'raybogman-ai-content-orchestrator' ),
-				'done'             => __( 'Done!', 'raybogman-ai-content-orchestrator' ),
-				'published'        => __( 'Published', 'raybogman-ai-content-orchestrator' ),
-				'draft'            => __( 'Draft', 'raybogman-ai-content-orchestrator' ),
-				'updated'          => __( 'Updated', 'raybogman-ai-content-orchestrator' ),
-				'not_available'    => __( 'Not available', 'raybogman-ai-content-orchestrator' ),
-				'request_failed'   => __( 'Request failed', 'raybogman-ai-content-orchestrator' ),
-			),
-		) );
+		wp_localize_script(
+			'rbco-admin',
+			'rbco',
+			array(
+				'ajax_url'    => admin_url( 'admin-ajax.php' ),
+				'nonce'       => wp_create_nonce( 'rbco_nonce' ),
+				'provider'    => $provider,
+				'model'       => RBCO_Settings::get_active_model(),
+				'configured'  => RBCO_Settings::is_configured(),
+				'categories'  => $categories,
+				'saved_urls'  => RBCO_Settings::get_saved_urls(),
+				'blog_styles' => $blog_styles,
+				'has_yoast'   => defined( 'WPSEO_VERSION' ),
+				'i18n'        => array(
+					'working'         => __( 'Working...', 'raybogman-ai-content-orchestrator' ),
+					'create_content'  => __( 'Create Content', 'raybogman-ai-content-orchestrator' ),
+					'prompt_required' => __( 'Please enter a prompt.', 'raybogman-ai-content-orchestrator' ),
+					'not_configured'  => __( 'Please configure your AI provider API key in Settings first.', 'raybogman-ai-content-orchestrator' ),
+					'error'           => __( 'Error', 'raybogman-ai-content-orchestrator' ),
+					'done'            => __( 'Done!', 'raybogman-ai-content-orchestrator' ),
+					'published'       => __( 'Published', 'raybogman-ai-content-orchestrator' ),
+					'draft'           => __( 'Draft', 'raybogman-ai-content-orchestrator' ),
+					'updated'         => __( 'Updated', 'raybogman-ai-content-orchestrator' ),
+					'not_available'   => __( 'Not available', 'raybogman-ai-content-orchestrator' ),
+					'request_failed'  => __( 'Request failed', 'raybogman-ai-content-orchestrator' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -228,9 +232,11 @@ class RBCO_Admin {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
-		wp_send_json_success( array(
-			'categories' => RBCO_Publisher::get_categories(),
-		) );
+		wp_send_json_success(
+			array(
+				'categories' => RBCO_Publisher::get_categories(),
+			)
+		);
 	}
 
 	/**
@@ -251,21 +257,29 @@ class RBCO_Admin {
 				wp_send_json_error( array( 'message' => __( 'No Anthropic API key saved. Enter the key and click Save Changes first.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
-			$response = wp_remote_post( 'https://api.anthropic.com/v1/messages', array(
-				'timeout' => 30,
-				'headers' => array(
-					'Content-Type'      => 'application/json',
-					'x-api-key'         => $api_key,
-					'anthropic-version'  => '2023-06-01',
-				),
-				'body' => wp_json_encode( array(
-					'model'      => RBCO_Settings::get_claude_model(),
-					'max_tokens' => 10,
-					'messages'   => array(
-						array( 'role' => 'user', 'content' => 'Say "ok"' ),
+			$response = wp_remote_post(
+				'https://api.anthropic.com/v1/messages',
+				array(
+					'timeout' => 30,
+					'headers' => array(
+						'Content-Type'      => 'application/json',
+						'x-api-key'         => $api_key,
+						'anthropic-version' => '2023-06-01',
 					),
-				) ),
-			) );
+					'body'    => wp_json_encode(
+						array(
+							'model'      => RBCO_Settings::get_claude_model(),
+							'max_tokens' => 10,
+							'messages'   => array(
+								array(
+									'role'    => 'user',
+									'content' => 'Say "ok"',
+								),
+							),
+						)
+					),
+				)
+			);
 
 		} elseif ( 'openai' === $provider ) {
 			$api_key = RBCO_Settings::get_openai_api_key();
@@ -273,20 +287,28 @@ class RBCO_Admin {
 				wp_send_json_error( array( 'message' => __( 'No OpenAI API key saved. Enter the key and click Save Changes first.', 'raybogman-ai-content-orchestrator' ) ) );
 			}
 
-			$response = wp_remote_post( 'https://api.openai.com/v1/chat/completions', array(
-				'timeout' => 30,
-				'headers' => array(
-					'Content-Type'  => 'application/json',
-					'Authorization' => 'Bearer ' . $api_key,
-				),
-				'body' => wp_json_encode( array(
-					'model'      => RBCO_Settings::get_openai_model(),
-					'max_tokens' => 10,
-					'messages'   => array(
-						array( 'role' => 'user', 'content' => 'Say "ok"' ),
+			$response = wp_remote_post(
+				'https://api.openai.com/v1/chat/completions',
+				array(
+					'timeout' => 30,
+					'headers' => array(
+						'Content-Type'  => 'application/json',
+						'Authorization' => 'Bearer ' . $api_key,
 					),
-				) ),
-			) );
+					'body'    => wp_json_encode(
+						array(
+							'model'      => RBCO_Settings::get_openai_model(),
+							'max_tokens' => 10,
+							'messages'   => array(
+								array(
+									'role'    => 'user',
+									'content' => 'Say "ok"',
+								),
+							),
+						)
+					),
+				)
+			);
 
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Invalid provider.', 'raybogman-ai-content-orchestrator' ) ) );
@@ -294,9 +316,11 @@ class RBCO_Admin {
 		}
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( array(
-				'message' => sprintf( 'Connection failed: %s', $response->get_error_message() ),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => sprintf( 'Connection failed: %s', $response->get_error_message() ),
+				)
+			);
 			return;
 		}
 
@@ -313,13 +337,15 @@ class RBCO_Admin {
 			if ( is_array( $data ) && isset( $data['model'] ) ) {
 				$model_used = $data['model'];
 			}
-			wp_send_json_success( array(
-				'message' => sprintf(
+			wp_send_json_success(
+				array(
+					'message' => sprintf(
 					/* translators: %s: dynamic value */
-					__( 'Connection successful! Using model: %s', 'raybogman-ai-content-orchestrator' ),
-					$model_used
-				),
-			) );
+						__( 'Connection successful! Using model: %s', 'raybogman-ai-content-orchestrator' ),
+						$model_used
+					),
+				)
+			);
 		} else {
 			$error_msg = '';
 			if ( is_array( $data ) && isset( $data['error']['message'] ) ) {
@@ -329,9 +355,11 @@ class RBCO_Admin {
 			} else {
 				$error_msg = mb_substr( $resp_body, 0, 300 );
 			}
-			wp_send_json_error( array(
-				'message' => sprintf( 'API error (HTTP %d): %s', $code, $error_msg ),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => sprintf( 'API error (HTTP %d): %s', $code, $error_msg ),
+				)
+			);
 		}
 	}
 
@@ -342,51 +370,53 @@ class RBCO_Admin {
 	 * @param array $log_messages Reference to log messages array.
 	 */
 	private static function register_fatal_error_handler( &$log_messages ) {
-		register_shutdown_function( function () use ( &$log_messages ) {
-			$error = error_get_last();
-			if ( null === $error ) {
-				return;
-			}
-			// Only handle fatal errors.
-			$fatal_types = array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR );
-			if ( ! in_array( $error['type'], $fatal_types, true ) ) {
-				return;
-			}
+		register_shutdown_function(
+			function () use ( &$log_messages ) {
+				$error = error_get_last();
+				if ( null === $error ) {
+						return;
+				}
+				// Only handle fatal errors.
+				$fatal_types = array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR );
+				if ( ! in_array( $error['type'], $fatal_types, true ) ) {
+					return;
+				}
 
-			// Clear any output that WordPress's error handler may have sent.
-			if ( ob_get_length() ) {
-				ob_end_clean();
-			}
+				// Clear any output that WordPress's error handler may have sent.
+				if ( ob_get_length() ) {
+					ob_end_clean();
+				}
 
-			$log_messages[] = sprintf(
-				'PHP Fatal Error: %s in %s on line %d',
-				$error['message'],
-				basename( $error['file'] ),
-				$error['line']
-			);
+				$log_messages[] = sprintf(
+					'PHP Fatal Error: %s in %s on line %d',
+					$error['message'],
+					basename( $error['file'] ),
+					$error['line']
+				);
 
-			$response = array(
-				'success' => false,
-				'data'    => array(
-					'message' => sprintf( 'PHP Fatal Error: %s', $error['message'] ),
-					'log'     => $log_messages,
-					'debug'   => sprintf(
-						'%s in %s:%d | PHP %s | memory_limit=%s | max_execution_time=%s',
-						$error['message'],
-						$error['file'],
-						$error['line'],
-						PHP_VERSION,
-						ini_get( 'memory_limit' ),
-						ini_get( 'max_execution_time' )
+				$response = array(
+					'success' => false,
+					'data'    => array(
+						'message' => sprintf( 'PHP Fatal Error: %s', $error['message'] ),
+						'log'     => $log_messages,
+						'debug'   => sprintf(
+							'%s in %s:%d | PHP %s | memory_limit=%s | max_execution_time=%s',
+							$error['message'],
+							$error['file'],
+							$error['line'],
+							PHP_VERSION,
+							ini_get( 'memory_limit' ),
+							ini_get( 'max_execution_time' )
+						),
 					),
-				),
-			);
+				);
 
-			header( 'Content-Type: application/json; charset=utf-8' );
-			header( 'HTTP/1.1 200 OK' );
-			echo wp_json_encode( $response );
-			exit;
-		} );
+				header( 'Content-Type: application/json; charset=utf-8' );
+				header( 'HTTP/1.1 200 OK' );
+				echo wp_json_encode( $response );
+				exit;
+			}
+		);
 	}
 
 	/**
@@ -397,8 +427,7 @@ class RBCO_Admin {
 	 * extended limits (AI generation and large PDF assembly). Memory is only
 	 * ever raised, never lowered, so a host with a higher limit is untouched.
 	 *
-	 * @param string $memory       Target memory limit, e.g. '256M'.
-	 * @param int    $time_seconds Target max execution time in seconds. 0 = skip.
+	 * @param string $memory Target memory limit, e.g. '256M'.
 	 */
 	private function raise_limits_for_request( $memory = '256M' ) {
 		// The multi-step AJAX handler already chunks work into short
@@ -456,15 +485,15 @@ class RBCO_Admin {
 
 				// ── Step 1: Initialize + Scan ───────────────────────
 				case 1:
-					$content_type = isset( $_POST['content_type'] ) ? sanitize_text_field( wp_unslash( $_POST['content_type'] ) ) : 'blog';
-					$url          = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
-					$prompt       = isset( $_POST['prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) ) : '';
-					$status       = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : 'draft';
-					$category_ids = isset( $_POST['categories'] ) ? array_map( 'absint', (array) $_POST['categories'] ) : array();
-					$blog_style   = isset( $_POST['blog_style'] ) ? sanitize_text_field( wp_unslash( $_POST['blog_style'] ) ) : 'standard';
-					$save_url     = isset( $_POST['save_url'] ) && '1' === $_POST['save_url'];
-					$generate_image = isset( $_POST['generate_image'] ) && '1' === $_POST['generate_image'];
-					$internal_linking    = ( isset( $_POST['internal_linking'] ) && '1' === $_POST['internal_linking'] ) ? '1' : '0';
+					$content_type     = isset( $_POST['content_type'] ) ? sanitize_text_field( wp_unslash( $_POST['content_type'] ) ) : 'blog';
+					$url              = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+					$prompt           = isset( $_POST['prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) ) : '';
+					$status           = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : 'draft';
+					$category_ids     = isset( $_POST['categories'] ) ? array_map( 'absint', (array) $_POST['categories'] ) : array();
+					$blog_style       = isset( $_POST['blog_style'] ) ? sanitize_text_field( wp_unslash( $_POST['blog_style'] ) ) : 'standard';
+					$save_url         = isset( $_POST['save_url'] ) && '1' === $_POST['save_url'];
+					$generate_image   = isset( $_POST['generate_image'] ) && '1' === $_POST['generate_image'];
+					$internal_linking = ( isset( $_POST['internal_linking'] ) && '1' === $_POST['internal_linking'] ) ? '1' : '0';
 
 					if ( empty( $prompt ) ) {
 						wp_send_json_error( array( 'message' => __( 'Prompt is required.', 'raybogman-ai-content-orchestrator' ) ) );
@@ -481,12 +510,14 @@ class RBCO_Admin {
 					// Generate a unique job ID.
 					$job_id = 'rbco_' . wp_generate_uuid4();
 
-					$log_callback( sprintf(
-						'Step 1/4: Scanning | PHP %s | Provider: %s (%s)',
-						PHP_VERSION,
-						ucfirst( RBCO_Settings::get_ai_provider() ),
-						RBCO_Settings::get_active_model()
-					) );
+					$log_callback(
+						sprintf(
+							'Step 1/4: Scanning | PHP %s | Provider: %s (%s)',
+							PHP_VERSION,
+							ucfirst( RBCO_Settings::get_ai_provider() ),
+							RBCO_Settings::get_active_model()
+						)
+					);
 
 					// Scan website.
 					$all_site_data = array();
@@ -499,23 +530,25 @@ class RBCO_Admin {
 
 					// Store job data in transient (30 min expiry).
 					$job_data = array(
-						'content_type'   => $content_type,
-						'prompt'         => $prompt,
-						'status'         => $status,
-						'category_ids'   => $category_ids,
-						'blog_style'     => $blog_style,
-						'site_data'      => $all_site_data,
-						'generate_image'      => $generate_image,
-						'internal_linking'    => $internal_linking,
+						'content_type'     => $content_type,
+						'prompt'           => $prompt,
+						'status'           => $status,
+						'category_ids'     => $category_ids,
+						'blog_style'       => $blog_style,
+						'site_data'        => $all_site_data,
+						'generate_image'   => $generate_image,
+						'internal_linking' => $internal_linking,
 					);
 					set_transient( $job_id, $job_data, 1800 );
 
-					wp_send_json_success( array(
-						'step'      => 1,
-						'job_id'    => $job_id,
-						'next_step' => 2,
-						'log'       => $log_messages,
-					) );
+					wp_send_json_success(
+						array(
+							'step'      => 1,
+							'job_id'    => $job_id,
+							'next_step' => 2,
+							'log'       => $log_messages,
+						)
+					);
 					break;
 
 				// ── Step 2: Generate SEO metadata ───────────────────
@@ -552,12 +585,14 @@ class RBCO_Admin {
 					$job_data['context_block'] = $context_block;
 					set_transient( $job_id, $job_data, 1800 );
 
-					wp_send_json_success( array(
-						'step'      => 2,
-						'job_id'    => $job_id,
-						'next_step' => 3,
-						'log'       => $log_messages,
-					) );
+					wp_send_json_success(
+						array(
+							'step'      => 2,
+							'job_id'    => $job_id,
+							'next_step' => 3,
+							'log'       => $log_messages,
+						)
+					);
 					break;
 
 				// ── Step 3: Generate HTML content ───────────────────
@@ -587,7 +622,7 @@ class RBCO_Admin {
 					$log_callback( sprintf( 'Internal linking: %s', $do_linking ? 'enabled' : 'disabled' ) );
 					if ( $do_linking ) {
 						$log_callback( 'Scanning your site for internal linking opportunities...' );
-						$link_result = RBCO_Internal_Linker::add_links(
+						$link_result  = RBCO_Internal_Linker::add_links(
 							$html_content,
 							$job_data['meta'],
 							RBCO_Settings::get_max_internal_links(),
@@ -620,8 +655,8 @@ class RBCO_Admin {
 								$log_callback( sprintf( 'Prompt %d (%s): %s', $idx + 1, $approach, mb_substr( $ip, 0, 100 ) . ( mb_strlen( $ip ) > 100 ? '...' : '' ) ) );
 							}
 
-							$log_callback( 'Generating 4 image options with DALL-E 3 (this may take 1-2 minutes)...' );
-							$image_urls = $generator->generate_images( $image_prompts, 4, $blog_style );
+							$log_callback( 'Generating 4 image options with gpt-image-1 (this may take 1-2 minutes)...' );
+							$image_urls = $generator->generate_images( $image_prompts, 4 );
 							if ( ! empty( $image_urls ) ) {
 								$job_data['image_urls']    = $image_urls;
 								$job_data['image_prompt']  = $image_prompts[0]; // Primary prompt for post meta.
@@ -637,12 +672,14 @@ class RBCO_Admin {
 
 					set_transient( $job_id, $job_data, 1800 );
 
-					wp_send_json_success( array(
-						'step'      => 3,
-						'job_id'    => $job_id,
-						'next_step' => 4,
-						'log'       => $log_messages,
-					) );
+					wp_send_json_success(
+						array(
+							'step'      => 3,
+							'job_id'    => $job_id,
+							'next_step' => 4,
+							'log'       => $log_messages,
+						)
+					);
 					break;
 
 				// ── Step 4: Publish to WordPress ────────────────────
@@ -657,7 +694,7 @@ class RBCO_Admin {
 
 					$log_callback( 'Step 4/4: Publishing to WordPress...' );
 
-					$meta = $job_data['meta'];
+					$meta      = $job_data['meta'];
 					$ai_result = array(
 						'seo_title'        => isset( $meta['seo_title'] ) ? $meta['seo_title'] : 'New Post',
 						'meta_description' => isset( $meta['meta_description'] ) ? $meta['meta_description'] : '',
@@ -665,12 +702,12 @@ class RBCO_Admin {
 						'focus_keyphrase'  => isset( $meta['focus_keyphrase'] ) ? $meta['focus_keyphrase'] : '',
 						'tags'             => isset( $meta['tags'] ) ? $meta['tags'] : array(),
 						'categories'       => isset( $meta['categories'] ) ? $meta['categories'] : array(),
-						'content'              => $job_data['html_content'],
-						'project_vision'       => RBCO_Settings::get_project_vision(),
-						'prompt'               => $job_data['prompt'],
-						'image_urls'           => isset( $job_data['image_urls'] ) ? $job_data['image_urls'] : array(),
-						'image_prompt'         => isset( $job_data['image_prompt'] ) ? $job_data['image_prompt'] : '',
-						'linked_posts'         => isset( $job_data['linked_posts'] ) ? $job_data['linked_posts'] : array(),
+						'content'          => $job_data['html_content'],
+						'project_vision'   => RBCO_Settings::get_project_vision(),
+						'prompt'           => $job_data['prompt'],
+						'image_urls'       => isset( $job_data['image_urls'] ) ? $job_data['image_urls'] : array(),
+						'image_prompt'     => isset( $job_data['image_prompt'] ) ? $job_data['image_prompt'] : '',
+						'linked_posts'     => isset( $job_data['linked_posts'] ) ? $job_data['linked_posts'] : array(),
 					);
 
 					$category_ids = $job_data['category_ids'];
@@ -780,39 +817,42 @@ class RBCO_Admin {
 					// Clean up transient.
 					delete_transient( $job_id );
 
-					wp_send_json_success( array(
-						'step'      => 4,
-						'job_id'    => $job_id,
-						'ai_result' => $ai_result,
-						'wp_result' => $wp_result,
-						'log'       => $log_messages,
-					) );
+					wp_send_json_success(
+						array(
+							'step'      => 4,
+							'job_id'    => $job_id,
+							'ai_result' => $ai_result,
+							'wp_result' => $wp_result,
+							'log'       => $log_messages,
+						)
+					);
 					break;
 
 				default:
 					wp_send_json_error( array( 'message' => 'Invalid step.' ) );
 			}
-
 		} catch ( \Throwable $e ) {
 			$log_messages[] = 'Error: ' . $e->getMessage();
 			// Clean up transient on error.
 			if ( ! empty( $job_id ) ) {
 				delete_transient( $job_id );
 			}
-			wp_send_json_error( array(
-				'message' => $e->getMessage(),
-				'log'     => $log_messages,
-				'debug'   => sprintf(
-					'Step %d | %s in %s:%d | Provider: %s | Model: %s | PHP %s',
-					$step,
-					get_class( $e ),
-					basename( $e->getFile() ),
-					$e->getLine(),
-					RBCO_Settings::get_ai_provider(),
-					RBCO_Settings::get_active_model(),
-					PHP_VERSION
-				),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => $e->getMessage(),
+					'log'     => $log_messages,
+					'debug'   => sprintf(
+						'Step %d | %s in %s:%d | Provider: %s | Model: %s | PHP %s',
+						$step,
+						get_class( $e ),
+						basename( $e->getFile() ),
+						$e->getLine(),
+						RBCO_Settings::get_ai_provider(),
+						RBCO_Settings::get_active_model(),
+						PHP_VERSION
+					),
+				)
+			);
 		}
 	}
 
@@ -833,10 +873,12 @@ class RBCO_Admin {
 
 		$removed = RBCO_Settings::remove_url( $url );
 
-		wp_send_json_success( array(
-			'removed' => $removed,
-			'urls'    => RBCO_Settings::get_saved_urls(),
-		) );
+		wp_send_json_success(
+			array(
+				'removed' => $removed,
+				'urls'    => RBCO_Settings::get_saved_urls(),
+			)
+		);
 	}
 
 	/**
@@ -869,7 +911,7 @@ class RBCO_Admin {
 		delete_post_thumbnail( $post_id );
 
 		// Download and attach the newly selected image.
-		$post = get_post( $post_id );
+		$post          = get_post( $post_id );
 		$attach_result = RBCO_Publisher::attach_image_from_url(
 			$post_id,
 			$options[ $image_idx ],
@@ -882,11 +924,13 @@ class RBCO_Admin {
 
 		update_post_meta( $post_id, '_rbco_image_selected', $image_idx );
 
-		wp_send_json_success( array(
-			'attachment_id'   => $attach_result,
-			'featured_image'  => get_the_post_thumbnail_url( $post_id, 'large' ),
-			'selected_index'  => $image_idx,
-		) );
+		wp_send_json_success(
+			array(
+				'attachment_id'  => $attach_result,
+				'featured_image' => get_the_post_thumbnail_url( $post_id, 'large' ),
+				'selected_index' => $image_idx,
+			)
+		);
 	}
 
 	/**
@@ -910,9 +954,11 @@ class RBCO_Admin {
 		}
 
 		if ( ! RBCO_Settings::is_image_configured() ) {
-			wp_send_json_error( array(
-				'message' => __( 'An OpenAI API key is required for image generation. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => __( 'An OpenAI API key is required for image generation. Configure it in Settings.', 'raybogman-ai-content-orchestrator' ),
+				)
+			);
 		}
 
 		try {
@@ -929,7 +975,7 @@ class RBCO_Admin {
 			$blog_style    = get_post_meta( $post_id, '_rbco_blog_style', true );
 			$blog_style    = ! empty( $blog_style ) ? $blog_style : 'standard';
 			$image_prompts = $generator->generate_image_prompts( $meta, $post->post_content, $blog_style );
-			$image_urls    = $generator->generate_images( $image_prompts, 4, $blog_style );
+			$image_urls    = $generator->generate_images( $image_prompts, 4 );
 
 			if ( empty( $image_urls ) ) {
 				wp_send_json_error( array( 'message' => __( 'No images were generated.', 'raybogman-ai-content-orchestrator' ) ) );
@@ -948,11 +994,13 @@ class RBCO_Admin {
 			delete_post_thumbnail( $post_id );
 			RBCO_Publisher::attach_image_from_url( $post_id, $image_urls[0], $post->post_title );
 
-			wp_send_json_success( array(
-				'image_urls'    => $image_urls,
-				'image_prompt'  => $image_prompts[0],
-				'featured_image' => get_the_post_thumbnail_url( $post_id, 'large' ),
-			) );
+			wp_send_json_success(
+				array(
+					'image_urls'     => $image_urls,
+					'image_prompt'   => $image_prompts[0],
+					'featured_image' => get_the_post_thumbnail_url( $post_id, 'large' ),
+				)
+			);
 		} catch ( \Throwable $e ) {
 			wp_send_json_error( array( 'message' => $e->getMessage() ) );
 		}
@@ -1019,14 +1067,21 @@ class RBCO_Admin {
 		update_post_meta( $post_id, '_rbco_overlay_line1', $line1 );
 		update_post_meta( $post_id, '_rbco_overlay_line2', $line2 );
 
-		wp_send_json_success( array(
-			'featured_image' => get_the_post_thumbnail_url( $post_id, 'large' ),
-			'attachment_id'  => $result,
-			'line1'          => $line1,
-			'line2'          => $line2,
-		) );
+		wp_send_json_success(
+			array(
+				'featured_image' => get_the_post_thumbnail_url( $post_id, 'large' ),
+				'attachment_id'  => $result,
+				'line1'          => $line1,
+				'line2'          => $line2,
+			)
+		);
 	}
 
+	/**
+	 * AJAX: Scan the active theme for brand colors (header, links, style.css).
+	 *
+	 * @return void Sends a JSON response.
+	 */
 	public function ajax_scan_theme_colors() {
 		check_ajax_referer( 'rbco_nonce', 'nonce' );
 
@@ -1034,7 +1089,7 @@ class RBCO_Admin {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
-		$colors = array();
+		$colors  = array();
 		$sources = array();
 
 		// 1. Block theme palette (WordPress 5.9+ with theme.json).
@@ -1110,8 +1165,13 @@ class RBCO_Admin {
 		// 4. Parse the active theme's style.css for CSS custom properties.
 		$stylesheet_path = get_stylesheet_directory() . '/style.css';
 		if ( file_exists( $stylesheet_path ) ) {
-			$css = file_get_contents( $stylesheet_path );
-			if ( false !== $css ) {
+			global $wp_filesystem;
+			if ( empty( $wp_filesystem ) ) {
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				WP_Filesystem();
+			}
+			$css = $wp_filesystem ? $wp_filesystem->get_contents( $stylesheet_path ) : '';
+			if ( ! empty( $css ) ) {
 				// Extract --wp--preset--color-- and other common color variables.
 				if ( preg_match_all( '/:\s*(#[0-9a-fA-F]{3,8})\b/', $css, $matches ) ) {
 					$css_found = false;
@@ -1132,30 +1192,39 @@ class RBCO_Admin {
 		// Deduplicate and remove near-black (#000000) and near-white (#ffffff)
 		// which are rarely useful as brand colors.
 		$colors = array_unique( array_map( 'strtolower', $colors ) );
-		$colors = array_values( array_filter( $colors, function ( $c ) {
-			return ! in_array( $c, array( '#000000', '#ffffff', '#fff', '#000' ), true );
-		} ) );
+		$colors = array_values(
+			array_filter(
+				$colors,
+				function ( $c ) {
+					return ! in_array( $c, array( '#000000', '#ffffff', '#fff', '#000' ), true );
+				}
+			)
+		);
 
 		// Limit to 10 most relevant colors.
 		$colors = array_slice( $colors, 0, 10 );
 
 		if ( empty( $colors ) ) {
-			wp_send_json_error( array(
-				'message' => __( 'No colors detected from the active theme. You can enter brand colors manually.', 'raybogman-ai-content-orchestrator' ),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => __( 'No colors detected from the active theme. You can enter brand colors manually.', 'raybogman-ai-content-orchestrator' ),
+				)
+			);
 			return;
 		}
 
-		wp_send_json_success( array(
-			'colors'  => $colors,
-			'sources' => array_unique( $sources ),
-			'message' => sprintf(
-				/* translators: 1: number of colors, 2: sources list */
-				__( 'Found %1$d colors from: %2$s', 'raybogman-ai-content-orchestrator' ),
-				count( $colors ),
-				implode( ', ', array_unique( $sources ) )
-			),
-		) );
+		wp_send_json_success(
+			array(
+				'colors'  => $colors,
+				'sources' => array_unique( $sources ),
+				'message' => sprintf(
+					/* translators: 1: number of colors, 2: sources list */
+					__( 'Found %1$d colors from: %2$s', 'raybogman-ai-content-orchestrator' ),
+					count( $colors ),
+					implode( ', ', array_unique( $sources ) )
+				),
+			)
+		);
 	}
 
 	/**
@@ -1182,5 +1251,4 @@ class RBCO_Admin {
 
 		return false;
 	}
-
 }

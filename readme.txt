@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,10 +18,10 @@ Ray Bogman AI Content Orchestrator generates SEO-optimized blog posts and pages 
 **Key Features:**
 
 * **Dual AI Provider Support** — Choose between Claude (Anthropic) and OpenAI (GPT) for content generation. Switch between providers at any time.
-* **Website Context Scanning** — Reads pages from a URL you provide to give the AI background context for writing on-brand content. Only scans the single URL you explicitly enter — no automated or third-party crawling.
+* **Website Context Scanning** — Reads the single page at a URL you provide to give the AI background context for writing on-brand content. Only reads the one URL you explicitly enter — it never crawls, follows links, or reads sitemaps, and does no automated or third-party crawling.
 * **AI Content Generation** — Two-step process: generates SEO metadata first, then creates original HTML content with a table of contents, FAQ sections, and a call-to-action.
 * **4 Blog Styles** — Standard Blog Post, How-To Guide, Listicle, and Beginner's Guide — each with a specialized AI prompt.
-* **AI Featured Images** — Generate a custom hero image for each post using OpenAI DALL-E 3, automatically set as the featured image.
+* **AI Featured Images** — Generate a custom hero image for each post using OpenAI gpt-image-1, automatically set as the featured image.
 * **Title Overlay Images** — Optionally place the post title on a branded background image with custom fonts and colors — a unique featured image per post, no AI image cost.
 * **Automatic Internal Linking** — After writing, the plugin scans your existing published posts and adds relevant internal links within the text to strengthen your site's SEO.
 * **Project Vision** — Define baseline instructions (brand voice, tone, audience, rules) that the AI always follows before generating any content.
@@ -40,7 +40,7 @@ Ray Bogman AI Content Orchestrator generates SEO-optimized blog posts and pages 
 
 **How it works:**
 
-1. (Optional) Enter a website URL to scan for context — the scanner reads its pages for background information.
+1. (Optional) Enter a page URL to read for context — the scanner reads only that single page for background information.
 2. Write a prompt describing the content you want.
 3. Choose blog post or page, pick a blog style, set draft or publish, and select categories.
 4. Click "Create Content" — the AI generates SEO metadata then full HTML content, an optional featured image, and internal links.
@@ -66,7 +66,7 @@ No. You only need one AI provider. Pick either Claude or OpenAI and enter that p
 
 = How much does it cost? =
 
-The plugin is free. You pay only for the AI usage through your provider's API — typically $0.02–$0.10 per blog post, plus about $0.04 per DALL-E 3 featured image.
+The plugin is free. You pay only for the AI usage through your provider's API — typically $0.02–$0.10 per blog post, plus about $0.06 per gpt-image-1 featured image.
 
 = Do I need Yoast SEO? =
 
@@ -78,7 +78,7 @@ Yes. Existing WordPress categories are listed as checkboxes on the creation form
 
 = Can I scan any website? =
 
-The scanner reads publicly accessible pages from a URL you provide. It is intended for scanning your own website or sites you have permission to scan, to give the AI relevant context. It does not perform automated mass crawling or scraping of third-party sites.
+The scanner reads only the single publicly accessible page at the exact URL you provide. It is intended for reading your own website or a page you have permission to read, to give the AI relevant context. It reads just that one page — it never crawls, follows links, or reads sitemaps, and it performs no automated mass crawling or scraping of third-party sites.
 
 == External services ==
 
@@ -93,12 +93,12 @@ What data is sent and when: The user prompt, the scanned website context, and th
 * Terms of service: https://www.anthropic.com/legal/consumer-terms
 * Privacy policy: https://www.anthropic.com/privacy
 
-= OpenAI (GPT & DALL-E 3) =
+= OpenAI (GPT & gpt-image-1) =
 What it is: AI text and image model API, used for content generation, SEO metadata, and AI featured image generation when OpenAI is selected.
 Domain(s) contacted: api.openai.com (generated images are then downloaded from the temporary URL OpenAI returns).
 What data is sent and when: The user prompt, scanned website context, and image-generation prompts — sent only when an administrator clicks "Create Content" or generates an image.
-* Terms of service: https://openai.com/policies/terms-of-use
-* Privacy policy: https://openai.com/policies/privacy-policy
+* Terms of service: https://openai.com/policies/terms-of-use/
+* Privacy policy: https://openai.com/policies/privacy-policy/
 
 == Screenshots ==
 
@@ -111,9 +111,12 @@ What data is sent and when: The user prompt, scanned website context, and image-
 == Upgrade Notice ==
 
 = 1.0.0 =
-First public release: a free, fully functional AI content pipeline for WordPress with Claude/OpenAI support, DALL-E 3 featured images, internal linking, and Yoast integration.
+First public release: a free, fully functional AI content pipeline for WordPress with Claude/OpenAI support, gpt-image-1 featured images, internal linking, and Yoast integration.
 
 == Changelog ==
+
+= 1.0.1 =
+* Hardening: the context-scanning request now verifies the remote TLS certificate (removed the SSL verification bypass) to prevent man-in-the-middle tampering.
 
 = 1.0.0 =
 * Initial public release on WordPress.org.
@@ -121,6 +124,6 @@ First public release: a free, fully functional AI content pipeline for WordPress
 * Single-URL website scanning for context.
 * Four blog writing styles (Standard, How-To, Listicle, Beginner's Guide).
 * SEO metadata generation with Yoast SEO integration.
-* AI featured image generation with OpenAI DALL-E 3, plus an optional branded title-overlay image.
+* AI featured image generation with OpenAI gpt-image-1, plus an optional branded title-overlay image.
 * Automatic internal linking to existing published posts.
 * Project Vision baseline instructions, category selection, draft/publish, and a content dashboard with progress logging.

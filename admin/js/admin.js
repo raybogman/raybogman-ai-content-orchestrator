@@ -105,61 +105,6 @@
 			});
 		});
 
-		// Repurpose content — generate for a specific platform (single + bulk).
-		$(document).on('click', '.rbco-repurpose-btn', function () {
-			var $btn    = $(this);
-			var $wrap   = $btn.closest('.rbco-repurpose-wrap, #rbco-repurpose');
-			var format  = $btn.data('format');
-			var postId  = $wrap.data('post-id');
-			var $result = $wrap.find('.rbco-repurpose-result, #rbco-repurpose-result').first();
-			var $text   = $wrap.find('.rbco-repurpose-text, #rbco-repurpose-text').first();
-			var $status = $wrap.find('.rbco-repurpose-status, #rbco-repurpose-status').first();
-
-			$wrap.find('.rbco-repurpose-btn').removeClass('button-primary');
-			$btn.addClass('button-primary').prop('disabled', true);
-			$result.show();
-			$text.html('<span class="spinner is-active" style="float:none;margin:0;"></span> Generating ' + format + ' version...');
-			$status.empty();
-
-			$.post(rbco.ajax_url, {
-				action:  'rbco_repurpose_content',
-				nonce:   rbco.nonce,
-				post_id: postId,
-				format:  format
-			}).done(function (response) {
-				if (response.success && response.data.content) {
-					$text.text(response.data.content);
-				} else {
-					var msg = (response.data && response.data.message) ? response.data.message : 'Failed.';
-					$text.html('<strong style="color:#d63638;">' + msg + '</strong>');
-				}
-			}).fail(function () {
-				$text.html('<strong style="color:#d63638;">Request failed.</strong>');
-			}).always(function () {
-				$btn.prop('disabled', false);
-			});
-		});
-
-		// Copy repurposed content to clipboard (single + bulk).
-		$(document).on('click', '.rbco-repurpose-copy-btn, #rbco-repurpose-copy', function () {
-			var $wrap  = $(this).closest('.rbco-repurpose-wrap, #rbco-repurpose');
-			var $text  = $wrap.find('.rbco-repurpose-text, #rbco-repurpose-text').first();
-			var $status = $wrap.find('.rbco-repurpose-status, #rbco-repurpose-status').first();
-			var text   = $text.text();
-			if (navigator.clipboard && navigator.clipboard.writeText) {
-				navigator.clipboard.writeText(text).then(function () {
-					$status.html('<span class="dashicons dashicons-yes-alt" style="color:#00a32a;vertical-align:text-bottom;"></span> Copied!');
-				});
-			} else {
-				var $temp = $('<textarea>');
-				$('body').append($temp);
-				$temp.val(text).select();
-				document.execCommand('copy');
-				$temp.remove();
-				$status.html('<span class="dashicons dashicons-yes-alt" style="color:#00a32a;vertical-align:text-bottom;"></span> Copied!');
-			}
-		});
-
 		// Featured Image — regenerate overlay with custom text.
 		$(document).on('click', '#rbco-regenerate-overlay', function () {
 			var $btn    = $(this);
@@ -246,113 +191,9 @@
 			});
 		});
 
-		// LinkedIn Post Preview — Edit button (switch to edit mode).
-		$(document).on('click', '#rbco-result-li-preview .rbco-li-edit-btn', function () {
-			var $wrap = $('#rbco-result-li-preview');
-			$wrap.find('.rbco-li-preview-view').hide();
-			$wrap.find('.rbco-li-preview-edit').show();
-			$wrap.find('.rbco-li-edit-textarea').focus();
-		});
-
-		// LinkedIn Post Preview — Cancel edit (restore original).
-		$(document).on('click', '#rbco-result-li-preview .rbco-li-cancel-btn', function () {
-			var $wrap    = $('#rbco-result-li-preview');
-			var original = $wrap.find('.rbco-li-preview-text').text();
-			$wrap.find('.rbco-li-edit-textarea').val(original);
-			$wrap.find('.rbco-li-edit-count').text(original.length + ' / 2900 characters');
-			$wrap.find('.rbco-li-preview-edit').hide();
-			$wrap.find('.rbco-li-preview-view').show();
-		});
-
-		// LinkedIn Post Preview — live char count while editing.
-		$(document).on('input', '#rbco-result-li-preview .rbco-li-edit-textarea', function () {
-			var len = $(this).val().length;
-			$('#rbco-result-li-preview .rbco-li-edit-count').text(len + ' / 2900 characters');
-		});
-
-		// LinkedIn Post Preview — Save edited commentary.
-		$(document).on('click', '#rbco-result-li-preview .rbco-li-save-btn', function () {
-			var $btn       = $(this);
-			var $wrap      = $('#rbco-result-li-preview');
-			var postId     = $btn.data('post-id');
-			var commentary = $wrap.find('.rbco-li-edit-textarea').val();
-
-			$btn.prop('disabled', true).text('Saving...');
-
-			$.post(rbco.ajax_url, {
-				action:     'rbco_linkedin_save_commentary',
-				nonce:      rbco.nonce,
-				post_id:    postId,
-				commentary: commentary,
-			}, function (response) {
-				if (response.success) {
-					$wrap.find('.rbco-li-preview-text').text(response.data.commentary);
-					$wrap.find('.rbco-li-char-count').text(response.data.length + ' characters');
-					$wrap.find('.rbco-li-preview-edit').hide();
-					$wrap.find('.rbco-li-preview-view').show();
-					$btn.prop('disabled', false).text('Save');
-				} else {
-					alert('Error: ' + (response.data && response.data.message ? response.data.message : 'Unknown error'));
-					$btn.prop('disabled', false).text('Save');
-				}
-			}).fail(function (xhr) {
-				alert('Request failed: ' + xhr.status);
-				$btn.prop('disabled', false).text('Save');
-			});
-		});
-
-		// LinkedIn Post Preview — Regenerate via AI.
-		$(document).on('click', '#rbco-result-li-preview .rbco-li-regen-btn', function () {
-			var $btn   = $(this);
-			var $wrap  = $('#rbco-result-li-preview');
-			var postId = $btn.data('post-id');
-
-			if (!confirm('Regenerate the LinkedIn post via AI? The current text will be replaced.')) {
-				return;
-			}
-
-			var originalHtml = $btn.html();
-			$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> Generating...');
-
-			$.ajax({
-				url:     rbco.ajax_url,
-				type:    'POST',
-				dataType: 'json',
-				data:    {
-					action:  'rbco_linkedin_regenerate_commentary',
-					nonce:   rbco.nonce,
-					post_id: postId,
-				},
-				timeout: 120000,
-			}).done(function (response) {
-				if (response.success) {
-					$wrap.find('.rbco-li-preview-text').text(response.data.commentary);
-					$wrap.find('.rbco-li-edit-textarea').val(response.data.commentary);
-					$wrap.find('.rbco-li-char-count').text(response.data.length + ' characters');
-					$wrap.find('.rbco-li-edit-count').text(response.data.length + ' / 2900 characters');
-					$btn.prop('disabled', false).html(originalHtml);
-				} else {
-					alert('Regeneration failed: ' + (response.data && response.data.message ? response.data.message : 'Unknown error'));
-					$btn.prop('disabled', false).html(originalHtml);
-				}
-			}).fail(function (xhr, textStatus, errorThrown) {
-				alert('Request failed: ' + (errorThrown || textStatus));
-				$btn.prop('disabled', false).html(originalHtml);
-			});
-		});
-
 		// Toggle categories row based on content type.
 		$('input[name="rbco-type"]').on('change', function () {
 			toggleCategoriesRow();
-		});
-
-		// Toggle schedule fields.
-		$('#rbco-schedule-enabled').on('change', function () {
-			if ($(this).is(':checked')) {
-				$('#rbco-schedule-fields').slideDown(200);
-			} else {
-				$('#rbco-schedule-fields').slideUp(200);
-			}
 		});
 
 		// Saved URL chips: click to populate URL field.
@@ -384,112 +225,6 @@
 						$chip.remove();
 						if ($('#rbco-saved-urls-list .rbco-url-chip').length === 0) {
 							$('#rbco-saved-urls-row').slideUp(200);
-						}
-					});
-				}
-			});
-		});
-
-		// Update schedule help text based on status selection.
-		$('input[name="rbco-status"]').on('change', updateScheduleHelp);
-
-		// PDF upload button trigger.
-		$('#rbco-pdf-upload-btn').on('click', function () {
-			$('#rbco-pdf-file').click();
-		});
-
-		// PDF file selected — upload via chunked AJAX (works with any server upload limit).
-		$('#rbco-pdf-file').on('change', function () {
-			var file = this.files[0];
-			if (!file) return;
-			this.value = '';
-
-			var $status    = $('#rbco-pdf-upload-status');
-			var $btn       = $('#rbco-pdf-upload-btn');
-			var maxSize    = 100 * 1024 * 1024; // 100MB
-
-			if (file.size > maxSize) {
-				$status.html('<span style="color:#d63638;">File too large (' + Math.round(file.size / 1024 / 1024) + ' MB). Maximum: 100 MB.</span>');
-				return;
-			}
-
-			$btn.prop('disabled', true);
-
-			// 1MB chunks — works even with 2MB upload_max_filesize.
-			var chunkSize   = 1 * 1024 * 1024;
-			var totalChunks = Math.ceil(file.size / chunkSize);
-			var tempId      = 'u' + Date.now() + Math.random().toString(36).substr(2, 6);
-
-			function sendChunk(chunkNum) {
-				var start = chunkNum * chunkSize;
-				var end   = Math.min(start + chunkSize, file.size);
-				var blob  = file.slice(start, end);
-
-				var pct = Math.round(((chunkNum + 1) / totalChunks) * 100);
-				$status.html('<span class="spinner is-active" style="float:none; margin:0;"></span> Uploading... ' + pct + '%');
-
-				var fd = new FormData();
-				fd.append('action', 'rbco_upload_pdf_chunk');
-				fd.append('nonce', rbco.nonce);
-				fd.append('chunk', blob, file.name);
-				fd.append('chunk_number', chunkNum);
-				fd.append('total_chunks', totalChunks);
-				fd.append('temp_id', tempId);
-				fd.append('filename', file.name);
-
-				$.ajax({
-					url:         rbco.ajax_url,
-					type:        'POST',
-					data:        fd,
-					processData: false,
-					contentType: false,
-					dataType:    'json',
-					timeout:     60000,
-					success: function (response) {
-						if (!response.success) {
-							$btn.prop('disabled', false);
-							$status.html('<span style="color:#d63638;">Error: ' + escHtml(response.data.message) + '</span>');
-							return;
-						}
-						if (response.data.complete) {
-							// All chunks received and PDF processed.
-							$btn.prop('disabled', false);
-							$status.html('<span style="color:#00a32a;">Uploaded: ' + escHtml(response.data.pdf.name) + ' (' + response.data.pdf.text_length + ' chars extracted)</span>');
-							addPdfToLibrary(response.data.pdf);
-							setTimeout(function () { $status.empty(); }, 5000);
-						} else {
-							// Send next chunk.
-							sendChunk(chunkNum + 1);
-						}
-					},
-					error: function (xhr) {
-						$btn.prop('disabled', false);
-						$status.html('<span style="color:#d63638;">Upload failed at chunk ' + (chunkNum + 1) + '/' + totalChunks + '. (HTTP ' + xhr.status + ')</span>');
-					},
-				});
-			}
-
-			sendChunk(0);
-		});
-
-		// PDF delete button.
-		$(document).on('click', '.rbco-pdf-delete-btn', function (e) {
-			e.preventDefault();
-			if (!confirm('Delete this PDF from the library?')) return;
-			var $btn   = $(this);
-			var pdfId  = $btn.data('pdf-id');
-			var $item  = $btn.closest('.rbco-pdf-item');
-
-			$.post(rbco.ajax_url, {
-				action: 'rbco_delete_pdf',
-				nonce:  rbco.nonce,
-				pdf_id: pdfId,
-			}, function (response) {
-				if (response.success) {
-					$item.fadeOut(200, function () {
-						$item.remove();
-						if ($('#rbco-pdf-library .rbco-pdf-item').length === 0) {
-							$('#rbco-pdf-library').hide();
 						}
 					});
 				}
@@ -540,7 +275,6 @@
 
 		// Initial state.
 		toggleCategoriesRow();
-		updateScheduleHelp();
 	});
 
 	/**
@@ -567,20 +301,6 @@
 			}
 		}
 		$('#rbco-style-preview-title').text(style ? style.name + ' — Layout Preview' : 'Preview');
-	}
-
-	/**
-	 * Show the correct schedule help text based on draft/publish selection.
-	 */
-	function updateScheduleHelp() {
-		var status = $('input[name="rbco-status"]:checked').val();
-		if ('publish' === status) {
-			$('#rbco-schedule-help-draft').hide();
-			$('#rbco-schedule-help-publish').show();
-		} else {
-			$('#rbco-schedule-help-draft').show();
-			$('#rbco-schedule-help-publish').hide();
-		}
 	}
 
 	/**
@@ -677,48 +397,6 @@
 	}
 
 	/**
-	 * Get selected PDF IDs.
-	 *
-	 * @return {Array} Array of selected PDF ID strings.
-	 */
-	function getSelectedPdfIds() {
-		var ids = [];
-		$('.rbco-pdf-checkbox:checked').each(function () {
-			ids.push($(this).val());
-		});
-		return ids;
-	}
-
-	/**
-	 * Add a newly uploaded PDF to the library list in the DOM.
-	 *
-	 * @param {Object} pdf PDF data from server response.
-	 */
-	function addPdfToLibrary(pdf) {
-		var $library = $('#rbco-pdf-library');
-		$library.show();
-
-		var html = '<div class="rbco-pdf-item" data-pdf-id="' + escAttr(pdf.id) + '">'
-			+ '<label class="rbco-pdf-label">'
-			+ '<input type="checkbox" name="rbco-pdf-ids[]" value="' + escAttr(pdf.id) + '" class="rbco-pdf-checkbox" checked />'
-			+ '<span class="dashicons dashicons-pdf" style="color: #d63638; vertical-align: text-bottom;"></span> '
-			+ '<strong>' + escHtml(pdf.name) + '</strong> '
-			+ '<span class="description">&mdash; ' + escHtml(pdf.upload_date) + ' &middot; ' + pdf.text_length + ' chars</span>'
-			+ '</label>'
-			+ '<button type="button" class="rbco-pdf-delete-btn" data-pdf-id="' + escAttr(pdf.id) + '" title="Delete">'
-			+ '<span class="dashicons dashicons-trash" style="color: #d63638; font-size: 14px; width: 14px; height: 14px;"></span>'
-			+ '</button>'
-			+ '<div class="rbco-pdf-preview description">' + escHtml(pdf.text_preview) + '</div>'
-			+ '</div>';
-
-		// Add header if this is the first PDF.
-		if ($library.find('.rbco-pdf-item').length === 0) {
-			$library.html('<p class="description" style="margin-bottom: 8px;"><strong>Saved PDFs — check to use as source:</strong></p>');
-		}
-		$library.append(html);
-	}
-
-	/**
 	 * Add new URL(s) to the saved URLs chip list if not already present.
 	 *
 	 * @param {string} urlString Comma-separated URL(s).
@@ -781,21 +459,6 @@
 		var status      = $('input[name="rbco-status"]:checked').val();
 		var categories  = getSelectedCategories();
 
-		// Schedule.
-		var scheduleAt = '';
-		if ($('#rbco-schedule-enabled').is(':checked')) {
-			scheduleAt = $('#rbco-schedule-at').val();
-			if (!scheduleAt) {
-				alert('Please select a date and time for scheduling, or uncheck "Schedule for later".');
-				return;
-			}
-			var scheduleTs = new Date(scheduleAt).getTime();
-			if (scheduleTs <= Date.now()) {
-				alert('Scheduled time must be in the future.');
-				return;
-			}
-		}
-
 		// Reset UI.
 		setLoading();
 		$logArea.show();
@@ -803,7 +466,6 @@
 		$resultCard.hide();
 		$spinner.show();
 		$('#rbco-preview').hide();
-		$('#rbco-view-scheduled').hide();
 
 		// Scroll the page to the progress area so the user can see updates immediately.
 		$('html, body').animate({

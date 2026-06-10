@@ -49,6 +49,11 @@ jobs:
             -x '.editorconfig' \
             -x '.env' \
             -x 'node_modules/*' \
+            -x 'vendor/*' \
+            -x 'phpcs.xml.dist' \
+            -x 'phpcs.xml' \
+            -x 'composer.json' \
+            -x 'composer.lock' \
             -x '*.zip'
 
       - name: Upload zip artifact

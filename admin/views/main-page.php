@@ -88,7 +88,7 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 			</div>
 			<div class="rbco-card-body">
 				<p class="description" style="margin-bottom: 12px;">
-					<?php esc_html_e( 'Enter a website URL to scan for context. The scanner will crawl sitemaps and internal links to extract content, headings, and metadata. This scanned data is used as context for the AI to generate relevant, on-brand content.', 'raybogman-ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'Enter a page URL to read for context. The scanner reads only the single page you enter — it does not crawl, follow links, or read sitemaps — and extracts its content, headings, and metadata. This data is used as context for the AI to generate relevant, on-brand content.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<table class="form-table" role="presentation">
 					<tbody>
@@ -175,8 +175,8 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 						</tr>
 						<!-- Blog Style (visible for Blog Post only) -->
 						<?php
-						$rbco_styles          = RBCO_Styles::get_styles();
-						$rbco_style_previews  = RBCO_Styles::get_short_previews();
+						$rbco_styles         = RBCO_Styles::get_styles();
+						$rbco_style_previews = RBCO_Styles::get_short_previews();
 						?>
 						<tr id="rbco-style-row">
 							<th scope="row"><?php esc_html_e( 'Blog Style', 'raybogman-ai-content-orchestrator' ); ?></th>
@@ -244,7 +244,7 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 									</label>
 									<p class="description">
 										<?php if ( $rbco_image_configured ) : ?>
-											<?php esc_html_e( 'Uses OpenAI (DALL-E 3) to generate a landscape image based on the blog topic, then sets it as the featured image.', 'raybogman-ai-content-orchestrator' ); ?>
+											<?php esc_html_e( 'Uses OpenAI (gpt-image-1) to generate a landscape image based on the blog topic, then sets it as the featured image.', 'raybogman-ai-content-orchestrator' ); ?>
 										<?php else : ?>
 											<span class="dashicons dashicons-warning" style="color: #dba617; vertical-align: text-bottom;"></span>
 											<em><?php esc_html_e( 'Requires an OpenAI API key. Configure it in Settings → General.', 'raybogman-ai-content-orchestrator' ); ?></em>

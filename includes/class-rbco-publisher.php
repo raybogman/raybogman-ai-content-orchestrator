@@ -93,7 +93,7 @@ class RBCO_Publisher {
 	 * Download an image from a URL and attach it to a post as the featured image.
 	 *
 	 * @param int    $post_id   The post to attach the image to.
-	 * @param string $image_url Remote image URL (e.g., from DALL-E).
+	 * @param string $image_url Remote image URL (e.g., from the OpenAI image API).
 	 * @param string $alt_text  Alt text for the image (typically the post title).
 	 * @return int|WP_Error Attachment ID on success, WP_Error on failure.
 	 */
@@ -118,7 +118,7 @@ class RBCO_Publisher {
 		$attachment_id = media_handle_sideload( $file_array, $post_id, $alt_text );
 
 		if ( is_wp_error( $attachment_id ) ) {
-			@wp_delete_file( $tmp );
+			wp_delete_file( $tmp );
 			return $attachment_id;
 		}
 
@@ -234,12 +234,14 @@ class RBCO_Publisher {
 	 * @return array Array of [ 'id' => int, 'name' => string, 'slug' => string ].
 	 */
 	public static function get_categories() {
-		$terms = get_terms( array(
-			'taxonomy'   => 'category',
-			'hide_empty' => false,
-			'orderby'    => 'name',
-			'order'      => 'ASC',
-		) );
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'category',
+				'hide_empty' => false,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
 
 		if ( is_wp_error( $terms ) ) {
 			return array();

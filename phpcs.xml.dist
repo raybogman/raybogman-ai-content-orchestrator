@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<ruleset name="Ray Bogman AI Content Orchestrator">
+	<description>WordPress.org coding-standards and PHP-compatibility ruleset for the plugin.</description>
+
+	<!-- Scan the whole plugin directory. -->
+	<file>.</file>
+
+	<!-- Only check PHP files. -->
+	<arg name="extensions" value="php"/>
+
+	<!-- Show sniff codes and progress, use colours. -->
+	<arg value="ps"/>
+	<arg name="colors"/>
+
+	<!-- Exclude build / tooling / VCS artefacts. -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/.git/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
+
+	<!-- ============================================================
+	     Full WordPress.org coding standard.
+	     ============================================================ -->
+	<rule ref="WordPress"/>
+
+	<!-- Validate the single text domain used for i18n. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="raybogman-ai-content-orchestrator"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Validate the plugin's unique prefixes for globals/functions/hooks. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="rbco"/>
+				<element value="RBCO"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- ============================================================
+	     PHP cross-version compatibility (Requires PHP: 7.4).
+	     ============================================================ -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- ============================================================
+	     The main plugin file is the conventional bootstrap: it is named
+	     after the plugin (not a class) and legitimately holds both the
+	     bootstrap helper function and the main plugin class. These two
+	     sniffs are not WordPress.org requirements for a bootstrap file.
+	     ============================================================ -->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>raybogman-ai-content-orchestrator.php</exclude-pattern>
+	</rule>
+	<rule ref="Universal.Files.SeparateFunctionsFromOO.Mixed">
+		<exclude-pattern>raybogman-ai-content-orchestrator.php</exclude-pattern>
+	</rule>
+
+	<!-- The Gutenberg converter walks the PHP DOM tree. DOMNode exposes
+	     camelCase properties ($childNodes, $nodeType, $nodeValue, $nodeName)
+	     that are part of the PHP core API and cannot be renamed to snake_case. -->
+	<rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
+		<exclude-pattern>includes/class-rbco-gutenberg-converter.php</exclude-pattern>
+	</rule>
+
+	<!-- Minimum supported WordPress version for *.WP.* deprecation checks. -->
+	<config name="minimum_wp_version" value="5.9"/>
+</ruleset>

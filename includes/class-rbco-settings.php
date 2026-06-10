@@ -30,12 +30,12 @@ class RBCO_Settings {
 	 */
 	const PAGE_SLUG = 'rbco-settings';
 
-	const TAB_GENERAL  = 'rbco-tab-general';
-	const TAB_CONTENT  = 'rbco-tab-content';
-	const TAB_IMAGES   = 'rbco-tab-images';
-	const TAB_SCANNER   = 'rbco-tab-scanner';
-	const TAB_FAQ       = 'rbco-tab-faq';
-	const TAB_ABOUT    = 'rbco-tab-about';
+	const TAB_GENERAL = 'rbco-tab-general';
+	const TAB_CONTENT = 'rbco-tab-content';
+	const TAB_IMAGES  = 'rbco-tab-images';
+	const TAB_SCANNER = 'rbco-tab-scanner';
+	const TAB_FAQ     = 'rbco-tab-faq';
+	const TAB_ABOUT   = 'rbco-tab-about';
 
 	/**
 	 * Register settings.
@@ -49,11 +49,15 @@ class RBCO_Settings {
 			self::TAB_CONTENT
 		);
 
-		register_setting( 'rbco_settings_content', 'rbco_project_vision', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_textarea_field',
-			'default'           => '',
-		) );
+		register_setting(
+			'rbco_settings_content',
+			'rbco_project_vision',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_textarea_field',
+				'default'           => '',
+			)
+		);
 
 		add_settings_field(
 			'rbco_project_vision',
@@ -78,11 +82,15 @@ class RBCO_Settings {
 		);
 
 		// AI Provider selector.
-		register_setting( 'rbco_settings_general', 'rbco_ai_provider', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => 'claude',
-		) );
+		register_setting(
+			'rbco_settings_general',
+			'rbco_ai_provider',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => 'claude',
+			)
+		);
 
 		add_settings_field(
 			'rbco_ai_provider',
@@ -91,8 +99,8 @@ class RBCO_Settings {
 			self::TAB_GENERAL,
 			'rbco_provider_section',
 			array(
-				'id'      => 'rbco_ai_provider',
-				'options' => array(
+				'id'          => 'rbco_ai_provider',
+				'options'     => array(
 					'claude' => 'Claude (Anthropic)',
 					'openai' => 'OpenAI (GPT)',
 				),
@@ -109,11 +117,15 @@ class RBCO_Settings {
 		);
 
 		// Anthropic API Key.
-		register_setting( 'rbco_settings_general', 'rbco_anthropic_api_key', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => '',
-		) );
+		register_setting(
+			'rbco_settings_general',
+			'rbco_anthropic_api_key',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+			)
+		);
 
 		add_settings_field(
 			'rbco_anthropic_api_key',
@@ -129,11 +141,15 @@ class RBCO_Settings {
 		);
 
 		// Claude Model.
-		register_setting( 'rbco_settings_general', 'rbco_claude_model', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => 'claude-sonnet-4-6',
-		) );
+		register_setting(
+			'rbco_settings_general',
+			'rbco_claude_model',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => 'claude-sonnet-4-6',
+			)
+		);
 
 		add_settings_field(
 			'rbco_claude_model',
@@ -142,8 +158,8 @@ class RBCO_Settings {
 			self::TAB_GENERAL,
 			'rbco_claude_section',
 			array(
-				'id'      => 'rbco_claude_model',
-				'options' => array(
+				'id'          => 'rbco_claude_model',
+				'options'     => array(
 					'claude-sonnet-4-6'         => 'Claude Sonnet 4.6 (recommended)',
 					'claude-opus-4-6'           => 'Claude Opus 4.6',
 					'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5',
@@ -161,11 +177,15 @@ class RBCO_Settings {
 		);
 
 		// OpenAI API Key.
-		register_setting( 'rbco_settings_general', 'rbco_openai_api_key', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => '',
-		) );
+		register_setting(
+			'rbco_settings_general',
+			'rbco_openai_api_key',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+			)
+		);
 
 		add_settings_field(
 			'rbco_openai_api_key',
@@ -181,11 +201,15 @@ class RBCO_Settings {
 		);
 
 		// OpenAI Model.
-		register_setting( 'rbco_settings_general', 'rbco_openai_model', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => 'gpt-4o',
-		) );
+		register_setting(
+			'rbco_settings_general',
+			'rbco_openai_model',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => 'gpt-4o',
+			)
+		);
 
 		add_settings_field(
 			'rbco_openai_model',
@@ -194,12 +218,12 @@ class RBCO_Settings {
 			self::TAB_GENERAL,
 			'rbco_openai_section',
 			array(
-				'id'      => 'rbco_openai_model',
-				'options' => array(
-					'gpt-4o'      => 'GPT-4o (recommended)',
-					'gpt-4o-mini' => 'GPT-4o Mini',
-					'gpt-4-turbo' => 'GPT-4 Turbo',
-					'gpt-4.1'     => 'GPT-4.1',
+				'id'          => 'rbco_openai_model',
+				'options'     => array(
+					'gpt-4o'       => 'GPT-4o (recommended)',
+					'gpt-4o-mini'  => 'GPT-4o Mini',
+					'gpt-4-turbo'  => 'GPT-4 Turbo',
+					'gpt-4.1'      => 'GPT-4.1',
 					'gpt-4.1-mini' => 'GPT-4.1 Mini',
 					'gpt-4.1-nano' => 'GPT-4.1 Nano',
 				),
@@ -216,11 +240,15 @@ class RBCO_Settings {
 		);
 
 		// Image Visual Style.
-		register_setting( 'rbco_settings_images', 'rbco_image_style', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => 'auto',
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_image_style',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => 'auto',
+			)
+		);
 
 		add_settings_field(
 			'rbco_image_style',
@@ -229,8 +257,8 @@ class RBCO_Settings {
 			self::TAB_IMAGES,
 			'rbco_image_provider_section',
 			array(
-				'id'      => 'rbco_image_style',
-				'options' => array(
+				'id'          => 'rbco_image_style',
+				'options'     => array(
 					'auto'      => 'Auto (match blog style)',
 					'REALISTIC' => 'Realistic / Photographic',
 					'GENERAL'   => 'General',
@@ -242,11 +270,15 @@ class RBCO_Settings {
 		);
 
 		// Brand Colors.
-		register_setting( 'rbco_settings_images', 'rbco_brand_colors', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => '',
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_brand_colors',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+			)
+		);
 
 		add_settings_field(
 			'rbco_brand_colors',
@@ -262,11 +294,15 @@ class RBCO_Settings {
 		);
 
 		// Negative Prompt.
-		register_setting( 'rbco_settings_images', 'rbco_image_negative_prompt', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_textarea_field',
-			'default'           => '',
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_image_negative_prompt',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_textarea_field',
+				'default'           => '',
+			)
+		);
 
 		add_settings_field(
 			'rbco_image_negative_prompt',
@@ -290,11 +326,15 @@ class RBCO_Settings {
 			self::TAB_IMAGES
 		);
 
-		register_setting( 'rbco_settings_images', 'rbco_default_featured_image', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 0,
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_default_featured_image',
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 0,
+			)
+		);
 
 		add_settings_field(
 			'rbco_default_featured_image',
@@ -308,11 +348,15 @@ class RBCO_Settings {
 			)
 		);
 
-		register_setting( 'rbco_settings_images', 'rbco_overlay_enabled', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => '',
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_overlay_enabled',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+			)
+		);
 
 		add_settings_field(
 			'rbco_overlay_enabled',
@@ -321,8 +365,8 @@ class RBCO_Settings {
 			self::TAB_IMAGES,
 			'rbco_default_image_section',
 			array(
-				'id'      => 'rbco_overlay_enabled',
-				'options' => array(
+				'id'          => 'rbco_overlay_enabled',
+				'options'     => array(
 					'1' => __( 'Enabled — overlay blog title on image', 'raybogman-ai-content-orchestrator' ),
 					''  => __( 'Disabled', 'raybogman-ai-content-orchestrator' ),
 				),
@@ -330,11 +374,15 @@ class RBCO_Settings {
 			)
 		);
 
-		register_setting( 'rbco_settings_images', 'rbco_overlay_text_color', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => '#0d5e50',
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_overlay_text_color',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '#0d5e50',
+			)
+		);
 
 		add_settings_field(
 			'rbco_overlay_text_color',
@@ -349,11 +397,15 @@ class RBCO_Settings {
 			)
 		);
 
-		register_setting( 'rbco_settings_images', 'rbco_overlay_font_bold', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 0,
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_overlay_font_bold',
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 0,
+			)
+		);
 
 		add_settings_field(
 			'rbco_overlay_font_bold',
@@ -369,11 +421,15 @@ class RBCO_Settings {
 			)
 		);
 
-		register_setting( 'rbco_settings_images', 'rbco_overlay_font_italic', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 0,
-		) );
+		register_setting(
+			'rbco_settings_images',
+			'rbco_overlay_font_italic',
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 0,
+			)
+		);
 
 		add_settings_field(
 			'rbco_overlay_font_italic',
@@ -390,11 +446,15 @@ class RBCO_Settings {
 		);
 
 		// Internal Linking toggle.
-		register_setting( 'rbco_settings_content', 'rbco_internal_linking', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => '1',
-		) );
+		register_setting(
+			'rbco_settings_content',
+			'rbco_internal_linking',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '1',
+			)
+		);
 
 		add_settings_field(
 			'rbco_internal_linking',
@@ -403,8 +463,8 @@ class RBCO_Settings {
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
-				'id'      => 'rbco_internal_linking',
-				'options' => array(
+				'id'          => 'rbco_internal_linking',
+				'options'     => array(
 					'1' => __( 'Enabled — automatically add internal links', 'raybogman-ai-content-orchestrator' ),
 					'0' => __( 'Disabled', 'raybogman-ai-content-orchestrator' ),
 				),
@@ -413,11 +473,15 @@ class RBCO_Settings {
 		);
 
 		// Max internal links.
-		register_setting( 'rbco_settings_content', 'rbco_max_internal_links', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 5,
-		) );
+		register_setting(
+			'rbco_settings_content',
+			'rbco_max_internal_links',
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 5,
+			)
+		);
 
 		add_settings_field(
 			'rbco_max_internal_links',
@@ -434,11 +498,15 @@ class RBCO_Settings {
 		);
 
 		// Link Placement.
-		register_setting( 'rbco_settings_content', 'rbco_link_placement', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-			'default'           => 'both',
-		) );
+		register_setting(
+			'rbco_settings_content',
+			'rbco_link_placement',
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => 'both',
+			)
+		);
 
 		add_settings_field(
 			'rbco_link_placement',
@@ -447,8 +515,8 @@ class RBCO_Settings {
 			self::TAB_CONTENT,
 			'rbco_project_vision_section',
 			array(
-				'id'      => 'rbco_link_placement',
-				'options' => array(
+				'id'          => 'rbco_link_placement',
+				'options'     => array(
 					'both'   => __( 'Inline + Related Articles section (recommended)', 'raybogman-ai-content-orchestrator' ),
 					'inline' => __( 'Inline only — links spread naturally through paragraphs', 'raybogman-ai-content-orchestrator' ),
 					'footer' => __( 'Related Articles section only — clean list at the bottom', 'raybogman-ai-content-orchestrator' ),
@@ -465,33 +533,16 @@ class RBCO_Settings {
 			self::TAB_SCANNER
 		);
 
-		// Max Pages to Crawl.
-		register_setting( 'rbco_settings_scanner', 'rbco_max_pages_to_crawl', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 25,
-		) );
-
-		add_settings_field(
-			'rbco_max_pages_to_crawl',
-			__( 'Max Pages to Scan', 'raybogman-ai-content-orchestrator' ),
-			array( __CLASS__, 'render_number_field' ),
-			self::TAB_SCANNER,
-			'rbco_scanner_section',
+		// Max Context Characters.
+		register_setting(
+			'rbco_settings_scanner',
+			'rbco_max_context_chars',
 			array(
-				'id'          => 'rbco_max_pages_to_crawl',
-				'min'         => 1,
-				'max'         => 100,
-				'description' => __( 'How many pages the plugin will scan from the website you enter. More pages = more context for the AI, but takes longer.', 'raybogman-ai-content-orchestrator' ),
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 18000,
 			)
 		);
-
-		// Max Context Characters.
-		register_setting( 'rbco_settings_scanner', 'rbco_max_context_chars', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 18000,
-		) );
 
 		add_settings_field(
 			'rbco_max_context_chars',
@@ -509,11 +560,15 @@ class RBCO_Settings {
 		);
 
 		// Request Timeout.
-		register_setting( 'rbco_settings_scanner', 'rbco_request_timeout', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 15,
-		) );
+		register_setting(
+			'rbco_settings_scanner',
+			'rbco_request_timeout',
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 15,
+			)
+		);
 
 		add_settings_field(
 			'rbco_request_timeout',
@@ -528,33 +583,49 @@ class RBCO_Settings {
 				'description' => __( 'How long (in seconds) to wait for each page to load during scanning. Increase this if scanning fails on slow websites.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
-
 	}
 
 	/* ── Section descriptions ──────────────────────────────────── */
 
+	/**
+	 * Render the description for the Project Vision section.
+	 */
 	public static function render_project_vision_section() {
 		echo '<p>' . esc_html__( 'Set instructions that the AI always follows when writing content. These are included with every content generation.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
+	/**
+	 * Render the description for the AI Provider section.
+	 */
 	public static function render_provider_section() {
 		echo '<p>' . esc_html__( 'Select which AI provider to use for generating content. You can configure both and switch between them.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
+	/**
+	 * Render the description for the Claude section.
+	 */
 	public static function render_claude_section() {
 		echo '<p>' . esc_html__( 'Configure your Anthropic Claude API credentials and model.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
+	/**
+	 * Render the description for the OpenAI section.
+	 */
 	public static function render_openai_section() {
 		echo '<p>' . esc_html__( 'Configure your OpenAI API credentials and model.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
+	/**
+	 * Render the description for the Default Featured Image section.
+	 */
 	public static function render_default_image_section() {
 		echo '<p>' . esc_html__( 'Configure a default featured image that is used when AI image generation is not enabled. Optionally overlay the blog title on the image to create a unique branded featured image for each post.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	/**
 	 * Render a media library upload field with preview.
+	 *
+	 * @param array $args Field arguments.
 	 */
 	public static function render_media_upload_field( $args ) {
 		$value       = (int) get_option( $args['id'], 0 );
@@ -615,8 +686,10 @@ class RBCO_Settings {
 			// Registered through the proper script API (attached to the
 			// already-enqueued 'rbco-admin' handle) rather than a raw tag.
 			// ob_start()/ob_get_clean() paired inside rbco_capture_inline_script().
-			rbco_capture_inline_script( 'rbco-admin', function () {
-				?>
+			rbco_capture_inline_script(
+				'rbco-admin',
+				function () {
+					?>
 			jQuery(document).ready(function($) {
 				$('.rbco-media-upload-btn').on('click', function(e) {
 					e.preventDefault();
@@ -657,13 +730,16 @@ class RBCO_Settings {
 					$(this).remove();
 				});
 			});
-				<?php
-			} );
+					<?php
+				}
+			);
 		}
 	}
 
 	/**
 	 * Render a checkbox field.
+	 *
+	 * @param array $args Field arguments.
 	 */
 	public static function render_checkbox_field( $args ) {
 		$value       = get_option( $args['id'], '' );
@@ -684,6 +760,8 @@ class RBCO_Settings {
 
 	/**
 	 * Render a color picker field.
+	 *
+	 * @param array $args Field arguments.
 	 */
 	public static function render_color_field( $args ) {
 		$value       = get_option( $args['id'], $args['default'] ?? '#000000' );
@@ -705,12 +783,18 @@ class RBCO_Settings {
 		}
 	}
 
+	/**
+	 * Render the description for the Image Provider section.
+	 */
 	public static function render_image_provider_section() {
-		echo '<p>' . esc_html__( 'Featured images are generated with OpenAI (DALL-E 3) using your OpenAI API key from the General tab. Configure the look and feel below.', 'raybogman-ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Featured images are generated with OpenAI (gpt-image-1) using your OpenAI API key from the General tab. Configure the look and feel below.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
+	/**
+	 * Render the description for the Scanner section.
+	 */
 	public static function render_scanner_section() {
-		echo '<p>' . esc_html__( 'Control how the plugin scans websites. When you enter a URL on the Create Content page, the plugin reads pages from that website to give the AI useful background information.', 'raybogman-ai-content-orchestrator' ) . '</p>';
+		echo '<p>' . esc_html__( 'Control how the plugin reads the page you enter. When you enter a URL on the Create Content page, the plugin reads only that single page to give the AI useful background information. It never crawls, follows links, or reads other pages of the site.', 'raybogman-ai-content-orchestrator' ) . '</p>';
 	}
 
 	/* ── Field renderers ───────────────────────────────────────── */
@@ -790,6 +874,11 @@ class RBCO_Settings {
 		}
 	}
 
+	/**
+	 * Render a number input field.
+	 *
+	 * @param array $args Field arguments.
+	 */
 	public static function render_number_field( $args ) {
 		$value = get_option( $args['id'], '' );
 		printf(
@@ -861,7 +950,7 @@ class RBCO_Settings {
 		echo '</button>';
 		echo '<span style="color:#787c82; font-size:12px;" id="rbco-color-count">';
 		if ( ! empty( $value ) ) {
-   /* translators: %s: dynamic value */
+			/* translators: %s: dynamic value */
 			printf( esc_html__( '%d/4 selected', 'raybogman-ai-content-orchestrator' ), intval( min( count( array_filter( $colors ) ), 4 ) ) );
 		}
 		echo '</span>';
@@ -870,79 +959,174 @@ class RBCO_Settings {
 		echo '<div id="rbco-scan-colors-result" style="margin-top:8px;"></div>';
 
 		if ( ! empty( $args['description'] ) ) {
-			printf( '<p class="description">%s</p>', wp_kses( $args['description'], array( 'strong' => array(), 'em' => array(), 'a' => array( 'href' => array() ) ) ) );
+			printf(
+				'<p class="description">%s</p>',
+				wp_kses(
+					$args['description'],
+					array(
+						'strong' => array(),
+						'em'     => array(),
+						'a'      => array( 'href' => array() ),
+					)
+				)
+			);
 		}
 	}
 
 	/* ── Getters ───────────────────────────────────────────────── */
 
+	/**
+	 * Get the project vision instructions.
+	 *
+	 * @return string
+	 */
 	public static function get_project_vision() {
 		return trim( get_option( 'rbco_project_vision', '' ) );
 	}
 
+	/**
+	 * Get the selected AI provider.
+	 *
+	 * @return string
+	 */
 	public static function get_ai_provider() {
 		return get_option( 'rbco_ai_provider', 'claude' );
 	}
 
+	/**
+	 * Get the Anthropic API key.
+	 *
+	 * @return string
+	 */
 	public static function get_anthropic_api_key() {
 		return get_option( 'rbco_anthropic_api_key', '' );
 	}
 
+	/**
+	 * Get the selected Claude model.
+	 *
+	 * @return string
+	 */
 	public static function get_claude_model() {
 		return get_option( 'rbco_claude_model', 'claude-sonnet-4-6' );
 	}
 
+	/**
+	 * Get the OpenAI API key.
+	 *
+	 * @return string
+	 */
 	public static function get_openai_api_key() {
 		return get_option( 'rbco_openai_api_key', '' );
 	}
 
+	/**
+	 * Get the selected OpenAI model.
+	 *
+	 * @return string
+	 */
 	public static function get_openai_model() {
 		return get_option( 'rbco_openai_model', 'gpt-4o' );
 	}
 
+	/**
+	 * Check whether internal linking is enabled.
+	 *
+	 * @return bool
+	 */
 	public static function is_internal_linking_enabled() {
 		return '1' === get_option( 'rbco_internal_linking', '1' );
 	}
 
+	/**
+	 * Get the maximum number of internal links.
+	 *
+	 * @return int
+	 */
 	public static function get_max_internal_links() {
 		return (int) get_option( 'rbco_max_internal_links', 5 );
 	}
 
+	/**
+	 * Get the internal link placement setting.
+	 *
+	 * @return string
+	 */
 	public static function get_link_placement() {
 		$placement = get_option( 'rbco_link_placement', 'both' );
 		return in_array( $placement, array( 'inline', 'footer', 'both' ), true ) ? $placement : 'both';
 	}
 
+	/**
+	 * Get the default featured image attachment ID.
+	 *
+	 * @return int
+	 */
 	public static function get_default_featured_image() {
 		return (int) get_option( 'rbco_default_featured_image', 0 );
 	}
 
+	/**
+	 * Check whether the title overlay is enabled.
+	 *
+	 * @return bool
+	 */
 	public static function is_overlay_enabled() {
 		return '1' === get_option( 'rbco_overlay_enabled', '' );
 	}
 
+	/**
+	 * Get the overlay text color.
+	 *
+	 * @return string
+	 */
 	public static function get_overlay_text_color() {
 		return get_option( 'rbco_overlay_text_color', '#0d5e50' );
 	}
 
+	/**
+	 * Get the file path to the bold overlay font.
+	 *
+	 * @return string
+	 */
 	public static function get_overlay_font_bold_path() {
 		$id = (int) get_option( 'rbco_overlay_font_bold', 0 );
 		return $id > 0 ? get_attached_file( $id ) : '';
 	}
 
+	/**
+	 * Get the file path to the italic overlay font.
+	 *
+	 * @return string
+	 */
 	public static function get_overlay_font_italic_path() {
 		$id = (int) get_option( 'rbco_overlay_font_italic', 0 );
 		return $id > 0 ? get_attached_file( $id ) : '';
 	}
 
+	/**
+	 * Get the image provider.
+	 *
+	 * @return string
+	 */
 	public static function get_image_provider() {
 		return 'openai';
 	}
 
+	/**
+	 * Get the selected image style.
+	 *
+	 * @return string
+	 */
 	public static function get_image_style() {
 		return get_option( 'rbco_image_style', 'auto' );
 	}
 
+	/**
+	 * Get the configured brand colors as an array of hex codes.
+	 *
+	 * @return array
+	 */
 	public static function get_brand_colors() {
 		$raw = trim( get_option( 'rbco_brand_colors', '' ) );
 		if ( empty( $raw ) ) {
@@ -950,11 +1134,21 @@ class RBCO_Settings {
 		}
 		$colors = array_map( 'trim', explode( ',', $raw ) );
 		// Validate hex codes.
-		return array_values( array_filter( $colors, function ( $c ) {
-			return preg_match( '/^#[0-9a-fA-F]{6}$/', $c );
-		} ) );
+		return array_values(
+			array_filter(
+				$colors,
+				function ( $c ) {
+					return preg_match( '/^#[0-9a-fA-F]{6}$/', $c );
+				}
+			)
+		);
 	}
 
+	/**
+	 * Get the image negative prompt.
+	 *
+	 * @return string
+	 */
 	public static function get_image_negative_prompt() {
 		return trim( get_option( 'rbco_image_negative_prompt', '' ) );
 	}
@@ -977,14 +1171,20 @@ class RBCO_Settings {
 		return ! empty( self::get_image_api_key() );
 	}
 
-	public static function get_max_pages() {
-		return (int) get_option( 'rbco_max_pages_to_crawl', 25 );
-	}
-
+	/**
+	 * Get the maximum number of context characters.
+	 *
+	 * @return int
+	 */
 	public static function get_max_context_chars() {
 		return (int) get_option( 'rbco_max_context_chars', 18000 );
 	}
 
+	/**
+	 * Get the request timeout in seconds.
+	 *
+	 * @return int
+	 */
 	public static function get_request_timeout() {
 		return (int) get_option( 'rbco_request_timeout', 15 );
 	}
@@ -1065,9 +1265,14 @@ class RBCO_Settings {
 	public static function remove_url( $url ) {
 		$url  = untrailingslashit( esc_url_raw( trim( $url ) ) );
 		$urls = self::get_saved_urls();
-		$new  = array_values( array_filter( $urls, function ( $u ) use ( $url ) {
-			return untrailingslashit( $u ) !== $url;
-		} ) );
+		$new  = array_values(
+			array_filter(
+				$urls,
+				function ( $u ) use ( $url ) {
+					return untrailingslashit( $u ) !== $url;
+				}
+			)
+		);
 
 		if ( count( $new ) !== count( $urls ) ) {
 			update_option( 'rbco_saved_urls', $new );
@@ -1083,12 +1288,12 @@ class RBCO_Settings {
 	 */
 	public static function get_tabs() {
 		return array(
-			'general'  => __( 'General', 'raybogman-ai-content-orchestrator' ),
-			'content'  => __( 'Content', 'raybogman-ai-content-orchestrator' ),
-			'images'   => __( 'Images', 'raybogman-ai-content-orchestrator' ),
-			'scanner'  => __( 'Scanner', 'raybogman-ai-content-orchestrator' ),
-			'faq'      => __( 'FAQ', 'raybogman-ai-content-orchestrator' ),
-			'about'    => __( 'About', 'raybogman-ai-content-orchestrator' ),
+			'general' => __( 'General', 'raybogman-ai-content-orchestrator' ),
+			'content' => __( 'Content', 'raybogman-ai-content-orchestrator' ),
+			'images'  => __( 'Images', 'raybogman-ai-content-orchestrator' ),
+			'scanner' => __( 'Scanner', 'raybogman-ai-content-orchestrator' ),
+			'faq'     => __( 'FAQ', 'raybogman-ai-content-orchestrator' ),
+			'about'   => __( 'About', 'raybogman-ai-content-orchestrator' ),
 		);
 	}
 
@@ -1112,7 +1317,7 @@ class RBCO_Settings {
 				'rbco_max_internal_links',
 				'rbco_link_placement',
 			),
-			'images' => array(
+			'images'  => array(
 				'rbco_image_style',
 				'rbco_brand_colors',
 				'rbco_image_negative_prompt',
@@ -1123,7 +1328,6 @@ class RBCO_Settings {
 				'rbco_overlay_font_italic',
 			),
 			'scanner' => array(
-				'rbco_max_pages_to_crawl',
 				'rbco_max_context_chars',
 				'rbco_request_timeout',
 			),

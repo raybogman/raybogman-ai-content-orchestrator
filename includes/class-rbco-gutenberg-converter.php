@@ -13,6 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Converts classic HTML markup into Gutenberg block markup so generated
+ * content renders as native blocks in the WordPress block editor.
+ */
 class RBCO_Gutenberg_Converter {
 
 	/**
