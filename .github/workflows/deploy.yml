@@ -43,6 +43,8 @@ jobs:
           zip -r raybogman-ai-content-orchestrator.zip . \
             -x '.git/*' \
             -x '.github/*' \
+            -x '.wordpress-org/*' \
+            -x '.claude/*' \
             -x '*.DS_Store' \
             -x '__MACOSX/*' \
             -x '.gitignore' \

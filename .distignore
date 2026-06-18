@@ -4,6 +4,8 @@
 # Version control / project meta
 .git
 .github
+.wordpress-org
+.claude
 .gitignore
 .gitattributes
 .distignore
