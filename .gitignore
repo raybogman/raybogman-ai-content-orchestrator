@@ -3,3 +3,4 @@ __MACOSX/
 *.zip
 node_modules/
 .env
+.claude/

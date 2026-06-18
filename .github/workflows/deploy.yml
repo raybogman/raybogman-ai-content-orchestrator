@@ -1,9 +1,11 @@
-name: Build plugin zip
+name: Build & deploy plugin
 
-# Builds a distributable plugin zip for every push to main and every v* tag.
-# The zip is uploaded as a downloadable artifact. (Freemius deployment has been
-# removed — this is the free WordPress.org build. A WordPress.org SVN deploy
-# step can be added here later if desired.)
+# - Every push to main and every v* tag builds a distributable plugin zip
+#   (uploaded as a downloadable artifact).
+# - Every v* tag ALSO deploys to the WordPress.org plugin SVN repository via
+#   10up/action-wordpress-plugin-deploy. The deploy respects .distignore and
+#   reads the version from readme.txt "Stable tag". Requires repository secrets
+#   SVN_USERNAME and SVN_PASSWORD (set in your WordPress.org "Account & Security").
 on:
   push:
     branches:
@@ -61,4 +63,30 @@ jobs:
         with:
           name: raybogman-ai-content-orchestrator-${{ steps.version.outputs.VERSION }}-${{ github.sha }}
           path: raybogman-ai-content-orchestrator.zip
+          retention-days: 90
+
+  deploy:
+    # Only deploy to WordPress.org when a v* tag is pushed.
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy to WordPress.org
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: WordPress.org plugin deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: raybogman-ai-content-orchestrator
+
+      - name: Upload deployed zip artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: wordpress-org-${{ github.ref_name }}
+          path: ${{ github.workspace }}/raybogman-ai-content-orchestrator.zip
           retention-days: 90
