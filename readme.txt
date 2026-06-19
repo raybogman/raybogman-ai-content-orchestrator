@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,10 +110,16 @@ What data is sent and when: The user prompt, scanned website context, and image-
 
 == Upgrade Notice ==
 
+= 1.0.2 =
+Restores the Style Examples page, which was unreachable because its menu entry was missing.
+
 = 1.0.0 =
 First public release: a free, fully functional AI content pipeline for WordPress with Claude/OpenAI support, gpt-image-1 featured images, internal linking, and Yoast integration.
 
 == Changelog ==
+
+= 1.0.2 =
+* Fix: restored the "Style Examples" admin page. Its menu entry was missing, so visiting the page showed no content even though the example previews existed. The page is now registered again under the AI Content menu.
 
 = 1.0.1 =
 * Hardening: the context-scanning request now verifies the remote TLS certificate (removed the SSL verification bypass) to prevent man-in-the-middle tampering.

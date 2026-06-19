@@ -3,7 +3,7 @@
  * Plugin Name:       Ray Bogman AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-ai-content-orchestrator
  * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO metadata, AI-generated articles, featured images (gpt-image-1), internal linking, and Yoast integration. Supports Claude and OpenAI.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 5.9
  * Tested up to:      7.0
  * Requires PHP:      7.4
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RBCO_VERSION', '1.0.1' );
+define( 'RBCO_VERSION', '1.0.2' );
 define( 'RBCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RBCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RBCO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );

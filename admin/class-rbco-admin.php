@@ -93,6 +93,15 @@ class RBCO_Admin {
 
 		add_submenu_page(
 			'raybogman-ai-content-orchestrator',
+			__( 'Style Examples', 'raybogman-ai-content-orchestrator' ),
+			__( 'Style Examples', 'raybogman-ai-content-orchestrator' ),
+			'edit_posts',
+			'rbco-examples',
+			array( $this, 'render_examples_page' )
+		);
+
+		add_submenu_page(
+			'raybogman-ai-content-orchestrator',
 			__( 'Settings', 'raybogman-ai-content-orchestrator' ),
 			__( 'Settings', 'raybogman-ai-content-orchestrator' ),
 			'manage_options',
