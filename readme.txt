@@ -3,9 +3,9 @@ Contributors: raybogman
 Donate link: https://raybogman.com
 Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,6 +117,9 @@ Restores the Style Examples page, which was unreachable because its menu entry w
 First public release: a free, fully functional AI content pipeline for WordPress with Claude/OpenAI support, gpt-image-1 featured images, internal linking, and Yoast integration.
 
 == Changelog ==
+
+= 1.0.3 =
+* Tested up to WordPress 7.1 (verified on 7.1-RC2 with Plugin Check and WP_DEBUG — no changes required).
 
 = 1.0.2 =
 * Fix: restored the "Style Examples" admin page. Its menu entry was missing, so visiting the page showed no content even though the example previews existed. The page is now registered again under the AI Content menu.
