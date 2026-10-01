@@ -65,6 +65,9 @@ class RBCO_Admin {
 		add_action( 'wp_ajax_rbco_regenerate_featured_images', array( $this, 'ajax_regenerate_featured_images' ) );
 		add_action( 'wp_ajax_rbco_linkedin_remove_from_dashboard', array( $this, 'ajax_linkedin_remove_from_dashboard' ) );
 		add_action( 'wp_ajax_rbco_linkedin_bulk_remove', array( $this, 'ajax_linkedin_bulk_remove' ) );
+		add_action( 'wp_ajax_rbco_linkedin_search_posts', array( $this, 'ajax_linkedin_search_posts' ) );
+		add_action( 'wp_ajax_rbco_linkedin_add_existing', array( $this, 'ajax_linkedin_add_existing' ) );
+		add_action( 'wp_ajax_rbco_linkedin_set_share_at', array( $this, 'ajax_linkedin_set_share_at' ) );
 		add_action( 'wp_ajax_rbco_scan_theme_colors', array( $this, 'ajax_scan_theme_colors' ) );
 		add_action( 'wp_ajax_rbco_regenerate_overlay', array( $this, 'ajax_regenerate_overlay' ) );
 		add_action( 'wp_ajax_rbco_repurpose_content', array( $this, 'ajax_repurpose_content' ) );
@@ -646,6 +649,7 @@ class RBCO_Admin {
 					$pdf_ids      = isset( $_POST['pdf_ids'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['pdf_ids'] ) ) : array();
 					$save_url     = isset( $_POST['save_url'] ) && '1' === $_POST['save_url'];
 					$linkedin     = isset( $_POST['linkedin'] ) && '1' === $_POST['linkedin'];
+					$linkedin_share_at = isset( $_POST['linkedin_share_at'] ) ? self::parse_datetime_local( sanitize_text_field( wp_unslash( $_POST['linkedin_share_at'] ) ) ) : 0;
 					$instagram    = isset( $_POST['instagram'] ) && '1' === $_POST['instagram'];
 					$generate_image = isset( $_POST['generate_image'] ) && '1' === $_POST['generate_image'];
 					$internal_linking    = ( isset( $_POST['internal_linking'] ) && '1' === $_POST['internal_linking'] ) ? '1' : '0';
@@ -709,6 +713,7 @@ class RBCO_Admin {
 						'blog_style'     => $blog_style,
 						'site_data'      => $all_site_data,
 						'linkedin'       => $linkedin,
+						'linkedin_share_at' => $linkedin_share_at,
 						'instagram'      => $instagram,
 						'generate_image'      => $generate_image,
 						'internal_linking'    => $internal_linking,
@@ -1073,6 +1078,9 @@ class RBCO_Admin {
 						// Store LinkedIn flag and commentary on the post.
 						if ( ! empty( $job_data['linkedin'] ) ) {
 							update_post_meta( $wp_result['id'], '_rbco_post_to_linkedin', '1' );
+							if ( ! empty( $job_data['linkedin_share_at'] ) ) {
+								RBCO_Publisher::set_linkedin_share_at( $wp_result['id'], (int) $job_data['linkedin_share_at'] );
+							}
 							if ( ! empty( $job_data['linkedin_commentary'] ) ) {
 								update_post_meta( $wp_result['id'], '_rbco_linkedin_commentary', $job_data['linkedin_commentary'] );
 							}
@@ -1830,28 +1838,8 @@ class RBCO_Admin {
 			wp_send_json_error( array( 'message' => __( 'AI provider not configured.', 'raybogman-ai-content-orchestrator' ) ) );
 		}
 
-		// Build metadata array from the post.
-		$meta = array(
-			'seo_title'        => $post->post_title,
-			'meta_description' => $post->post_excerpt,
-			'focus_keyphrase'  => get_post_meta( $post_id, '_yoast_wpseo_focuskw', true ),
-		);
-
-		$blog_style = get_post_meta( $post_id, '_rbco_blog_style', true );
-		if ( empty( $blog_style ) ) {
-			$blog_style = 'standard';
-		}
-
 		try {
-			$generator  = new RBCO_Generator();
-			$commentary = $generator->generate_linkedin_post(
-				$post->post_content,
-				$meta,
-				$blog_style,
-				get_permalink( $post_id )
-			);
-
-			update_post_meta( $post_id, '_rbco_linkedin_commentary', $commentary );
+			$commentary = $this->generate_linkedin_commentary( $post );
 
 			wp_send_json_success( array(
 				'commentary' => $commentary,
@@ -1860,6 +1848,125 @@ class RBCO_Admin {
 		} catch ( \Throwable $e ) {
 			wp_send_json_error( array( 'message' => $e->getMessage() ) );
 		}
+	}
+
+	/**
+	 * Generate and store the AI LinkedIn commentary for a post.
+	 *
+	 * @param WP_Post $post Post object.
+	 * @return string Commentary.
+	 * @throws Exception On provider errors.
+	 */
+	private function generate_linkedin_commentary( $post ) {
+		$meta = array(
+			'seo_title'        => $post->post_title,
+			'meta_description' => $post->post_excerpt,
+			'focus_keyphrase'  => get_post_meta( $post->ID, '_yoast_wpseo_focuskw', true ),
+		);
+
+		$blog_style = get_post_meta( $post->ID, '_rbco_blog_style', true );
+		if ( empty( $blog_style ) ) {
+			$blog_style = 'standard';
+		}
+
+		$generator  = new RBCO_Generator();
+		$commentary = $generator->generate_linkedin_post( $post->post_content, $meta, $blog_style, get_permalink( $post->ID ) );
+		update_post_meta( $post->ID, '_rbco_linkedin_commentary', $commentary );
+
+		return $commentary;
+	}
+
+	/**
+	 * AJAX: search published posts/pages that are not yet in the LinkedIn queue.
+	 */
+	public function ajax_linkedin_search_posts() {
+		check_ajax_referer( 'rbco_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+		if ( ! rbco_is_pro() ) {
+			wp_send_json_error( array( 'message' => __( 'Sharing existing posts on LinkedIn is an Enterprise feature.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		$term = isset( $_POST['term'] ) ? sanitize_text_field( wp_unslash( $_POST['term'] ) ) : '';
+
+		wp_send_json_success( array( 'items' => RBCO_Publisher::search_posts_for_linkedin( $term ) ) );
+	}
+
+	/**
+	 * AJAX: add an existing post to the LinkedIn queue, optionally with a share time
+	 * and AI-generated commentary.
+	 */
+	public function ajax_linkedin_add_existing() {
+		check_ajax_referer( 'rbco_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+		if ( ! rbco_is_pro() ) {
+			wp_send_json_error( array( 'message' => __( 'Sharing existing posts on LinkedIn is an Enterprise feature.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		$post_id  = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+		$share_at = isset( $_POST['share_at'] ) ? self::parse_datetime_local( sanitize_text_field( wp_unslash( $_POST['share_at'] ) ) ) : 0;
+		$generate = isset( $_POST['generate_commentary'] ) && '1' === $_POST['generate_commentary'];
+
+		if ( ! $post_id ) {
+			wp_send_json_error( array( 'message' => __( 'Missing post ID.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+		if ( $share_at > 0 && $share_at <= time() ) {
+			wp_send_json_error( array( 'message' => __( 'Share time must be in the future.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		$result = RBCO_Publisher::add_existing_to_linkedin( $post_id, $share_at );
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		$result['commentary'] = '';
+		if ( $generate && RBCO_Settings::is_configured() ) {
+			try {
+				$result['commentary'] = $this->generate_linkedin_commentary( get_post( $post_id ) );
+			} catch ( \Throwable $e ) {
+				$result['commentary_error'] = $e->getMessage();
+			}
+		}
+
+		wp_send_json_success( $result );
+	}
+
+	/**
+	 * AJAX: set or clear the scheduled LinkedIn share time of a queued post.
+	 */
+	public function ajax_linkedin_set_share_at() {
+		check_ajax_referer( 'rbco_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+		if ( ! rbco_is_pro() ) {
+			wp_send_json_error( array( 'message' => __( 'Scheduled LinkedIn sharing is an Enterprise feature.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		$post_id  = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+		$share_at = isset( $_POST['share_at'] ) ? self::parse_datetime_local( sanitize_text_field( wp_unslash( $_POST['share_at'] ) ) ) : 0;
+
+		if ( ! $post_id || ! get_post( $post_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+		if ( $share_at > 0 && $share_at <= time() ) {
+			wp_send_json_error( array( 'message' => __( 'Share time must be in the future.', 'raybogman-ai-content-orchestrator' ) ) );
+		}
+
+		RBCO_Publisher::set_linkedin_share_at( $post_id, $share_at );
+		delete_post_meta( $post_id, '_rbco_linkedin_error' );
+
+		wp_send_json_success( array(
+			'id'                 => $post_id,
+			'share_at'           => $share_at,
+			'share_at_formatted' => $share_at > 0 ? wp_date( 'Y-m-d H:i', $share_at ) : '',
+		) );
 	}
 
 	/**
@@ -2650,6 +2757,12 @@ class RBCO_Admin {
 
 		// Only if not already shared.
 		if ( get_post_meta( $post->ID, '_rbco_linkedin_shared', true ) ) {
+			return;
+		}
+
+		// A share time in the future means "share later": the catch-up cron
+		// handles it (RBCO_Publisher::share_due_linkedin).
+		if ( (int) get_post_meta( $post->ID, '_rbco_linkedin_share_at', true ) > time() ) {
 			return;
 		}
 

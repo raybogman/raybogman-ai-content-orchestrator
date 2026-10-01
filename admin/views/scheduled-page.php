@@ -371,6 +371,48 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 
 	<?php endif; ?>
 
+	<!-- Share existing content on LinkedIn (Enterprise) -->
+	<?php if ( rbco_is_pro() ) : ?>
+		<div class="rbco-card" style="margin-top: 20px;" id="rbco-li-import-card">
+			<div class="rbco-card-header">
+				<h2>
+					<span class="dashicons dashicons-linkedin" style="margin-right: 6px; color: #0a66c2;"></span>
+					<?php esc_html_e( 'Share an Existing Post on LinkedIn', 'raybogman-ai-content-orchestrator' ); ?>
+				</h2>
+			</div>
+			<div class="rbco-card-body">
+				<?php if ( ! RBCO_LinkedIn::is_connected() ) : ?>
+					<p class="description">
+						<?php esc_html_e( 'Connect your LinkedIn account first.', 'raybogman-ai-content-orchestrator' ); ?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=rbco-settings&tab=linkedin' ) ); ?>"><?php esc_html_e( 'Open LinkedIn settings', 'raybogman-ai-content-orchestrator' ); ?> &rarr;</a>
+					</p>
+				<?php else : ?>
+					<p class="description" style="margin-top:0;">
+						<?php esc_html_e( 'Add any published post or page to the LinkedIn queue below. The post itself is not changed. Share it right away, let the AI write the LinkedIn text, or pick a date and time and the plugin shares it automatically.', 'raybogman-ai-content-orchestrator' ); ?>
+					</p>
+					<p>
+						<input type="search" id="rbco-li-search" class="regular-text" placeholder="<?php esc_attr_e( 'Search your published posts and pages…', 'raybogman-ai-content-orchestrator' ); ?>" />
+						<span class="spinner" id="rbco-li-search-spinner" style="float:none; margin: 0 6px;"></span>
+					</p>
+					<table class="widefat striped" id="rbco-li-search-results" style="display:none;">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Title', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 90px;"><?php esc_html_e( 'Type', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 110px;"><?php esc_html_e( 'Published', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 230px;"><?php esc_html_e( 'Share at (optional)', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 150px;"><?php esc_html_e( 'AI text', 'raybogman-ai-content-orchestrator' ); ?></th>
+								<th style="width: 150px;"></th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<p class="description" id="rbco-li-search-empty" style="display:none;"><?php esc_html_e( 'No published posts found that are not already in the LinkedIn queue.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<?php endif; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+
 	<!-- LinkedIn sharing status -->
 	<?php if ( ! empty( $rbco_linkedin_items ) ) : ?>
 		<div class="rbco-card" style="margin-top: 20px;">
@@ -476,6 +518,9 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 								</td>
 								<td>
 									<?php echo esc_html( wp_date( 'Y-m-d H:i', $rbco_li['published_at'] ) ); ?>
+									<?php if ( ! empty( $rbco_li['imported'] ) ) : ?>
+										<br><span class="rbco-badge" style="font-size:10px;"><?php esc_html_e( 'Existing post', 'raybogman-ai-content-orchestrator' ); ?></span>
+									<?php endif; ?>
 								</td>
 								<td class="rbco-li-status-<?php echo esc_attr( $rbco_li['id'] ); ?>">
 									<?php if ( 'shared' === $rbco_li['linkedin_status'] ) : ?>
@@ -486,6 +531,10 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 										<span class="dashicons dashicons-warning" style="color: #d63638;"></span>
 										<strong style="color: #d63638;"><?php esc_html_e( 'Failed', 'raybogman-ai-content-orchestrator' ); ?></strong>
 										<br><small class="description" style="color: #d63638;"><?php echo esc_html( mb_substr( $rbco_li['linkedin_error'], 0, 100 ) ); ?></small>
+									<?php elseif ( 'scheduled' === $rbco_li['linkedin_status'] ) : ?>
+										<span class="dashicons dashicons-clock" style="color: #2271b1;"></span>
+										<strong style="color: #2271b1;"><?php esc_html_e( 'Scheduled', 'raybogman-ai-content-orchestrator' ); ?></strong>
+										<br><small class="description"><?php echo esc_html( wp_date( 'Y-m-d H:i', $rbco_li['share_at'] ) ); ?></small>
 									<?php else : ?>
 										<span class="dashicons dashicons-minus" style="color: #646970;"></span>
 										<em class="description"><?php esc_html_e( 'Not shared yet', 'raybogman-ai-content-orchestrator' ); ?></em>
@@ -504,6 +553,11 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 										}
 										?>
 									</button>
+									<?php if ( 'shared' !== $rbco_li['linkedin_status'] ) : ?>
+									<button type="button" class="button rbco-li-schedule-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>" data-share-at="<?php echo esc_attr( $rbco_li['share_at'] > 0 ? wp_date( 'Y-m-d\TH:i', $rbco_li['share_at'] ) : '' ); ?>" title="<?php esc_attr_e( 'Pick a date and time to share automatically', 'raybogman-ai-content-orchestrator' ); ?>">
+										<span class="dashicons dashicons-clock" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px;"></span>
+									</button>
+									<?php endif; ?>
 									<button type="button" class="button rbco-li-remove-btn" data-post-id="<?php echo esc_attr( $rbco_li['id'] ); ?>" title="<?php esc_attr_e( 'Remove from LinkedIn dashboard (does not delete the WordPress post or LinkedIn share)', 'raybogman-ai-content-orchestrator' ); ?>">
 										<span class="dashicons dashicons-trash" style="vertical-align: text-bottom; font-size: 16px; width: 16px; height: 16px; color: #d63638;"></span>
 									</button>
@@ -521,6 +575,21 @@ $rbco_last_catchup     = get_option( 'rbco_last_catchup_log', array() );
 			</div>
 		</div>
 	<?php endif; ?>
+</div>
+
+<!-- LinkedIn share time modal -->
+<div id="rbco-li-schedule-modal" class="rbco-modal" style="display: none;">
+	<div class="rbco-modal-backdrop"></div>
+	<div class="rbco-modal-content">
+		<h2><?php esc_html_e( 'Share on LinkedIn at', 'raybogman-ai-content-orchestrator' ); ?></h2>
+		<p class="description"><?php esc_html_e( 'The plugin shares the post automatically at this time (checked every minute by the catch-up cron). Clear the time to go back to manual sharing.', 'raybogman-ai-content-orchestrator' ); ?></p>
+		<input type="datetime-local" id="rbco-li-schedule-input" class="regular-text" />
+		<p style="margin-top: 12px;">
+			<button type="button" class="button" id="rbco-li-schedule-cancel"><?php esc_html_e( 'Cancel', 'raybogman-ai-content-orchestrator' ); ?></button>
+			<button type="button" class="button" id="rbco-li-schedule-clear"><?php esc_html_e( 'Clear time', 'raybogman-ai-content-orchestrator' ); ?></button>
+			<button type="button" class="button button-primary" id="rbco-li-schedule-save"><?php esc_html_e( 'Save', 'raybogman-ai-content-orchestrator' ); ?></button>
+		</p>
+	</div>
 </div>
 
 <!-- Reschedule modal -->
@@ -1001,6 +1070,100 @@ rbco_capture_inline_script( 'rbco-admin', function () {
 			}
 		});
 	});
+
+	// ── Share an existing post on LinkedIn ──────────────────────────
+	var liSearchTimer = null;
+	var liSearchXhr   = null;
+
+	function escHtmlLi(str) { return $('<div>').text(str || '').html(); }
+
+	function liRenderResults(items) {
+		var $table = $('#rbco-li-search-results');
+		var $body  = $table.find('tbody').empty();
+		if (!items.length) {
+			$table.hide();
+			$('#rbco-li-search-empty').show();
+			return;
+		}
+		$('#rbco-li-search-empty').hide();
+		$.each(items, function(_, it) {
+			$body.append(
+				'<tr data-post-id="' + it.id + '">' +
+					'<td><strong>' + escHtmlLi(it.title) + '</strong><br><a href="' + escHtmlLi(it.url) + '" target="_blank" class="description">' + escHtmlLi(it.url) + '</a></td>' +
+					'<td>' + escHtmlLi(it.type) + '</td>' +
+					'<td>' + escHtmlLi(it.published_at) + '</td>' +
+					'<td><input type="datetime-local" class="rbco-li-add-at" style="width:100%;" /></td>' +
+					'<td><label><input type="checkbox" class="rbco-li-add-ai" checked /> <?php echo esc_js( __( 'Generate', 'raybogman-ai-content-orchestrator' ) ); ?></label></td>' +
+					'<td><button type="button" class="button button-primary rbco-li-add-btn" data-post-id="' + it.id + '"><?php echo esc_js( __( 'Add to queue', 'raybogman-ai-content-orchestrator' ) ); ?></button></td>' +
+				'</tr>'
+			);
+		});
+		$table.show();
+	}
+
+	function liSearch(term) {
+		if (liSearchXhr) { liSearchXhr.abort(); }
+		$('#rbco-li-search-spinner').addClass('is-active');
+		liSearchXhr = $.post(ajaxUrl, { action: 'rbco_linkedin_search_posts', nonce: nonce, term: term }, function(response) {
+			if (response.success) { liRenderResults(response.data.items || []); }
+			else { alert('Error: ' + ((response.data && response.data.message) || 'Unknown error')); }
+		}).always(function() { $('#rbco-li-search-spinner').removeClass('is-active'); });
+	}
+
+	$('#rbco-li-search').on('input', function() {
+		var term = $(this).val();
+		clearTimeout(liSearchTimer);
+		liSearchTimer = setTimeout(function() { liSearch(term); }, 300);
+	}).on('focus', function() {
+		if (!$('#rbco-li-search-results tbody tr').length) { liSearch($(this).val()); }
+	});
+
+	$(document).on('click', '.rbco-li-add-btn', function() {
+		var $btn   = $(this);
+		var $row   = $btn.closest('tr');
+		var postId = $btn.data('post-id');
+		var at     = $row.find('.rbco-li-add-at').val() || '';
+		var genAi  = $row.find('.rbco-li-add-ai').is(':checked') ? '1' : '0';
+
+		$btn.prop('disabled', true).html('<span class="spinner is-active" style="float:none; margin:0;"></span> ' + (genAi === '1' ? '<?php echo esc_js( __( 'Adding + writing AI text…', 'raybogman-ai-content-orchestrator' ) ); ?>' : '<?php echo esc_js( __( 'Adding…', 'raybogman-ai-content-orchestrator' ) ); ?>'));
+
+		$.post(ajaxUrl, { action: 'rbco_linkedin_add_existing', nonce: nonce, post_id: postId, share_at: at, generate_commentary: genAi }, function(response) {
+			if (response.success) {
+				if (response.data.commentary_error) { alert('<?php echo esc_js( __( 'Added to the queue, but the AI text could not be generated:', 'raybogman-ai-content-orchestrator' ) ); ?> ' + response.data.commentary_error); }
+				location.reload();
+			} else {
+				alert('Error: ' + ((response.data && response.data.message) || 'Unknown error'));
+				$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Add to queue', 'raybogman-ai-content-orchestrator' ) ); ?>');
+			}
+		}).fail(function(xhr) {
+			alert('Request failed: ' + xhr.status + ' ' + xhr.statusText);
+			$btn.prop('disabled', false).text('<?php echo esc_js( __( 'Add to queue', 'raybogman-ai-content-orchestrator' ) ); ?>');
+		});
+	});
+
+	// ── LinkedIn share-time modal ───────────────────────────────────
+	var liScheduleTargetId = null;
+
+	$(document).on('click', '.rbco-li-schedule-btn', function() {
+		liScheduleTargetId = $(this).data('post-id');
+		$('#rbco-li-schedule-input').val($(this).data('share-at') || '');
+		$('#rbco-li-schedule-modal').show();
+	});
+	$('#rbco-li-schedule-cancel, #rbco-li-schedule-modal .rbco-modal-backdrop').on('click', function() {
+		$('#rbco-li-schedule-modal').hide();
+	});
+	function liSaveShareAt(value) {
+		$.post(ajaxUrl, { action: 'rbco_linkedin_set_share_at', nonce: nonce, post_id: liScheduleTargetId, share_at: value }, function(response) {
+			if (response.success) { location.reload(); }
+			else { alert('Error: ' + ((response.data && response.data.message) || 'Unknown error')); }
+		});
+	}
+	$('#rbco-li-schedule-save').on('click', function() {
+		var v = $('#rbco-li-schedule-input').val();
+		if (!v) { alert('<?php echo esc_js( __( 'Please select a date and time, or use "Clear time".', 'raybogman-ai-content-orchestrator' ) ); ?>'); return; }
+		liSaveShareAt(v);
+	});
+	$('#rbco-li-schedule-clear').on('click', function() { liSaveShareAt(''); });
 })(jQuery);
 	<?php
 } );

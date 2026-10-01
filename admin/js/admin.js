@@ -826,6 +826,7 @@
 			blog_style:   blogStyle,
 			save_url:     $('#rbco-save-url').is(':checked') ? '1' : '0',
 			linkedin:     $('#rbco-linkedin').is(':checked') ? '1' : '0',
+			linkedin_share_at: $('#rbco-linkedin-share-at').val() || '',
 			instagram:    $('#rbco-instagram').is(':checked') ? '1' : '0',
 			generate_image:      $('#rbco-generate-image').is(':checked') ? '1' : '0',
 			internal_linking:    $('#rbco-internal-linking').is(':checked') ? '1' : '0',

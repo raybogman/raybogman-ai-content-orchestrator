@@ -343,6 +343,11 @@ $rbco_project_vision = RBCO_Settings::get_project_vision();
 											);
 											?>
 										</p>
+										<p style="margin-top:8px;">
+											<label for="rbco-linkedin-share-at"><?php esc_html_e( 'Share on LinkedIn at (optional):', 'raybogman-ai-content-orchestrator' ); ?></label>
+											<input type="datetime-local" id="rbco-linkedin-share-at" />
+										</p>
+										<p class="description"><?php esc_html_e( 'Leave empty to share the moment the post is published. Set a later time to publish first and share on LinkedIn afterwards, for example the next morning.', 'raybogman-ai-content-orchestrator' ); ?></p>
 									</fieldset>
 								</td>
 							</tr>

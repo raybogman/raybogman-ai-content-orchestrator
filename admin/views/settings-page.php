@@ -220,6 +220,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			'image-overlay'        => __( 'How does the featured image overlay work?', 'raybogman-ai-content-orchestrator' ),
 			'shared-hosting'       => __( 'Does this plugin work on shared hosting?', 'raybogman-ai-content-orchestrator' ),
 			'scheduling'           => __( 'Can I schedule posts for later?', 'raybogman-ai-content-orchestrator' ),
+			'linkedin-existing'    => __( 'Can I share an existing post on LinkedIn, or share later than I publish?', 'raybogman-ai-content-orchestrator' ),
 			'repurposing'          => __( 'What is the "Content Repurposing" feature?', 'raybogman-ai-content-orchestrator' ),
 			'curl-timeout'         => __( 'I get a "cURL error 28: Operation timed out" — what does this mean?', 'raybogman-ai-content-orchestrator' ),
 			'scan-pages'           => __( 'How many pages should I scan for best results?', 'raybogman-ai-content-orchestrator' ),
@@ -346,6 +347,13 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			</div>
 		</div>
 
+		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-linkedin-existing">
+			<div class="rbco-card-body">
+				<h3 style="margin-top:0;"><?php esc_html_e( 'Can I share an existing post on LinkedIn, or share later than I publish?', 'raybogman-ai-content-orchestrator' ); ?></h3>
+				<p><?php esc_html_e( 'Yes (Enterprise). On the Scheduled page, use "Share an Existing Post on LinkedIn": search any published post or page and add it to the LinkedIn queue. The post itself is not changed. You can share it right away, let the AI write the LinkedIn text, or pick a date and time so the plugin shares it automatically. Every post in the queue has a clock button to set or change that time. When creating new content you can also set "Share on LinkedIn at" to publish first and share later, for example the next morning. Scheduled shares are sent by the same every-minute catch-up cron that publishes scheduled posts, so a working WordPress cron is required.', 'raybogman-ai-content-orchestrator' ); ?></p>
+			</div>
+		</div>
+
 		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-repurposing">
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'What is the "Content Repurposing" feature?', 'raybogman-ai-content-orchestrator' ); ?></h3>
@@ -447,7 +455,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'What is the difference between Free and Enterprise?', 'raybogman-ai-content-orchestrator' ); ?></h3>
 				<p><?php esc_html_e( 'The free version includes single content creation with 4 blog styles, DALL-E 3 images, basic internal linking (inline, max 3), content repurposing, scheduling, and Yoast SEO integration — everything you need to create great content.', 'raybogman-ai-content-orchestrator' ); ?></p>
-				<p><?php esc_html_e( 'Enterprise unlocks power features for teams and agencies: Bulk Create (batch posts with AI topic suggestions), Refresh Content (analyze and fix all posts), all 13 blog styles, Ideogram images, competitor gap analysis, LinkedIn and Instagram auto-sharing, Thrive Architect output, PDF sources, adaptive internal linking (max 15), multiple URL scanning, auto-fill publish dates, and email notifications.', 'raybogman-ai-content-orchestrator' ); ?></p>
+				<p><?php esc_html_e( 'Enterprise unlocks power features for teams and agencies: Bulk Create (batch posts with AI topic suggestions), Refresh Content (analyze and fix all posts), all 13 blog styles, Ideogram images, competitor gap analysis, LinkedIn and Instagram auto-sharing (including existing posts and scheduled LinkedIn shares), Thrive Architect output, PDF sources, adaptive internal linking (max 15), multiple URL scanning, auto-fill publish dates, and email notifications.', 'raybogman-ai-content-orchestrator' ); ?></p>
 				<p><?php esc_html_e( 'See the full comparison table in the About tab.', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
@@ -507,6 +515,7 @@ $rbco_active_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unsla
 						<tr><td><?php esc_html_e( 'Refresh Content (Analyze + Fix)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'PDF Sources', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'LinkedIn Auto-Share', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
+						<tr><td><?php esc_html_e( 'LinkedIn: Share Existing Posts + Scheduled Shares', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'Instagram Auto-Share', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'Thrive Architect Output', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php esc_html_e( 'Beta', 'raybogman-ai-content-orchestrator' ); ?></td></tr>
 						<tr><td><?php esc_html_e( 'Publishing Schedule (Auto-fill)', 'raybogman-ai-content-orchestrator' ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_cross ); ?></td><td style="text-align:center;"><?php echo wp_kses_post( $rbco_check ); ?></td></tr>

@@ -278,6 +278,10 @@ class RBCO_Publisher {
 			}
 		}
 
+		// Scheduled LinkedIn shares (existing posts added to the queue, or
+		// generated posts with a share time later than their publish time).
+		$details = array_merge( $details, self::share_due_linkedin() );
+
 		// Store a debug log of the last run for troubleshooting.
 		update_option( 'rbco_last_catchup_log', array(
 			'time'      => time(),
@@ -287,6 +291,157 @@ class RBCO_Publisher {
 		), false );
 
 		return $published;
+	}
+
+	/**
+	 * Share every post whose scheduled LinkedIn time has passed.
+	 *
+	 * Called from the every-minute catch-up cron. A post is due when it is
+	 * published, flagged for LinkedIn, not yet shared, and its
+	 * _rbco_linkedin_share_at is in the past. The share time is removed after
+	 * the attempt; a failure is stored in _rbco_linkedin_error so the dashboard
+	 * shows "Failed" with a Retry button instead of retrying every minute.
+	 *
+	 * @return array Human-readable log lines.
+	 */
+	public static function share_due_linkedin() {
+		$details = array();
+
+		$query = new WP_Query( array(
+			'post_type'      => array( 'post', 'page' ),
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+   // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for finding scheduled LinkedIn shares.
+			'meta_query'     => array(
+				array(
+					'key'     => '_rbco_linkedin_share_at',
+					'value'   => time(),
+					'compare' => '<=',
+					'type'    => 'NUMERIC',
+				),
+			),
+		) );
+
+		foreach ( $query->posts as $post_id ) {
+			$title = get_the_title( $post_id );
+
+			if ( ! get_post_meta( $post_id, '_rbco_post_to_linkedin', true ) || get_post_meta( $post_id, '_rbco_linkedin_shared', true ) ) {
+				delete_post_meta( $post_id, '_rbco_linkedin_share_at' );
+				continue;
+			}
+
+			if ( ! RBCO_LinkedIn::is_connected() ) {
+				$details[] = sprintf( '#%d (%s) → LinkedIn share skipped (not connected)', $post_id, $title );
+				continue;
+			}
+
+			$result = RBCO_LinkedIn::share_post( $post_id );
+			delete_post_meta( $post_id, '_rbco_linkedin_share_at' );
+
+			if ( is_wp_error( $result ) ) {
+				update_post_meta( $post_id, '_rbco_linkedin_error', $result->get_error_message() );
+				$details[] = sprintf( '#%d (%s) → LinkedIn share FAILED: %s', $post_id, $title, $result->get_error_message() );
+			} else {
+				$details[] = sprintf( '#%d (%s) → shared on LinkedIn', $post_id, $title );
+			}
+		}
+
+		return $details;
+	}
+
+	/**
+	 * Add an existing WordPress post or page to the LinkedIn queue.
+	 *
+	 * The post itself is not modified; only the plugin meta is set so the
+	 * post shows up in the LinkedIn dashboard with Share Now, commentary and
+	 * scheduling, exactly like a generated post.
+	 *
+	 * @param int $post_id  Published post or page.
+	 * @param int $share_at Optional Unix timestamp to share automatically.
+	 * @return array|WP_Error Item data on success.
+	 */
+	public static function add_existing_to_linkedin( $post_id, $share_at = 0 ) {
+		$post = get_post( $post_id );
+		if ( ! $post || ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
+			return new WP_Error( 'not_found', __( 'Post not found.', 'raybogman-ai-content-orchestrator' ) );
+		}
+		if ( 'publish' !== $post->post_status ) {
+			return new WP_Error( 'not_published', __( 'Only published posts and pages can be shared on LinkedIn.', 'raybogman-ai-content-orchestrator' ) );
+		}
+
+		if ( ! get_post_meta( $post_id, '_rbco_generated', true ) ) {
+			update_post_meta( $post_id, '_rbco_generated', '1' );
+			update_post_meta( $post_id, '_rbco_imported', '1' );
+		}
+		update_post_meta( $post_id, '_rbco_post_to_linkedin', '1' );
+		delete_post_meta( $post_id, '_rbco_linkedin_shared' );
+		delete_post_meta( $post_id, '_rbco_linkedin_error' );
+		self::set_linkedin_share_at( $post_id, $share_at );
+
+		return array(
+			'id'       => $post_id,
+			'title'    => $post->post_title,
+			'url'      => get_permalink( $post_id ),
+			'share_at' => (int) $share_at,
+		);
+	}
+
+	/**
+	 * Set or clear the scheduled LinkedIn share time of a post.
+	 *
+	 * @param int $post_id  Post ID.
+	 * @param int $share_at Unix timestamp, or 0 to clear.
+	 */
+	public static function set_linkedin_share_at( $post_id, $share_at ) {
+		if ( $share_at > 0 ) {
+			update_post_meta( $post_id, '_rbco_linkedin_share_at', (int) $share_at );
+		} else {
+			delete_post_meta( $post_id, '_rbco_linkedin_share_at' );
+		}
+	}
+
+	/**
+	 * Find published posts/pages that are not yet in the LinkedIn queue.
+	 *
+	 * @param string $term Search term (title/content), may be empty for most recent.
+	 * @return array
+	 */
+	public static function search_posts_for_linkedin( $term = '' ) {
+		$query = new WP_Query( array(
+			'post_type'      => array( 'post', 'page' ),
+			'post_status'    => 'publish',
+			'posts_per_page' => 10,
+			's'              => $term,
+			'orderby'        => $term ? 'relevance' : 'date',
+			'order'          => 'DESC',
+   // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Excludes posts already queued for LinkedIn.
+			'meta_query'     => array(
+				'relation' => 'OR',
+				array(
+					'key'     => '_rbco_post_to_linkedin',
+					'compare' => 'NOT EXISTS',
+				),
+				array(
+					'key'     => '_rbco_post_to_linkedin',
+					'value'   => '1',
+					'compare' => '!=',
+				),
+			),
+		) );
+
+		$items = array();
+		foreach ( $query->posts as $post ) {
+			$items[] = array(
+				'id'            => $post->ID,
+				'title'         => $post->post_title,
+				'type'          => $post->post_type,
+				'url'           => get_permalink( $post->ID ),
+				'published_at'  => wp_date( 'Y-m-d', strtotime( $post->post_date_gmt . ' GMT' ) ),
+				'has_thumbnail' => has_post_thumbnail( $post->ID ),
+			);
+		}
+		return $items;
 	}
 
 	/**
@@ -471,11 +626,14 @@ class RBCO_Publisher {
 		foreach ( $query->posts as $post ) {
 			$shared_at = (int) get_post_meta( $post->ID, '_rbco_linkedin_shared', true );
 			$error     = get_post_meta( $post->ID, '_rbco_linkedin_error', true );
+			$share_at  = (int) get_post_meta( $post->ID, '_rbco_linkedin_share_at', true );
 
 			if ( $shared_at > 0 ) {
 				$status = 'shared';
 			} elseif ( ! empty( $error ) ) {
 				$status = 'error';
+			} elseif ( $share_at > 0 ) {
+				$status = 'scheduled';
 			} else {
 				$status = 'pending';
 			}
@@ -488,6 +646,8 @@ class RBCO_Publisher {
 				'edit_url'            => get_edit_post_link( $post->ID, 'raw' ),
 				'published_at'        => strtotime( $post->post_date_gmt . ' GMT' ),
 				'shared_at'           => $shared_at,
+				'share_at'            => $share_at,
+				'imported'            => (bool) get_post_meta( $post->ID, '_rbco_imported', true ),
 				'linkedin_status'     => $status,
 				'linkedin_error'      => $error,
 				'linkedin_commentary' => get_post_meta( $post->ID, '_rbco_linkedin_commentary', true ),

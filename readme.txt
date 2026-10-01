@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.2.4
+Stable tag: 3.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ Ray Bogman AI Content Orchestrator generates SEO-optimized blog posts and pages 
 * **Website Context Scanning** — Reads pages from a URL you provide to give the AI background context for writing on-brand content. Only scans URLs you explicitly enter — no automated or third-party crawling.
 * **PDF Sources** — Upload PDFs as context for content generation. Saved in a library for future reuse. Text is extracted automatically. Uses sitemaps and internal link discovery for comprehensive context gathering.
 * **AI Featured Images** — Generate a custom hero image for each post using OpenAI DALL-E 3 or Ideogram. Choose your preferred image provider in Settings. Automatically set as the featured image; LinkedIn picks it up via Open Graph tags.
-* **LinkedIn Integration** — Automatically share published content to your LinkedIn profile. Connect via OAuth 2.0, toggle per post, and content is shared when published (immediately or after approval).
+* **LinkedIn Integration** — Automatically share published content to your LinkedIn profile. Connect via OAuth 2.0, toggle per post, and content is shared when published (immediately or after approval) or at a time you choose. Add any existing post or page to the LinkedIn queue, let the AI write the LinkedIn text, and schedule the share.
 * **Project Vision** — Define baseline instructions (brand voice, tone, audience, rules) that the AI always follows before generating any content. Set once in Settings, applied to every request.
 * **AI Content Generation** — Two-step process: generates SEO metadata first, then creates original HTML content with table of contents, FAQ sections, and calls-to-action.
 * **SEO Metadata** — Automatically generates SEO titles (max 60 chars), meta descriptions (max 155 chars), slugs, focus keyphrases, tags, and categories.
@@ -147,6 +147,9 @@ What data is sent and when: Site URL, plugin version, and (for Enterprise) the l
 
 == Upgrade Notice ==
 
+= 3.3.0 =
+Share existing posts on LinkedIn and schedule LinkedIn shares independently of the publish time.
+
 = 3.2.4 =
 Model dropdowns now load live from Anthropic and OpenAI; GPT-5 family fully supported.
 
@@ -163,6 +166,11 @@ WordPress.org plugin review compliance release. Recommended for all users.
 Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
+
+= 3.3.0 =
+* New: Share existing posts on LinkedIn. On the Scheduled page, search any published post or page and add it to the LinkedIn queue without changing the post. Share now, generate the LinkedIn text with AI, or pick a date and time.
+* New: Scheduled LinkedIn shares. Every post in the LinkedIn queue has a clock button to set a share time; the every-minute catch-up cron sends it. New content can be published first and shared later via "Share on LinkedIn at" on the Create Content page.
+* The LinkedIn dashboard shows a "Scheduled" status with the planned time and marks imported posts as "Existing post".
 
 = 3.2.4 =
 * Build: Freemius WordPress SDK updated to 2.13.4; the deploy pipeline now uses an in-repo action (the third-party one no longer builds).
