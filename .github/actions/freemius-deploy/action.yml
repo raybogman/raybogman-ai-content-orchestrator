@@ -1,0 +1,20 @@
+name: "Deploy on Freemius"
+description: "Uploads a plugin zip to Freemius and sets its release mode (developer key/secret auth)."
+inputs:
+  file_name:
+    description: "Zip file to deploy (relative to the workspace)"
+    required: true
+  version:
+    description: "Version being deployed (skips upload if Freemius already has it)"
+    required: true
+  release_mode:
+    description: "pending | beta | released"
+    required: false
+    default: "pending"
+  sandbox:
+    description: "Use the Freemius sandbox API"
+    required: false
+    default: "false"
+runs:
+  using: "docker"
+  image: "Dockerfile"

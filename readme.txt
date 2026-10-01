@@ -165,6 +165,7 @@ Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updat
 == Changelog ==
 
 = 3.2.4 =
+* Build: Freemius WordPress SDK updated to 2.13.4; the deploy pipeline now uses an in-repo action (the third-party one no longer builds).
 * New: Claude and OpenAI model dropdowns are now loaded live from each provider using your API key (cached 12 hours, "Refresh model list" link under the dropdown). New models appear automatically; a built-in list is used until a key is saved.
 * Change: default models are now Claude Sonnet 5.5 and GPT-5.5 for new installs. Existing settings are kept.
 * Fix: OpenAI requests now send max_completion_tokens, which the current GPT-5 family requires (max_tokens was rejected by those models).

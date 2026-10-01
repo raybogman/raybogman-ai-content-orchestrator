@@ -96,7 +96,7 @@ jobs:
 
       - name: Deploy to Freemius
         if: steps.version.outputs.DEPLOY == 'true'
-        uses: buttonizer/freemius-deploy@v0.1.3
+        uses: ./.github/actions/freemius-deploy
         env:
           DEV_ID: '33246'
           PLUGIN_ID: '28680'
