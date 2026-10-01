@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,8 +35,8 @@ Ray Bogman AI Content Orchestrator generates SEO-optimized blog posts and pages 
 
 **Supported Models:**
 
-* Claude Sonnet 4.6, Opus 4.6, Haiku 4.5 (Anthropic)
-* GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-4.1, GPT-4.1 Mini, GPT-4.1 Nano (OpenAI)
+* Claude: every model your Anthropic key can access (Sonnet, Opus, Haiku), loaded live
+* OpenAI: every current GPT chat model your key can access, loaded live
 
 **How it works:**
 
@@ -110,6 +110,9 @@ What data is sent and when: The user prompt, scanned website context, and image-
 
 == Upgrade Notice ==
 
+= 1.0.4 =
+Model dropdowns now load live from Anthropic and OpenAI; GPT-5 family fully supported.
+
 = 1.0.2 =
 Restores the Style Examples page, which was unreachable because its menu entry was missing.
 
@@ -117,6 +120,11 @@ Restores the Style Examples page, which was unreachable because its menu entry w
 First public release: a free, fully functional AI content pipeline for WordPress with Claude/OpenAI support, gpt-image-1 featured images, internal linking, and Yoast integration.
 
 == Changelog ==
+
+= 1.0.4 =
+* New: Claude and OpenAI model dropdowns are now loaded live from each provider using your API key (cached 12 hours, "Refresh model list" link under the dropdown). New models appear automatically; a built-in list is used until a key is saved.
+* Change: default models are now Claude Sonnet 5.5 and GPT-5.5 for new installs. Existing settings are kept.
+* Fix: OpenAI requests now send max_completion_tokens, which the current GPT-5 family requires (max_tokens was rejected by those models).
 
 = 1.0.3 =
 * Tested up to WordPress 7.1 (verified on 7.1-RC2 with Plugin Check and WP_DEBUG — no changes required).

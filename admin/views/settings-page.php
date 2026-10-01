@@ -60,6 +60,7 @@ $rbco_active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GE
 		$rbco_faq_items = array(
 			'what-does-it-do'  => __( 'What does this plugin do?', 'raybogman-ai-content-orchestrator' ),
 			'ai-providers'     => __( 'Do I need both a Claude and OpenAI account?', 'raybogman-ai-content-orchestrator' ),
+			'models'           => __( 'Which AI models can I choose from?', 'raybogman-ai-content-orchestrator' ),
 			'cost'             => __( 'How much does it cost to generate a blog post?', 'raybogman-ai-content-orchestrator' ),
 			'website-scanner'  => __( 'What is the "Website Scanner" and do I need it?', 'raybogman-ai-content-orchestrator' ),
 			'internal-linking' => __( 'How does the automatic internal linking work?', 'raybogman-ai-content-orchestrator' ),
@@ -91,6 +92,13 @@ $rbco_active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GE
 			<div class="rbco-card-body">
 				<h3 style="margin-top:0;"><?php esc_html_e( 'Do I need both a Claude and OpenAI account?', 'raybogman-ai-content-orchestrator' ); ?></h3>
 				<p><?php esc_html_e( 'No. You only need one AI provider. Pick either Claude (Anthropic) or OpenAI in the General tab and enter that provider\'s API key. You can configure both and switch between them anytime, but only one is used at a time for content generation.', 'raybogman-ai-content-orchestrator' ); ?></p>
+			</div>
+		</div>
+
+		<div class="rbco-card" style="margin-bottom: 12px;" id="faq-models">
+			<div class="rbco-card-body">
+				<h3 style="margin-top:0;"><?php esc_html_e( 'Which AI models can I choose from?', 'raybogman-ai-content-orchestrator' ); ?></h3>
+				<p><?php esc_html_e( 'The model dropdowns in the General tab are filled live from your provider. Once you save an Anthropic or OpenAI API key, the plugin asks that provider for its current model list, so new Claude and GPT models show up automatically without a plugin update. The list is cached for 12 hours; use the "Refresh model list" link under the dropdown to reload it. Without an API key a short built-in list is shown. For OpenAI only chat models are listed (no audio, image, realtime or dated snapshot variants).', 'raybogman-ai-content-orchestrator' ); ?></p>
 			</div>
 		</div>
 
@@ -172,7 +180,7 @@ $rbco_active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GE
 					<?php esc_html_e( 'Here\'s what it does: you give it a topic and optionally a website to scan for background information. The AI then writes a full, SEO-optimized blog post with proper headings, paragraphs, lists, and a FAQ section. It generates a custom featured image, adds internal links to your existing posts, and publishes everything to WordPress with Yoast SEO fields filled in — all in about 2 minutes.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
-					<?php esc_html_e( 'The plugin supports two AI providers (Claude by Anthropic and OpenAI\'s GPT models), featured image generation with gpt-image-1, four blog writing styles, automatic internal linking, and an optional branded title overlay for featured images.', 'raybogman-ai-content-orchestrator' ); ?>
+					<?php esc_html_e( 'The plugin supports two AI providers (Claude by Anthropic and OpenAI\'s GPT models) with model lists loaded live from each provider, featured image generation with gpt-image-1, four blog writing styles, automatic internal linking, and an optional branded title overlay for featured images.', 'raybogman-ai-content-orchestrator' ); ?>
 				</p>
 				<p style="font-size:14px;line-height:1.6;">
 					<?php esc_html_e( 'Everything is designed to work on any hosting — including shared hosting with strict timeouts — thanks to a 4-step pipeline that breaks the work into manageable chunks.', 'raybogman-ai-content-orchestrator' ); ?>

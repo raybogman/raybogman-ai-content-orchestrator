@@ -306,9 +306,9 @@ class RBCO_Admin {
 					),
 					'body'    => wp_json_encode(
 						array(
-							'model'      => RBCO_Settings::get_openai_model(),
-							'max_tokens' => 10,
-							'messages'   => array(
+							'model'                 => RBCO_Settings::get_openai_model(),
+							'max_completion_tokens' => 10,
+							'messages'              => array(
 								array(
 									'role'    => 'user',
 									'content' => 'Say "ok"',

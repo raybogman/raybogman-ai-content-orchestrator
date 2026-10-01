@@ -147,24 +147,20 @@ class RBCO_Settings {
 			array(
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => 'claude-sonnet-4-6',
+				'default'           => 'claude-sonnet-5-5',
 			)
 		);
 
 		add_settings_field(
 			'rbco_claude_model',
 			__( 'Claude Model', 'raybogman-ai-content-orchestrator' ),
-			array( __CLASS__, 'render_select_field' ),
+			array( __CLASS__, 'render_model_select_field' ),
 			self::TAB_GENERAL,
 			'rbco_claude_section',
 			array(
 				'id'          => 'rbco_claude_model',
-				'options'     => array(
-					'claude-sonnet-4-6'         => 'Claude Sonnet 4.6 (recommended)',
-					'claude-opus-4-6'           => 'Claude Opus 4.6',
-					'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5',
-				),
-				'description' => __( 'Which Claude model to use. Sonnet is recommended for most users (fast and high quality). Opus is the most capable but slower. Haiku is the fastest and cheapest.', 'raybogman-ai-content-orchestrator' ),
+				'provider'    => 'claude',
+				'description' => __( 'Which Claude model to use. The list is loaded from Anthropic with your API key, so new models appear automatically. Sonnet is recommended for most users (fast and high quality). Opus is the most capable but slower. Haiku is the fastest and cheapest.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -207,27 +203,20 @@ class RBCO_Settings {
 			array(
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => 'gpt-4o',
+				'default'           => 'gpt-5.5',
 			)
 		);
 
 		add_settings_field(
 			'rbco_openai_model',
 			__( 'OpenAI Model', 'raybogman-ai-content-orchestrator' ),
-			array( __CLASS__, 'render_select_field' ),
+			array( __CLASS__, 'render_model_select_field' ),
 			self::TAB_GENERAL,
 			'rbco_openai_section',
 			array(
 				'id'          => 'rbco_openai_model',
-				'options'     => array(
-					'gpt-4o'       => 'GPT-4o (recommended)',
-					'gpt-4o-mini'  => 'GPT-4o Mini',
-					'gpt-4-turbo'  => 'GPT-4 Turbo',
-					'gpt-4.1'      => 'GPT-4.1',
-					'gpt-4.1-mini' => 'GPT-4.1 Mini',
-					'gpt-4.1-nano' => 'GPT-4.1 Nano',
-				),
-				'description' => __( 'Which OpenAI model to use. GPT-4o is recommended for most users (fast and high quality). Mini and Nano versions are faster and cheaper but less capable.', 'raybogman-ai-content-orchestrator' ),
+				'provider'    => 'openai',
+				'description' => __( 'Which OpenAI model to use. The list is loaded from OpenAI with your API key, so new models appear automatically. The newest full-size GPT model is recommended. Mini and Nano versions are faster and cheaper but less capable.', 'raybogman-ai-content-orchestrator' ),
 			)
 		);
 
@@ -858,6 +847,23 @@ class RBCO_Settings {
 	}
 
 	/**
+	 * Render a model select whose options come live from the provider.
+	 *
+	 * @param array $args Field arguments (id, provider, description).
+	 */
+	public static function render_model_select_field( $args ) {
+		$provider        = $args['provider'];
+		$args['options'] = RBCO_Models::get_options( $provider, get_option( $args['id'], '' ) );
+		self::render_select_field( $args );
+		printf(
+			'<p class="description">%s <a href="%s">%s</a></p>',
+			esc_html( RBCO_Models::source_note( $provider ) ),
+			esc_url( RBCO_Models::refresh_url() ),
+			esc_html__( 'Refresh model list', 'raybogman-ai-content-orchestrator' )
+		);
+	}
+
+	/**
 	 * Render a number input field.
 	 *
 	 * @param array $args Field arguments.
@@ -1008,7 +1014,7 @@ class RBCO_Settings {
 	 * @return string
 	 */
 	public static function get_claude_model() {
-		return get_option( 'rbco_claude_model', 'claude-sonnet-4-6' );
+		return get_option( 'rbco_claude_model', 'claude-sonnet-5-5' );
 	}
 
 	/**
@@ -1026,7 +1032,7 @@ class RBCO_Settings {
 	 * @return string
 	 */
 	public static function get_openai_model() {
-		return get_option( 'rbco_openai_model', 'gpt-4o' );
+		return get_option( 'rbco_openai_model', 'gpt-5.5' );
 	}
 
 	/**
