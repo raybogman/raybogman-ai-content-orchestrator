@@ -3,7 +3,7 @@
  * Plugin Name:       Ray Bogman AI Content Orchestrator
  * Plugin URI:        https://github.com/raybogman/raybogman-ai-content-orchestrator
  * Description:       End-to-end AI content pipeline for WordPress: website scanning, SEO, featured images (DALL-E 3 / Ideogram), LinkedIn auto-share, and Yoast integration. Supports Claude and OpenAI.
- * Version:           3.2.3
+ * Version:           3.2.4
  * Requires at least: 5.9
  * Tested up to:      7.0
  * Requires PHP:      7.4
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RBCO_VERSION', '3.2.3' );
+define( 'RBCO_VERSION', '3.2.4' );
 define( 'RBCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RBCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RBCO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -125,6 +125,7 @@ final class RBCO_Plugin {
 	 */
 	private function load_dependencies() {
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-settings.php';
+		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-models.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-styles.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-pdf-extractor.php';
 		require_once RBCO_PLUGIN_DIR . 'includes/class-rbco-pdf-library.php';
@@ -377,9 +378,9 @@ final class RBCO_Plugin {
 		$defaults = array(
 			'ai_provider'        => 'claude',
 			'anthropic_api_key'  => '',
-			'claude_model'       => 'claude-sonnet-4-6',
+			'claude_model'       => 'claude-sonnet-5-5',
 			'openai_api_key'     => '',
-			'openai_model'       => 'gpt-4o',
+			'openai_model'       => 'gpt-5.5',
 			'max_pages_to_crawl' => 25,
 			'max_context_chars'  => 18000,
 			'request_timeout'    => 15,

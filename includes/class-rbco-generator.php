@@ -1062,9 +1062,9 @@ class RBCO_Generator {
 		$this->log( sprintf( 'Calling OpenAI API: model=%s, max_tokens=%d', $model, $max_tokens ) );
 
 		$body = array(
-			'model'      => $model,
-			'max_tokens' => $max_tokens,
-			'messages'   => array(
+			'model'                 => $model,
+			'max_completion_tokens' => $max_tokens,
+			'messages'              => array(
 				array( 'role' => 'system', 'content' => $system_prompt ),
 				array( 'role' => 'user',   'content' => $user_message ),
 			),

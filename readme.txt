@@ -5,7 +5,7 @@ Tags: ai, content-generator, seo, openai, claude
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.2.3
+Stable tag: 3.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,8 +37,8 @@ Ray Bogman AI Content Orchestrator generates SEO-optimized blog posts and pages 
 
 **Supported Models:**
 
-* Claude Sonnet 4.6, Opus 4.6, Haiku 4.5 (Anthropic)
-* GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-4.1, GPT-4.1 Mini, GPT-4.1 Nano (OpenAI)
+* Claude: every model your Anthropic key can access (Sonnet, Opus, Haiku), loaded live
+* OpenAI: every current GPT chat model your key can access, loaded live
 
 **How it works:**
 
@@ -147,6 +147,9 @@ What data is sent and when: Site URL, plugin version, and (for Enterprise) the l
 
 == Upgrade Notice ==
 
+= 3.2.4 =
+Model dropdowns now load live from Anthropic and OpenAI; GPT-5 family fully supported.
+
 = 3.2.3 =
 WordPress.org plugin review round-3 fixes. Adds the WP 7.0 core AI Client as the preferred path for text generation (direct provider integration kept as fallback), tightens OAuth CSRF, and clears Plugin Check static-analysis findings.
 
@@ -160,6 +163,11 @@ WordPress.org plugin review compliance release. Recommended for all users.
 Major rebrand to Ray Bogman AI Content Orchestrator. All internal prefixes updated. Fresh install recommended for new users.
 
 == Changelog ==
+
+= 3.2.4 =
+* New: Claude and OpenAI model dropdowns are now loaded live from each provider using your API key (cached 12 hours, "Refresh model list" link under the dropdown). New models appear automatically; a built-in list is used until a key is saved.
+* Change: default models are now Claude Sonnet 5.5 and GPT-5.5 for new installs. Existing settings are kept.
+* Fix: OpenAI requests now send max_completion_tokens, which the current GPT-5 family requires (max_tokens was rejected by those models).
 
 = 3.2.3 =
 * New: When running on WordPress 7.0 or newer with a provider configured through the core AI Client, every text generation now goes through wp_ai_client_prompt() → generateText() first. The plugin's own direct integrations (api.anthropic.com / api.openai.com) are kept only as a fallback for older WordPress versions and sites that haven't set up the core AI Client.
